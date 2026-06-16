@@ -11,3 +11,8 @@ Application de gestion de projets et de suivi des membres d'une association
 3. cp .env.example .env && renseigner les variables
 4. npm run migrate
 5. npm run dev -> http://localhost:3000
+
+## Architecture
+## Contribution
+## Teste unitaire
+## Deployment
