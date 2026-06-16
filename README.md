@@ -1,3 +1,13 @@
-En tant qu’utilisateur, je veux créer mon compte afin de pouvoir utiliser l’application
-En tant qu’utilisateur, je veux modifier mon compte afin de mettre à jour mon profil
-En tant qu’utilisateur, je veux supprimer mon compte afin de ne plus etre dans la liste des utilisateurs
+# Associsson
+Application de gestion de projets et de suivi des membres d'une association
+
+## Prerequis
+- Node.js
+- PostgreSQL
+
+## Installation
+1. git clone le depot
+2. cd Associsson/ && npm install
+3. cp .env.example .env && renseigner les variables
+4. npm run migrate
+5. npm run dev -> http://localhost:3000
