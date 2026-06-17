@@ -81,6 +81,6 @@ associsson/
 ## Auteur
 
 Florian Gosse — [profil GitHub](https://github.com/GosseFlorian)<br>
-Benjamin <br>
-Antoine LAU <br>
-Rachida <br>
+Benjamin Correa — [profil GitHub](https://github.com/ben-25)<br>
+Antoine Lau — [profil GitHub](https://github.com/antoineLAU)<br>
+Fofana Hawa Rachida — [profil GitHub](https://github.com/fofanahawarachida) <br>
