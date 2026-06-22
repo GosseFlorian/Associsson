@@ -1,9 +1,0 @@
-{
-  "devDependencies": {
-    "typescript": "^6.0.3",
-    "vite-plugin-checker": "^0.14.4"
-  },
-  "dependencies": {
-    "react-router-dom": "^7.18.0"
-  }
-}
