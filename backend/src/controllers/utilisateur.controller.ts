@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getUtilisateursService, getUtilisateurIdService } from "../services/utilisateur.service";
+import { getUtilisateursService, getUtilisateurIdService, postUtilisateurService, patchUtilisateurService } from "../services/utilisateur.service";
 
 export const getUtilisateursController = async (
   req: Request,
@@ -23,7 +23,36 @@ export const getUtilisateurIdController = async (
     const utilisateur = await getUtilisateurIdService(id);
     return res.status(200).json(utilisateur);
   } catch (error) {
-    console.error("Errur lors de la récupération : ", error);
+    console.error("Erreur lors de la récupération : ", error);
     return res.status(500).json({ message: "Erreur interne du serveur" });
+  }
+};
+
+export const postUtilisateurController = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  try{
+    const data = req.body;
+    const nouvelleUtilisateur = await postUtilisateurService(data);
+    return res.status(200).json(nouvelleUtilisateur);
+  } catch (error){
+    console.error("Erreur lors de la récupération : ", error);
+    return res.status(500).json({ message: "Erreur interne du serveur"});
+  }
+};
+
+export const patchUtilisateurController = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  try{
+    const id = Number(req.params.id);
+    const data = req.body;
+    const utilisateur = await patchUtilisateurService(id, data);
+    return res.status(200).json(utilisateur);
+  } catch (error){
+    console.error("Erreur lors de la récupération : ", error);
+    return res.status(500).json({ message: "Erreur interne du serveur"});
   }
 };
