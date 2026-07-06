@@ -7,3 +7,10 @@ export const getUtilisateursRepository = async (): Promise<Utilisateur[]> => {
   );
   return result.rows;
 };
+
+export const getUtilisateurIdRepository = async (id: number): Promise<Utilisateur[]> => {
+  const result = await pool.query<Utilisateur>(
+    "SELECT nom, email, date_inscription FROM utilisateur WHERE id = $1", [id]
+  );
+  return result.rows;
+}
