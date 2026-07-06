@@ -8,3 +8,10 @@ export const getProjetsRepository = async (): Promise<Projet[]> => {
     return result.rows;
 }
 
+export const getProjetByIdRepository = async (id: number): Promise<Projet | null> => {
+    const result = await pool.query<Projet>(
+        "SELECT id, organisation_id, createur_id, titre, description, date_creation, date_debut, date_fin, adresse, est_termine FROM projet WHERE id = $1",
+        [id]        
+    );
+    return result.rows[0] ?? null;
+};
