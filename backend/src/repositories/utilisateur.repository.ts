@@ -8,16 +8,12 @@ export const getUtilisateursRepository = async (): Promise<Utilisateur[]> => {
   return result.rows;
 };
 
-export const getUtilisateurIdRepository = async (id: number): Promise<Utilisateur> => {
+export const getUtilisateurIdRepository = async (id: number): Promise<Utilisateur | null> => {
   const result = await pool.query<Utilisateur>(
     "SELECT nom, email, date_inscription FROM utilisateur WHERE id = $1", [id]
   );
 
-  if (!result.rows[0]){
-    throw new Error("Utilisateur introuvable");
-  }
-
-  return result.rows[0];
+  return result.rows[0] ?? null;
 };
 
 export const postUtilisateurRepository = async (data: Utilisateur): Promise<Utilisateur> => {

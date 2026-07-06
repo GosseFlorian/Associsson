@@ -23,7 +23,14 @@ export const getUtilisateurIdController = async (
     const utilisateur = await getUtilisateurIdService(id);
     return res.status(200).json(utilisateur);
   } catch (error) {
-    console.error("Erreur lors de la récupération : ", error);
+    const err = error as Error;
+
+    if (err.message === "INVALID_ID") {
+      return res.status(400).json({ message: "L'id doit être un nombre" });
+    }
+    if (err.message === "NOT_FOUND") {
+      return res.status(404).json({ message: "Utilisateur introuvable" });
+    }
     return res.status(500).json({ message: "Erreur interne du serveur" });
   }
 };

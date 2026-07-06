@@ -8,7 +8,18 @@ export const getUtilisateursService = async (): Promise<Utilisateur[]> => {
 };
 
 export const getUtilisateurIdService = async (id: number): Promise<Utilisateur> => {
-  return await getUtilisateurIdRepository(id);
+
+  if (isNaN(id)) {
+    throw new Error("INVALID_ID");
+  }
+
+  const utilisateur = await getUtilisateurIdRepository(id);
+  
+  if (!utilisateur) {
+    throw new Error("NOT_FOUND");
+  }
+
+  return utilisateur;
 };
 
 export const postUtilisateurService = async (data: Utilisateur): Promise<Utilisateur> => {
