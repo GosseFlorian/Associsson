@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import utilisateurRoutes from "./routes/utilisateur.route";
+import membreRoutes from "./routes/membre.route";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -10,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/utilisateur", utilisateurRoutes);
+app.use("/membre", membreRoutes);
 
 // Lancement du serveur
 app.listen(PORT, () => {
