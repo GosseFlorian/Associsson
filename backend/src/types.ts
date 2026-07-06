@@ -6,6 +6,12 @@ export interface Utilisateur {
   date_inscription: string;
 }
 
+export interface Membre {
+  id: number;
+  organisation_id: number;
+  utilisateur_id: number;
+  role: string;
+}
 export interface Projet {
   id: number;
   organisation_id: number;
