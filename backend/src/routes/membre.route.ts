@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { getMembresController } from "../controllers/membre.controller";
+import {
+  getMembresController,
+  getMembresParIdController,
+} from "../controllers/membre.controller";
 
 const router = Router();
 
 router.get("/", getMembresController);
+router.get("/:id", getMembresParIdController);
 
 export default router;

@@ -11,6 +11,8 @@ export interface Membre {
   organisation_id: number;
   utilisateur_id: number;
   role: string;
+  nomUtilisateur: string;
+  nomOrganisation: string;
 }
 export interface Projet {
   id: number;
