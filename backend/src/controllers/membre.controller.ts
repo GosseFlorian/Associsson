@@ -4,6 +4,7 @@ import {
   getMembreParIdService,
   putMembreService,
   postMembreService,
+  deleteMembreService,
 } from "../services/membre.service";
 
 export async function getMembresController(
@@ -80,6 +81,29 @@ export async function postMembreController(
     const nouveauMembre = await postMembreService(data);
     res.status(200).json(nouveauMembre);
     return;
+  } catch (error) {
+    console.error("Erreur lors de la récupération : ", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
+  }
+}
+
+export async function deleteMembreController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const id = Number(req.params.id);
+  if (isNaN(id) || id <= 0) {
+    res.status(400).json({ message: "ID invalide" });
+    return;
+  }
+  try {
+    const membre = await deleteMembreService(id);
+    if (!membre) {
+      res.status(404).json({ message: "Membre non trouvé" });
+      return;
+    }
+    res.status(200).json(membre);
   } catch (error) {
     console.error("Erreur lors de la récupération : ", error);
     res.status(500).json({ message: "Erreur interne du serveur" });

@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { getOrganisationIdController } from "../controllers/organisation.controller";
+import {
+  getOrganisationIdController,
+  getOrganisationController,
+} from "../controllers/organisation.controller";
 
 const router = Router();
 

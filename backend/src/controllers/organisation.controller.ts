@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
-import { getOrganisationIdService } from "../services/organisation.service";
+import {
+  getOrganisationIdService,
+  getOrganisationService,
+} from "../services/organisation.service";
 
 export const getOrganisationIdController = async (
   req: Request,
