@@ -37,3 +37,11 @@ export interface Tache {
   date_echeance: string | null;
   assigne_a: number | null;
 }
+
+export interface Organisation {
+  id: number;
+  nom: string;
+  date_creation: Date;
+  est_actif: boolean;
+  proprietaire_id: number;
+}
