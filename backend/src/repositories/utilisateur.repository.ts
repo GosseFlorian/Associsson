@@ -43,18 +43,11 @@ export const putUtilisateurRepository = async (
     SET nom = COALESCE($1, nom),
         email = COALESCE($2, email),
         mot_de_passe = COALESCE($3, mot_de_passe),
-        date_inscription = COALESCE($4, date_inscription)
     WHERE id = $5
     RETURNING *;
   `;
 
-  const values = [
-    data.nom ?? null,
-    data.email ?? null,
-    data.mot_de_passe ?? null,
-    data.date_inscription ?? null,
-    id,
-  ];
+  const values = [data.nom, data.email, data.mot_de_passe, id];
 
   const result = await pool.query<Utilisateur>(query, values);
   if (!result.rows[0]) {
