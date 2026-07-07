@@ -23,7 +23,7 @@ export async function getMembresParIdController(
 ): Promise<void> {
   const id = Number(req.params.id);
 
-  if (isNaN(id)) {
+  if (isNaN(id) || id <= 0) {
     res.status(400).json({ message: "ID invalide" });
     return;
   }
