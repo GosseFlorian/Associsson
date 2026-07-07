@@ -26,3 +26,11 @@ export interface Projet {
   adresse: string;
   est_termine: boolean;
 }
+
+export interface Organisation {
+  id: number;
+  nom: string;
+  date_creation: Date;
+  est_actif: boolean;
+  proprietaire_id: number;
+}
