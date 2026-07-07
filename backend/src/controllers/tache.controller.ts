@@ -1,15 +1,21 @@
 import { Request, Response } from "express";
-import { getTachesService } from "../services/tache.service";
+import {
+  getTachesService,
+  
+} from "../services/tache.service";
 
-export const gettacheController = async (
+export const getTachesController = async (
   req: Request,
   res: Response,
-): Promise<Response> => {
+): Promise<void> => {
   try {
-    const tache = await getTachesService();
-    return res.status(200).json(tache);
+    const taches = await getTachesService();
+    res.status(200).json(taches);
+    return;
   } catch (error) {
     console.error("Erreur lors de la récupération :", error);
-    return res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
   }
 };
+
