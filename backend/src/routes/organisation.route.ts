@@ -3,6 +3,7 @@ import { getOrganisationIdController } from "../controllers/organisation.control
 
 const router = Router();
 
+router.get("/", getOrganisationController);
 router.get("/:id", getOrganisationIdController);
 
 export default router;

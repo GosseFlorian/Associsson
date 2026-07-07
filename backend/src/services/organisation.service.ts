@@ -5,4 +5,8 @@ export const getOrganisationIdService = async (
   id: number,
 ): Promise<Organisation | undefined> => {
   return await getOrganisationIdRepository(id);
+}
+
+export const getOrganisationService = async (): Promise<Organisation[]> => {
+  return await getOrganisationRepository();
 };

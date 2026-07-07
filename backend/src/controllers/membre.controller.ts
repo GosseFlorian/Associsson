@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   getMembreService,
   getMembreParIdService,
+  postMembreService,
 } from "../services/membre.service";
 
 export async function getMembresController(
@@ -38,5 +39,21 @@ export async function getMembresParIdController(
     res.status(200).json(membre);
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
+  }
+}
+
+export async function postMembreController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const data = req.body;
+    const nouveauMembre = await postMembreService(data);
+    res.status(200).json(nouveauMembre);
+    return;
+  } catch (error) {
+    console.error("Erreur lors de la récupération : ", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
   }
 }
