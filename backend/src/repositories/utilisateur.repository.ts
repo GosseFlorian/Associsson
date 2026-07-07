@@ -7,3 +7,65 @@ export const getUtilisateursRepository = async (): Promise<Utilisateur[]> => {
   );
   return result.rows;
 };
+
+export const getUtilisateurIdRepository = async (
+  id: number,
+): Promise<Utilisateur | undefined> => {
+  const result = await pool.query<Utilisateur>(
+    "SELECT nom, email, date_inscription FROM utilisateur WHERE id = $1",
+    [id],
+  );
+
+  return result.rows[0];
+};
+
+export const postUtilisateurRepository = async (
+  data: Utilisateur,
+): Promise<Utilisateur> => {
+  const query =
+    "INSERT INTO utilisateur (nom, email, mot_de_passe) VALUES ($1, $2, $3) RETURNING *";
+  const values = [data.nom, data.email, data.mot_de_passe];
+  const result = await pool.query<Utilisateur>(query, values);
+
+  if (!result.rows[0]) {
+    throw new Error("Échec de la création de l'utilisateur");
+  }
+
+  return result.rows[0];
+};
+
+export const putUtilisateurRepository = async (
+  id: number,
+  data: Partial<Utilisateur>,
+): Promise<Utilisateur> => {
+  const query = `
+    UPDATE utilisateur
+    SET nom = COALESCE($1, nom),
+        email = COALESCE($2, email),
+        mot_de_passe = COALESCE($3, mot_de_passe),
+    WHERE id = $5
+    RETURNING *;
+  `;
+
+  const values = [data.nom, data.email, data.mot_de_passe, id];
+
+  const result = await pool.query<Utilisateur>(query, values);
+  if (!result.rows[0]) {
+    throw new Error("Echec de la modification");
+  }
+
+  return result.rows[0];
+};
+
+export const deleteUtilisateurRepository = async (
+  id: number,
+): Promise<Utilisateur> => {
+  const query = "DELETE FROM utilisateur WHERE id = $1 RETURNING *";
+  const result = await pool.query<Utilisateur>(query, [id]);
+
+  if (!result.rows[0]) {
+    throw new Error("Echec de la modification");
+  }
+
+  return result.rows[0];
+};
