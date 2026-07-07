@@ -26,3 +26,14 @@ export interface Projet {
   adresse: string;
   est_termine: boolean;
 }
+
+export interface Tache {
+  id: number;
+  projet_id: number;
+  nom: string;
+  description: string | null;
+  statut: "A_FAIRE" | "EN_COURS" | "TERMINE";
+  priorite: "BASSE" | "MOYENNE" | "HAUTE";
+  date_echeance: string | null;
+  assigne_a: number | null;
+}
