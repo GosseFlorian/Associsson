@@ -3,6 +3,7 @@ import {
   getMembreService,
   getMembreParIdService,
   putMembreService,
+  postMembreService,
 } from "../services/membre.service";
 
 export async function getMembresController(
@@ -62,6 +63,22 @@ export async function putMembreController(
     }
 
     res.status(200).json(membre);
+    return;
+  } catch (error) {
+    console.error("Erreur lors de la récupération : ", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
+  }
+}
+
+export async function postMembreController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const data = req.body;
+    const nouveauMembre = await postMembreService(data);
+    res.status(200).json(nouveauMembre);
     return;
   } catch (error) {
     console.error("Erreur lors de la récupération : ", error);

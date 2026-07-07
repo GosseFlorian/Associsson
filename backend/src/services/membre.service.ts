@@ -3,6 +3,7 @@ import {
   getMembresRepository,
   getMembreParIdRepository,
   putMembreRepository,
+  postMembreRepository,
 } from "../repositories/membre.repository";
 
 // Logique métier (hors format de URL, verification dans le controller), vérif si adresse email bon format, ou mdp taille suffisante ....
@@ -22,4 +23,8 @@ export async function putMembreService(
   data: Partial<Membre>,
 ): Promise<Membre> {
   return putMembreRepository(id, data);
+}
+
+export async function postMembreService(data: Membre): Promise<Membre> {
+  return postMembreRepository(data);
 }
