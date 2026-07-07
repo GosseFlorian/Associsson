@@ -4,18 +4,20 @@ import {
   getMembreParIdService,
 } from "../services/membre.service";
 
-export const getMembresController = async (
+export async function getMembresController(
   req: Request,
   res: Response,
-): Promise<Response> => {
+): Promise<void> {
   try {
     const membres = await getMembreService();
-    return res.status(200).json(membres);
+    res.status(200).json(membres);
+    return;
   } catch (error) {
     console.error("Erreur lors de la récupération :", error);
-    return res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
   }
-};
+}
 
 export async function getMembresParIdController(
   req: Request,

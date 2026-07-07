@@ -4,11 +4,11 @@ import {
   getMembreParIdRepository,
 } from "../repositories/membre.repository";
 
-// Logique métier, vérif si adresse email bon format, ou mdp taille suffisante ....
+// Logique métier (hors format de URL, verification dans le controller), vérif si adresse email bon format, ou mdp taille suffisante ....
 
-export const getMembreService = async (): Promise<Membre[]> => {
-  return await getMembresRepository();
-};
+export async function getMembreService(): Promise<Membre[]> {
+  return getMembresRepository();
+}
 
 export async function getMembreParIdService(
   id: number,
