@@ -44,3 +44,14 @@ export async function postMembreRepository(data: Membre): Promise<Membre> {
   }
   return result.rows[0];
 }
+
+export async function deleteMembreRepository(
+  id: number,
+): Promise<Membre | undefined> {
+  const result = await pool.query<Membre>(
+    `DELETE FROM membre WHERE id = $1 RETURNING *`,
+    [id],
+  );
+
+  return result.rows[0];
+}
