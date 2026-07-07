@@ -13,8 +13,5 @@ export const getMembreService = async (): Promise<Membre[]> => {
 export async function getMembreParIdService(
   id: number,
 ): Promise<Membre | undefined> {
-  if (id <= 0) {
-    throw new Error("ID doit être positif");
-  }
   return getMembreParIdRepository(id);
 }
