@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { getOrganisationController } from "../controllers/organisation.controller";
+import { getOrganisationIdController } from "../controllers/organisation.controller";
 
 const router = Router();
 
 router.get("/", getOrganisationController);
+router.get("/:id", getOrganisationIdController);
 
 export default router;
