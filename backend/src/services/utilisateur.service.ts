@@ -4,6 +4,7 @@ import {
   getUtilisateurIdRepository,
   postUtilisateurRepository,
   putUtilisateurRepository,
+  deleteUtilisateurRepository,
 } from "../repositories/utilisateur.repository";
 
 // Logique métier, vérif si adresse email bon format, ou mdp taille suffisante ....
@@ -29,4 +30,10 @@ export const putUtilisateurService = async (
   data: Partial<Utilisateur>,
 ): Promise<Utilisateur> => {
   return await putUtilisateurRepository(id, data);
+};
+
+export const deleteUtilisateurService = async (
+  id: number,
+): Promise<Utilisateur> => {
+  return await deleteUtilisateurRepository(id);
 };

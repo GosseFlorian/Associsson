@@ -56,3 +56,16 @@ export const putUtilisateurRepository = async (
 
   return result.rows[0];
 };
+
+export const deleteUtilisateurRepository = async (
+  id: number,
+): Promise<Utilisateur> => {
+  const query = "DELETE FROM utilisateur WHERE id = $1 RETURNING *";
+  const result = await pool.query<Utilisateur>(query, [id]);
+
+  if (!result.rows[0]) {
+    throw new Error("Echec de la modification");
+  }
+
+  return result.rows[0];
+};

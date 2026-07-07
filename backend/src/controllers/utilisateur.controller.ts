@@ -4,6 +4,7 @@ import {
   getUtilisateurIdService,
   postUtilisateurService,
   putUtilisateurService,
+  deleteUtilisateurService,
 } from "../services/utilisateur.service";
 
 export const getUtilisateursController = async (
@@ -65,12 +66,47 @@ export const putUtilisateurController = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
+  const id = Number(req.params.id);
+
+  if (isNaN(id) || id <= 0) {
+    res.status(400).json({ message: "ID invalide" });
+    return;
+  }
   try {
-    const id = Number(req.params.id);
     const data = req.body;
     const utilisateur = await putUtilisateurService(id, data);
+
+    if (!utilisateur) {
+      res.status(404).json({ message: "Membre non trouvé" });
+      return;
+    }
+
     res.status(200).json(utilisateur);
     return;
+  } catch (error) {
+    console.error("Erreur lors de la récupération : ", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
+  }
+};
+
+export const deleteUtilisateurController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const id = Number(req.params.id);
+  if (isNaN(id) || id <= 0) {
+    res.status(400).json({ message: "ID invalide" });
+    return;
+  }
+  try {
+    const utilisateur = await deleteUtilisateurService(id);
+
+    if (!utilisateur) {
+      res.status(404).json({ message: "Membre non trouvé" });
+      return;
+    }
+    res.status(200).json(utilisateur);
   } catch (error) {
     console.error("Erreur lors de la récupération : ", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
