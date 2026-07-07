@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
-import { getMembreService } from "../services/membre.service";
+import {
+  getMembreService,
+  getMembreParIdService,
+} from "../services/membre.service";
 
 export const getMembresController = async (
   req: Request,
@@ -13,3 +16,25 @@ export const getMembresController = async (
     return res.status(500).json({ message: "Erreur interne du serveur" });
   }
 };
+
+export async function getMembresParIdController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const id = Number(req.params.id);
+
+  if (isNaN(id)) {
+    res.status(400).json({ message: "ID invalide" });
+    return;
+  }
+  try {
+    const membre = await getMembreParIdService(id);
+    if (!membre) {
+      res.status(404).json({ message: "Membre non trouvé" });
+      return;
+    }
+    res.status(200).json(membre);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
+}
