@@ -3,7 +3,7 @@ import {
   getUtilisateursRepository,
   getUtilisateurIdRepository,
   postUtilisateurRepository,
-  patchUtilisateurRepository,
+  putUtilisateurRepository,
 } from "../repositories/utilisateur.repository";
 
 // Logique métier, vérif si adresse email bon format, ou mdp taille suffisante ....
@@ -24,9 +24,9 @@ export const postUtilisateurService = async (
   return await postUtilisateurRepository(data);
 };
 
-export const patchUtilisateurService = async (
+export const putUtilisateurService = async (
   id: number,
   data: Partial<Utilisateur>,
 ): Promise<Utilisateur> => {
-  return await patchUtilisateurRepository(id, data);
+  return await putUtilisateurRepository(id, data);
 };

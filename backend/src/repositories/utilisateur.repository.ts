@@ -34,25 +34,29 @@ export const postUtilisateurRepository = async (
   return result.rows[0];
 };
 
-export const patchUtilisateurRepository = async (
+export const putUtilisateurRepository = async (
   id: number,
   data: Partial<Utilisateur>,
 ): Promise<Utilisateur> => {
-  const patchSql = [];
-  const values = [];
-  let index = 1;
+  const query = `
+    UPDATE utilisateur
+    SET nom = COALESCE($1, nom),
+        email = COALESCE($2, email),
+        mot_de_passe = COALESCE($3, mot_de_passe),
+        date_inscription = COALESCE($4, date_inscription)
+    WHERE id = $5
+    RETURNING *;
+  `;
 
-  for (const key in data) {
-    patchSql.push(`${key} = $${index}`);
-    values.push((data as any)[key]);
-    index++;
-  }
+  const values = [
+    data.nom ?? null,
+    data.email ?? null,
+    data.mot_de_passe ?? null,
+    data.date_inscription ?? null,
+    id,
+  ];
 
-  values.push(id);
-
-  const query = `UPDATE utilisateur SET ${patchSql.join(", ")} WHERE id = $${index} RETURNING *`;
   const result = await pool.query<Utilisateur>(query, values);
-
   if (!result.rows[0]) {
     throw new Error("Echec de la modification");
   }

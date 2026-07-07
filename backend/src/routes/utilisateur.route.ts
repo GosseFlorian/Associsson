@@ -1,11 +1,16 @@
 import { Router } from "express";
-import { getUtilisateursController, getUtilisateurIdController, postUtilisateurController, patchUtilisateurController } from "../controllers/utilisateur.controller";
+import {
+  getUtilisateursController,
+  getUtilisateurIdController,
+  postUtilisateurController,
+  putUtilisateurController,
+} from "../controllers/utilisateur.controller";
 
 const router = Router();
 
 router.get("/", getUtilisateursController);
 router.get("/:id", getUtilisateurIdController);
 router.post("/", postUtilisateurController);
-router.patch("/:id", patchUtilisateurController);
+router.put("/:id", putUtilisateurController);
 
 export default router;

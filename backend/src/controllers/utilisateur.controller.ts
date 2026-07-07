@@ -3,7 +3,7 @@ import {
   getUtilisateursService,
   getUtilisateurIdService,
   postUtilisateurService,
-  patchUtilisateurService,
+  putUtilisateurService,
 } from "../services/utilisateur.service";
 
 export const getUtilisateursController = async (
@@ -61,14 +61,14 @@ export const postUtilisateurController = async (
   }
 };
 
-export const patchUtilisateurController = async (
+export const putUtilisateurController = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   try {
     const id = Number(req.params.id);
     const data = req.body;
-    const utilisateur = await patchUtilisateurService(id, data);
+    const utilisateur = await putUtilisateurService(id, data);
     res.status(200).json(utilisateur);
     return;
   } catch (error) {
