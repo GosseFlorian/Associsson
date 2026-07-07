@@ -9,13 +9,15 @@ import {
 export const getUtilisateursController = async (
   req: Request,
   res: Response,
-): Promise<Response> => {
+): Promise<void> => {
   try {
     const utilisateurs = await getUtilisateursService();
-    return res.status(200).json(utilisateurs);
+    res.status(200).json(utilisateurs);
+    return;
   } catch (error) {
     console.error("Erreur lors de la récupération :", error);
-    return res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
   }
 };
 
@@ -39,34 +41,39 @@ export const getUtilisateurIdController = async (
     res.status(200).json(utilisateur);
   } catch (error) {
     res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
   }
 };
 
 export const postUtilisateurController = async (
   req: Request,
   res: Response,
-): Promise<Response> => {
+): Promise<void> => {
   try {
     const data = req.body;
     const nouvelleUtilisateur = await postUtilisateurService(data);
-    return res.status(200).json(nouvelleUtilisateur);
+    res.status(200).json(nouvelleUtilisateur);
+    return;
   } catch (error) {
     console.error("Erreur lors de la récupération : ", error);
-    return res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
   }
 };
 
 export const patchUtilisateurController = async (
   req: Request,
   res: Response,
-): Promise<Response> => {
+): Promise<void> => {
   try {
     const id = Number(req.params.id);
     const data = req.body;
     const utilisateur = await patchUtilisateurService(id, data);
-    return res.status(200).json(utilisateur);
+    res.status(200).json(utilisateur);
+    return;
   } catch (error) {
     console.error("Erreur lors de la récupération : ", error);
-    return res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
   }
 };
