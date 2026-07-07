@@ -1,3 +1,4 @@
+import { promises } from "node:dns";
 import {pool} from "../config/client";
 import {Projet} from "../types";
 
@@ -27,3 +28,11 @@ export const createProjetRepository = async (projet: Omit<Projet, 'id' | 'date_c
     }
     return createdProjet;
 };
+
+export const updateProjetRepository = async (id: number, projet: Omit<Projet, 'id' | 'date_creation'>): Promise<Projet | null> => {
+    const result =await pool.query<Projet>(
+        "UPDATE projet SET organisation_id = $1, createur_id = $2, titre = $3, description = $4, date_debut = $5, date_fin = $6, adresse = $7, est_termine = $8 WHERE id = $9 RETURNING *",
+        [projet.organisation_id, projet.createur_id, projet.titre, projet.description, projet.date_debut, projet.date_fin, projet.adresse, projet.est_termine, id]
+    );
+    return result.rows[0] ?? null
+}

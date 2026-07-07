@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {getProjetsService, getProjetByIdService, createProjetService} from "../services/projet.service";
+import {getProjetsService, getProjetByIdService, createProjetService, updateProjetService} from "../services/projet.service";
 
 export const getProjetsController = async (req: Request, res: Response) => {
     try {
@@ -53,5 +53,40 @@ export const createProjetController = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Erreur lors de la création du projet :", error);
     return res.status(500).json({ message: "Erreur interne du serveur" });
+  }
+};
+
+export const updateProjetController = async (req: Request, res: Response) => {
+  try{
+    const id = Number(req.params.id);
+    const {organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine} =req.body;
+    
+    if (isNaN(id)) {
+      return res.status(400).json({message: "Identificatian invalide"});
+    }
+
+    if (!organisation_id || !createur_id || !titre || est_termine === undefined) {
+      return res.status(400).json ({message: "tous les champs un projet sont requis pour une modification complète"});
+    }
+
+    const projetModifie = await updateProjetService(id, {
+      organisation_id,
+      createur_id,
+      titre,
+      description,
+      date_debut: description ?? null,
+      date_fin: description ?? null,
+      adresse: adresse ?? null,
+      est_termine
+    });
+
+    if(!projetModifie) {
+      return res.status(404).json({message: "Projet non trouvé"});
+    }
+
+    return res.status(200).json(projetModifie);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du projet :", error);
+    return res.status(500).json({message: "Erreur interne du serveur"});
   }
 };
