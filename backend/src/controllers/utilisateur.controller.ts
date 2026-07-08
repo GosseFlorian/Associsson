@@ -53,7 +53,7 @@ export const postUtilisateurController = async (
   try {
     const data = req.body;
     const nouvelleUtilisateur = await postUtilisateurService(data);
-    res.status(200).json(nouvelleUtilisateur);
+    res.status(201).json(nouvelleUtilisateur);
     return;
   } catch (error) {
     console.error("Erreur lors de la récupération : ", error);
@@ -81,7 +81,7 @@ export const putUtilisateurController = async (
       return;
     }
 
-    res.status(200).json(utilisateur);
+    res.status(204).json(utilisateur);
     return;
   } catch (error) {
     console.error("Erreur lors de la récupération : ", error);
@@ -106,7 +106,7 @@ export const deleteUtilisateurController = async (
       res.status(404).json({ message: "Membre non trouvé" });
       return;
     }
-    res.status(200).json(utilisateur);
+    res.status(204).json(utilisateur);
   } catch (error) {
     console.error("Erreur lors de la récupération : ", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
