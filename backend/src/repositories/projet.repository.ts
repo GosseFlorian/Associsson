@@ -5,14 +5,12 @@ export const postProjetRepository= async(
     data: Projet,
 ): Promise<Projet> => {
     const query =
-        "INSERT INTO projet (id, organisation_id, createur_id, titre, description, date_création, date_debut, date_fin, adresse, est_termine) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *";
+        "INSERT INTO projet (organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *";
     const values =    
-        [   data.id,
-            data.organisation_id,
+        [   data.organisation_id,
             data.createur_id, 
             data.titre, 
-            data.description, 
-            data.date_creation, 
+            data.description,  
             data.date_debut, 
             data.date_fin, 
             data.adresse, 
