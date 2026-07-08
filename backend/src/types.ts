@@ -3,7 +3,7 @@ export interface Utilisateur {
   nom: string;
   email: string;
   mot_de_passe: string;
-  date_inscription: string;
+  date_inscription: Date;
 }
 
 export interface Membre {
@@ -30,7 +30,7 @@ export interface Projet {
 export interface Organisation {
   id: number;
   nom: string;
-  date_creation: string;
+  date_creation: Date;
   est_actif: boolean;
   proprietaire_id: number;
 }
