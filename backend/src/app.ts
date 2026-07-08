@@ -5,6 +5,8 @@ import utilisateurRoutes from "./routes/utilisateur.route";
 import membreRoutes from "./routes/membre.route";
 import projetRoutes from "./routes/projets.routes";
 import organisationRoutes from "./routes/organisation.route";
+import tacheRoutes from "./routes/tache.route";
+
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -16,6 +18,8 @@ app.use("/utilisateur", utilisateurRoutes);
 app.use("/membre", membreRoutes);
 app.use("/projet", projetRoutes);
 app.use("/organisation", organisationRoutes);
+app.use("/tache", tacheRoutes);
+
 
 // Lancement du serveur
 app.listen(PORT, () => {
