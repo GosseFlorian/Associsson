@@ -4,6 +4,7 @@ import {
   getProjetByIdRepository,
   postProjetRepository,
   putProjetRepository,
+  deleteProjetRepository,
 } from "../repositories/projet.repository";
 
 export const getProjetsService = async (): Promise<Projet[]> => {
@@ -27,4 +28,8 @@ export const putProjetService = async (
   data: Projet,
 ): Promise<Projet> => {
     return await putProjetRepository(id, data);
+};
+
+export const deleteProjetService = async (id: number): Promise<Projet> => {
+    return await deleteProjetRepository(id);
 };

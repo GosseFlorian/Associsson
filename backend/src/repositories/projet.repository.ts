@@ -77,3 +77,13 @@ export const putProjetRepository = async (
     }
     return result.rows[0];
 };
+
+export const deleteProjetRepository = async (id: number): Promise<Projet> => {
+    const query = "DELETE FROM projet WHERE id = $1 RETURNING *";
+    const result = await pool.query<Projet>(query, [id]);
+
+    if (!result.rows[0]) {
+        throw new Error("Projet non trouvé");
+    }
+    return result.rows[0];
+};
