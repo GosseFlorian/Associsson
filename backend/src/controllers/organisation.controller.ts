@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   getOrganisationIdService,
   getOrganisationService,
+  postOrganisationService,
 } from "../services/organisation.service";
 
 export const getOrganisationIdController = async (
@@ -38,6 +39,22 @@ export const getOrganisationController = async (
     return;
   } catch (error) {
     console.error("Erreur lors de la récuperation : ", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
+  }
+};
+
+export const postOrganisationController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const data = req.body;
+    const nouvelleOrganisation = await postOrganisationService(data);
+    res.status(200).json(nouvelleOrganisation);
+    return;
+  } catch (error) {
+    console.error("Erreur lors de la récuperation :", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
     return;
   }

@@ -3,7 +3,7 @@ export interface Utilisateur {
   nom: string;
   email: string;
   mot_de_passe: string;
-  date_inscription: string;
+  date_inscription: Date;
 }
 
 export interface Membre {
