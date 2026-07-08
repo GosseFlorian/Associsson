@@ -39,3 +39,39 @@ export const getProjetByIdRepository = async (
     );
     return result.rows[0];
 };
+
+export const putProjetRepository = async (
+    id: number,
+    data: Projet,
+): Promise<Projet> => {
+    const query = `
+        UPDATE projet
+        SET organisation_id = $1,
+            createur_id = $2,
+            titre = $3,
+            description = $4,
+            date_debut = $5,
+            date_fin = $6,
+            adresse = $7,
+            est_termine = $8
+        WHERE id = $9
+        RETURNING *`;
+    const values = [
+        data.organisation_id,
+        data.createur_id,
+        data.titre,
+        data.description,
+        data.date_debut,
+        data.date_fin,
+        data.adresse,
+        data.est_termine,
+        id,
+    ];
+
+    const result = await pool.query<Projet>(query, values);
+
+    if (!result.rows[0]) {
+        throw new Error("Projet non trouvé");
+    }
+    return result.rows[0];
+};

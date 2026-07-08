@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import utilisateurRoutes from "./routes/utilisateur.route";
 import membreRoutes from "./routes/membre.route";
-import projetRoutes from "./routes/projets.routes";
+import projetRoutes from "./routes/projet.route";
 import organisationRoutes from "./routes/organisation.route";
 
 const app = express();

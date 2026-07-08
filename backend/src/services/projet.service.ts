@@ -1,5 +1,10 @@
 import {Projet} from "../types";
-import {getProjetsRepository, getProjetByIdRepository, postProjetRepository} from "../repositories/projet.repository"
+import {
+  getProjetsRepository,
+  getProjetByIdRepository,
+  postProjetRepository,
+  putProjetRepository,
+} from "../repositories/projet.repository";
 
 export const getProjetsService = async (): Promise<Projet[]> => {
     return await getProjetsRepository();
@@ -15,4 +20,11 @@ export const postProjetService= async (
   data: Projet,
 ):Promise<Projet> => {
 return await postProjetRepository(data);
+};
+
+export const putProjetService = async (
+  id: number, 
+  data: Projet,
+): Promise<Projet> => {
+    return await putProjetRepository(id, data);
 };
