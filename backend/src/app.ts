@@ -4,6 +4,7 @@ import cors from "cors";
 import utilisateurRoutes from "./routes/utilisateur.route";
 import membreRoutes from "./routes/membre.route";
 import projetRoutes from "./routes/projets.routes";
+import organisationRoutes from "./routes/organisation.route";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use("/utilisateur", utilisateurRoutes);
 app.use("/membre", membreRoutes);
 app.use("/projet", projetRoutes);
+app.use("/organisation", organisationRoutes);
 
 // Lancement du serveur
 app.listen(PORT, () => {
