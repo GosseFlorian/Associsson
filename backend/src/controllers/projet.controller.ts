@@ -4,6 +4,7 @@ import {
   getProjetByIdService, 
   postProjetService,
   putProjetService,
+  deleteProjetService,
 } from "../services/projet.service";
 
 
@@ -71,6 +72,26 @@ export const putProjetController = async (
         return;
     } catch (error) {
         console.error("Erreur lors de la modification du projet :", error);
+        res.status(500).json({ message: "Erreur interne du serveur" });
+        return;
+    }
+};
+
+export const deleteProjetController = async (
+    req: Request,
+    res: Response,
+): Promise<void> => {
+    const id = Number(req.params.id);
+    if (isNaN(id) || id <= 0) {
+      res.status(400).json({ message: "ID invalide" });
+      return;
+    }
+    try {
+        const projetSupprime = await deleteProjetService(id);
+        res.status(200).json(projetSupprime);
+        return;
+    } catch (error) {
+        console.error("Erreur lors de la suppression du projet :", error);
         res.status(500).json({ message: "Erreur interne du serveur" });
         return;
     }
