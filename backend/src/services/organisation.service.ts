@@ -4,6 +4,7 @@ import {
   getOrganisationRepository,
   postOrganisationRepository,
   putOrganisationRepository,
+  deleteOrganisationRepository,
 } from "../repositories/organisation.repository";
 
 export const getOrganisationIdService = async (
@@ -27,4 +28,10 @@ export const putOrganisationService = async (
   data: Partial<Organisation>,
 ): Promise<Organisation> => {
   return await putOrganisationRepository(id, data);
+};
+
+export const deleteOrganisationService = async (
+  id: number,
+): Promise<Organisation> => {
+  return await deleteOrganisationRepository(id);
 };

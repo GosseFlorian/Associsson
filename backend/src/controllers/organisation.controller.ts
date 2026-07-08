@@ -4,6 +4,7 @@ import {
   getOrganisationService,
   postOrganisationService,
   putOrganisationService,
+  deleteOrganisationService,
 } from "../services/organisation.service";
 
 export const getOrganisationIdController = async (
@@ -82,6 +83,29 @@ export const putOrganisationController = async (
 
     res.status(200).json(organisation);
     return;
+  } catch (error) {
+    console.error("Erreur lors de la récupération : ", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
+  }
+};
+
+export const deleteOrganisationController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const id = Number(req.params.id);
+  if (isNaN(id) || id <= 0) {
+    res.status(400).json({ message: "ID invalide" });
+    return;
+  }
+  try {
+    const organisation = await deleteOrganisationService(id);
+
+    if (!organisation) {
+      res.status(404).json({ message: "Organisation non trouvé" });
+    }
+    res.status(200).json(organisation);
   } catch (error) {
     console.error("Erreur lors de la récupération : ", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
