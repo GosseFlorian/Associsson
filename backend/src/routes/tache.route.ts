@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getTacheController } from "../controllers/tache.controller";
+import { getTachesController } from "../controllers/tache.controller";
 
 const router = Router();
 
-router.get("/", getTacheController);
+router.get("/", getTachesController);
 
 export default router;
