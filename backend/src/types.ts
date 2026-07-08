@@ -34,3 +34,14 @@ export interface Organisation {
   est_actif: boolean;
   proprietaire_id: number;
 }
+
+export interface Tache {
+  id: number;
+  projet_id: number;
+  titre: string;
+  description: string | null;          
+  statut: "a_faire" | "en_cours" | "terminee";
+  priorite: "basse" | "moyenne" | "haute";
+  date_echeance: Date | null;          
+  assigne_a: number | null;            
+}
