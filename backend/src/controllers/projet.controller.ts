@@ -1,8 +1,28 @@
 import { Request, Response } from "express";
+<<<<<<< HEAD
 import {} from "../services/projet.service";
 import {getProjetsService, getProjetByIdService, postProjetService} from "../services/projet.service";
 
 
+=======
+import {getProjetsService, getProjetByIdService, postProjetService} from "../services/projet.service";
+
+export const postProjetController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const data = req.body;    
+    const nouveauProjet = await postProjetService(data)
+    res.status(200).json(nouveauProjet);
+    return; 
+  } catch (error) {
+    console.error("Erreur lors de la création du projet :", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
+      }
+};
+>>>>>>> e7d09146ba55132efcdbb61b34ae53a9b46ccbb4
 
 export const getProjetsController = async (
   req: Request, 
@@ -15,7 +35,7 @@ export const getProjetsController = async (
         console.error("Erreur lors de la récupération :", error);
         res.status(500).json({ message: "Erreur interne du serveur" });
     }   
-}
+};
 
 export const getProjetByIdController = async (
   req: Request, 
@@ -36,6 +56,7 @@ export const getProjetByIdController = async (
   } catch (error) {
     console.error("Erreur lors de la récupération du projet :", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
+<<<<<<< HEAD
   }
 };
 
@@ -54,3 +75,7 @@ export const postProjetController = async (
     return;
   }
 };
+=======
+      }
+};
+>>>>>>> e7d09146ba55132efcdbb61b34ae53a9b46ccbb4
