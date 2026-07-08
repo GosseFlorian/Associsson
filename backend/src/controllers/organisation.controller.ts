@@ -3,6 +3,7 @@ import {
   getOrganisationIdService,
   getOrganisationService,
   postOrganisationService,
+  putOrganisationService,
 } from "../services/organisation.service";
 
 export const getOrganisationIdController = async (
@@ -55,6 +56,34 @@ export const postOrganisationController = async (
     return;
   } catch (error) {
     console.error("Erreur lors de la récuperation :", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
+  }
+};
+
+export const putOrganisationController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const id = Number(req.params.id);
+
+  if (isNaN(id) || id <= 0) {
+    res.status(400).json({ message: "ID invalide" });
+    return;
+  }
+  try {
+    const data = req.body;
+    const organisation = await putOrganisationService(id, data);
+
+    if (!organisation) {
+      res.status(404).json({ messsage: "Organisation non trouvé" });
+      return;
+    }
+
+    res.status(200).json(organisation);
+    return;
+  } catch (error) {
+    console.error("Erreur lors de la récupération : ", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
     return;
   }

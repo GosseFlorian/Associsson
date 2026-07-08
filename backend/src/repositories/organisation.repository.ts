@@ -31,3 +31,25 @@ export const postOrganisationRepository = async (
   }
   return result.rows[0];
 };
+
+export const putOrganisationRepository = async (
+  id: number,
+  data: Partial<Organisation>,
+): Promise<Organisation> => {
+  const query = `
+    UPDATE organisation
+    SET nom = COALESCE($1, nom),
+        est_actif = COALESCE($2, est_actif),
+        proprietaire_id = COALESCE($3, proprietaire_id)
+    WHERE id = $4
+    RETURNING *;
+    `;
+
+  const values = [data.nom, data.est_actif, data.proprietaire_id, id];
+  const result = await pool.query<Organisation>(query, values);
+  if (!result.rows[0]) {
+    throw new Error("Echec de la modification");
+  }
+
+  return result.rows[0];
+};
