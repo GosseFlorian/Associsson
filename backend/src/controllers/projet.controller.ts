@@ -4,6 +4,7 @@ import {
   getProjetByIdService, 
   postProjetService,
   putProjetService,
+  patchProjetService
 } from "../services/projet.service";
 
 
@@ -71,6 +72,23 @@ export const putProjetController = async (
         return;
     } catch (error) {
         console.error("Erreur lors de la modification du projet :", error);
+        res.status(500).json({ message: "Erreur interne du serveur" });
+        return;
+    }
+};
+
+export const patchProjetController = async (
+    req: Request,
+    res: Response,
+): Promise<void> => {
+    try {
+        const id = Number(req.params.id);
+        const data = req.body;
+        const projetModifie = await patchProjetService(id, data);
+        res.status(200).json(projetModifie);
+        return;
+    } catch (error) {
+        console.error("Erreur lors de la modification partielle du projet :", error);
         res.status(500).json({ message: "Erreur interne du serveur" });
         return;
     }

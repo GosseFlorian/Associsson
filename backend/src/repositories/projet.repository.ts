@@ -77,3 +77,45 @@ export const putProjetRepository = async (
     }
     return result.rows[0];
 };
+
+const COLONNES_AUTORISEES = [
+    "organisation_id",
+    "createur_id",
+    "titre",
+    "description",
+    "date_debut",
+    "date_fin",
+    "adresse",
+    "est_termine",
+];
+
+export const patchProjetRepository = async (
+    id: number,
+    data: Partial<Projet>,
+): Promise<Projet> => {
+    const champs = Object.keys(data).filter((champ) =>
+        COLONNES_AUTORISEES.includes(champ),
+    );
+
+    if (champs.length === 0) {
+        throw new Error("Aucun champ valide à modifier");
+    }
+
+    const setClause = champs
+        .map((champ, i) => `${champ} = $${i + 1}`)
+        .join(", ");
+    const values = champs.map((champ) => (data as Record<string, unknown>)[champ]);
+
+    const query = `
+        UPDATE projet
+        SET ${setClause}
+        WHERE id = $${champs.length + 1}
+        RETURNING *`;
+
+    const result = await pool.query<Projet>(query, [...values, id]);
+
+    if (!result.rows[0]) {
+        throw new Error("Projet non trouvé");
+    }
+    return result.rows[0];
+};

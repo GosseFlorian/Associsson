@@ -4,6 +4,7 @@ import {
   getProjetByIdRepository,
   postProjetRepository,
   putProjetRepository,
+  patchProjetRepository
 } from "../repositories/projet.repository";
 
 export const getProjetsService = async (): Promise<Projet[]> => {
@@ -27,4 +28,11 @@ export const putProjetService = async (
   data: Projet,
 ): Promise<Projet> => {
     return await putProjetRepository(id, data);
+};
+
+export const patchProjetService = async (
+    id: number,
+    data: Partial<Projet>,
+): Promise<Projet> => {
+    return await patchProjetRepository(id, data);
 };
