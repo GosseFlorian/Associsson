@@ -46,16 +46,18 @@ export const putProjetRepository = async (
 ): Promise<Projet> => {
     const query = `
         UPDATE projet
-        SET organisation_id = $1,
-            createur_id = $2,
-            titre = $3,
-            description = $4,
-            date_debut = $5,
-            date_fin = $6,
-            adresse = $7,
-            est_termine = $8
+        SET organisation_id = COALESCE($1, organisation_id),
+            createur_id     = COALESCE($2, createur_id),
+            titre           = COALESCE($3, titre),
+            description     = COALESCE($4, description),
+            date_debut      = COALESCE($5, date_debut),
+            date_fin        = COALESCE($6, date_fin),
+            adresse         = COALESCE($7, adresse),
+            est_termine     = COALESCE($8, est_termine)
         WHERE id = $9
-        RETURNING *`;
+        RETURNING *;
+    `
+
     const values = [
         data.organisation_id,
         data.createur_id,
