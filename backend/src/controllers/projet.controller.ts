@@ -81,8 +81,12 @@ export const deleteProjetController = async (
     req: Request,
     res: Response,
 ): Promise<void> => {
+    const id = Number(req.params.id);
+    if (isNaN(id) || id <= 0) {
+      res.status(400).json({ message: "ID invalide" });
+      return;
+    }
     try {
-        const id = Number(req.params.id);
         const projetSupprime = await deleteProjetService(id);
         res.status(200).json(projetSupprime);
         return;
