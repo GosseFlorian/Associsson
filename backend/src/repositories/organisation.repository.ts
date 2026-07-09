@@ -53,3 +53,16 @@ export const putOrganisationRepository = async (
 
   return result.rows[0];
 };
+
+export const deleteOrganisationRepository = async (
+  id: number,
+): Promise<Organisation> => {
+  const query = "DELETE FROM organisation WHERE id = $1 RETURNING *";
+  const result = await pool.query<Organisation>(query, [id]);
+
+  if (!result.rows[0]) {
+    throw new Error("Echec de la modification");
+  }
+
+  return result.rows[0];
+};

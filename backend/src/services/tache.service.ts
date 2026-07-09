@@ -1,6 +1,6 @@
-import { getTacheRepository } from "../repositories/tache.repository";
+import { getTachesRepository } from "../repositories/tache.repository";
 import { Tache } from "../types";
 
-export const getTacheService = async (): Promise<Tache[]> => {
-  return await getTacheRepository();
+export const getTachesService = async (): Promise<Tache[]> => {
+  return await getTachesRepository();
 };
