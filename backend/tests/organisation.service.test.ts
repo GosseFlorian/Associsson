@@ -22,12 +22,12 @@ jest.mock("../src/repositories/organisation.repository", () => ({
   deleteOrganisationRepository: jest.fn(),
 }));
 
-describe("OrganisationService", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
-  it("getOrganisationIdService doit retourner une organisation", async () => {
+describe("getOrganisationIdService", () => {
+  it("doit retourner une organisation", async () => {
     const organisation = { id: 1, nom: "OpenAI" };
     (getOrganisationIdRepository as jest.Mock).mockResolvedValue(organisation);
 
@@ -37,7 +37,7 @@ describe("OrganisationService", () => {
     expect(result).toEqual(organisation);
   });
 
-  it("getOrganisationIdService doit retourner undefined si aucune organisation", async () => {
+  it("doit retourner undefined si aucune organisation n'existe", async () => {
     (getOrganisationIdRepository as jest.Mock).mockResolvedValue(undefined);
 
     const result = await getOrganisationIdService(1);
@@ -45,8 +45,10 @@ describe("OrganisationService", () => {
     expect(getOrganisationIdRepository).toHaveBeenCalledWith(1);
     expect(result).toBeUndefined();
   });
+});
 
-  it("getOrganisationService doit retourner la liste des organisations", async () => {
+describe("getOrganisationService", () => {
+  it("doit retourner la liste des organisations", async () => {
     const organisations = [
       { id: 1, nom: "OpenAI" },
       { id: 2, nom: "Google" },
@@ -59,19 +61,23 @@ describe("OrganisationService", () => {
     expect(getOrganisationRepository).toHaveBeenCalled();
     expect(result).toEqual(organisations);
   });
+});
 
-  it("postOrganisationService doit créer une organisation", async () => {
-    const data = { id: 1, nom: "OpenAI" };
+describe("postOrganisationService", () => {
+  it("doit créer une organisation", async () => {
+    const organisation = { id: 1, nom: "OpenAI" };
 
-    (postOrganisationRepository as jest.Mock).mockResolvedValue(data);
+    (postOrganisationRepository as jest.Mock).mockResolvedValue(organisation);
 
-    const result = await postOrganisationService(data);
+    const result = await postOrganisationService(organisation);
 
-    expect(postOrganisationRepository).toHaveBeenCalledWith(data);
-    expect(result).toEqual(data);
+    expect(postOrganisationRepository).toHaveBeenCalledWith(organisation);
+    expect(result).toEqual(organisation);
   });
+});
 
-  it("putOrganisationService doit modifier une organisation", async () => {
+describe("putOrganisationService", () => {
+  it("doit modifier une organisation", async () => {
     const data = { nom: "Nouvelle organisation" };
     const organisation = { id: 1, nom: "Nouvelle organisation" };
 
@@ -82,8 +88,10 @@ describe("OrganisationService", () => {
     expect(putOrganisationRepository).toHaveBeenCalledWith(1, data);
     expect(result).toEqual(organisation);
   });
+});
 
-  it("deleteOrganisationService doit supprimer une organisation", async () => {
+describe("deleteOrganisationService", () => {
+  it("doit supprimer une organisation", async () => {
     const organisation = { id: 1, nom: "OpenAI" };
 
     (deleteOrganisationRepository as jest.Mock).mockResolvedValue(organisation);
