@@ -46,3 +46,41 @@ export const postTacheRepository = async (
 
   return result.rows[0];
 };
+
+export const putTacheRepository = async (
+  id: number,
+  data: Partial<Tache>,
+): Promise<Tache> => {
+  const query = `
+    UPDATE tache
+    SET titre = COALESCE($1, titre),
+        description = COALESCE($2, description),
+        statut = COALESCE($3, statut),
+        priorite = COALESCE($4, priorite),
+        date_echeance = COALESCE($5, date_echeance),
+        assigne_a = COALESCE($6, assigne_a),
+        projet_id = COALESCE($7, projet_id)
+    WHERE id = $8
+    RETURNING *;
+  `;
+
+  const values = [
+    data.titre,
+    data.description,
+    data.statut,
+    data.priorite,
+    data.date_echeance,
+    data.assigne_a,
+    data.projet_id,
+    id,
+  ];
+
+  const result = await pool.query<Tache>(query, values);
+
+  if (!result.rows[0]) {
+    throw new Error("Echec de la modification");
+  }
+
+  return result.rows[0];
+};
+

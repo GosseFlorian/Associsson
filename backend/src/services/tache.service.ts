@@ -2,6 +2,7 @@ import {
   getTachesRepository,
   getTacheByIdRepository,
   postTacheRepository,
+  putTacheRepository,
 } from "../repositories/tache.repository";
 import { Tache } from "../types";
 
@@ -17,4 +18,11 @@ export const getTacheIdService = async (
 
 export const postTacheService = async (data: Tache): Promise<Tache> => {
   return await postTacheRepository(data);
+};
+
+export const putTacheService = async (
+  id: number,
+  data: Partial<Tache>,
+): Promise<Tache> => {
+  return await putTacheRepository(id, data);
 };
