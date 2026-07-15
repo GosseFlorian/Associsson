@@ -1,0 +1,54 @@
+.tacheCard-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--border);
+    width: 350px;
+    padding: 10px;
+    border-radius: var(--radius);
+    background-color: var(--card);
+}
+
+.tacheCard{
+    margin: 10px;
+}
+
+.tache-info{
+    display: flex;
+}
+
+.bg{
+    padding: 5px 10px;
+    border-radius: var(--radius);
+}
+
+.faible{
+    background-color: var(--succes);
+}
+
+.moyenne{
+    background-color: var(--warning);
+}
+
+.haute{
+    background-color: var(--danger);
+    color: white;
+}
+
+.tres_haute{
+    background-color: var(--urgence);
+    color: white;
+}
+
+.a_faire{
+    background-color: var(--danger);
+    color: white;
+}
+
+.en_cours{
+    background-color: var(--warning);
+}
+
+.termine{
+    background-color: var(--succes);
+}

@@ -1,0 +1,14 @@
+.projetCard-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--border);
+    width: 350px;
+    padding: 10px;
+    border-radius: var(--radius);
+    background-color: var(--card);
+}
+
+.projetCard{
+    margin: 10px;
+}
