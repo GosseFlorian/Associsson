@@ -1,5 +1,6 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
+import LoginSimple from "./pages/login";
 // On importe les pages depuis notre dossier pages/
 
 function App() {
@@ -9,6 +10,11 @@ function App() {
 
       {/* Page erreur 404 */}
       <Route path="*" element={<h2>Page non trouvée 404 🔍</h2>} />
+
+       {/* Page login */}
+      <Route path="/login" element={<LoginSimple />} />
+
+
     </Routes>
   );
 }
