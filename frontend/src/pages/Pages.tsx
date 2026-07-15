@@ -1,3 +1,5 @@
+import "./pages.css"
+
 export function Organisation() {
   return (
     <>
@@ -7,33 +9,33 @@ export function Organisation() {
     <main>
       
       <section>
-        <button/>
-        <button/>
-        <button/>
+        <button> Logo home</button>
+        <button> Liste déroulante Organisation</button>
+        <button> Logo Pofil</button>
       </section>
       
       <section>
         <div>
           <div>
             <div>
-              <h1></h1>
-              <p></p>
+              <h1>MES ORGANISATIONS</h1>
+              <p>Text</p>
             </div>
-            <button/>
+            <button> Nouvelle organisation</button>
           </div>
           <hr/>
           <div>
-            <p></p>
-            <button/>
+            <p>texte</p>
+            <button> Créer ma première organisation</button>
           </div>
         </div>
         <div>
           <div>
             <div>
-            <h1></h1>
-            <p></p>
+            <h1>MES ORGANISATIONS</h1>
+            <p>texte</p>
             </div>
-            <button/>
+            <button> Nouvelle organisation</button>
           </div>
           <hr/>
           <div>

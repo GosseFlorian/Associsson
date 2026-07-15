@@ -1,0 +1,23 @@
+.orga-card {
+  background: #fff;
+  border: 1px solid #f0d9d3;
+  border-left: 3px solid #d85a30;
+  border-radius: 0 8px 8px 0;
+  padding: 1rem 1.25rem;
+  max-width: 260px;
+}
+
+.orga-card__eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #d85a30;
+  text-transform: uppercase;
+}
+
+.orga-card__label {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 4px 0 0;
+  color: #1a1a1a;
+}
