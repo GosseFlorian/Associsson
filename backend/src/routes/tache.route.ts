@@ -3,7 +3,8 @@ import { getTachesController, getTacheIdController } from "../controllers/tache.
 
 const router = Router();
 
-router.get("/tache", getTachesController);
-router.get("/tache/:id", getTacheIdController);
+router.get("/", getTachesController);
+
+router.get("/:id", getTacheIdController);
 
 export default router;
