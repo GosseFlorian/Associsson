@@ -41,7 +41,7 @@ export interface Tache {
   titre: string;
   description: string | null;          
   statut: "a_faire" | "en_cours" | "terminee";
-  priorite: "basse" | "moyenne" | "haute";
+  priorite: "faible" | "moyenne" | "haute" | "tres_haute";
   date_echeance: Date | null;          
   assigne_a: number | null;            
 }
