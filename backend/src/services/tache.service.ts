@@ -3,6 +3,7 @@ import {
   getTacheByIdRepository,
   postTacheRepository,
   putTacheRepository,
+  deleteTacheRepository
 } from "../repositories/tache.repository";
 import { Tache } from "../types";
 
@@ -25,4 +26,9 @@ export const putTacheService = async (
   data: Partial<Tache>,
 ): Promise<Tache> => {
   return await putTacheRepository(id, data);
+};
+
+
+export const deleteTacheService = async (id: number): Promise<Tache> => {
+  return await deleteTacheRepository(id);
 };

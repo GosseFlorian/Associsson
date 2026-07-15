@@ -84,3 +84,18 @@ export const putTacheRepository = async (
   return result.rows[0];
 };
 
+
+export const deleteTacheRepository = async (
+  id: number,
+): Promise<Tache> => {
+  const query = "DELETE FROM tache WHERE id = $1 RETURNING *";
+  const result = await pool.query<Tache>(query, [id]);
+
+  if (!result.rows[0]) {
+    throw new Error("Echec de la suppression");
+  }
+
+  return result.rows[0];
+};
+
+
