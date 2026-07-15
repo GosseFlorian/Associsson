@@ -20,3 +20,9 @@ JavaScript, React. Cette technologie sera un gain de temps dans notre travail, l
 ## Conséquences
 
 Maintenance continue — React évolue régulièrement, impliquant des mises à jour et adaptations.
+
+## Mise à jour — 15/07/2026
+
+⚠️ Écart constaté : le frontend/package.json et les fichiers tsconfig\*.json du dépôt montrent que le projet utilise en réalité React + TypeScript (option 2 de cette ADR), pas JavaScript comme écrit ci-dessus. C'est cohérent avec le choix backend (ADR 002, Node.js/TypeScript).
+
+→ Résolu par ADR 004 — Passage de JavaScript à TypeScript, qui documente ce changement. Cette ADR-003 est laissée telle quelle pour garder la trace de la décision d'origine (JavaScript), conformément au principe qu'une ADR ne se réécrit pas a posteriori.
