@@ -1,55 +1,53 @@
 ```mermaid
 erDiagram
-    Utilisateur }o--o{ Membre : ""
-    Utilisateur ||--o{ Organisation : ""
-    Organisation ||--o{ Membre : ""
-    Organisation ||--o{ Projet : ""
-    Projet ||--o{ Tache : ""
-    Tache }o..o{ avancement : ""
-    Tache }o..o{ priorite : ""
-    Utilisateur {
+    UTILISATEUR ||--o{ MEMBRE : "possède"
+    UTILISATEUR ||--o{ ORGANISATION : "possède (proprietaire_id)"
+    ORGANISATION ||--o{ MEMBRE : "regroupe"
+    ORGANISATION ||--o{ PROJET : "porte"
+    MEMBRE ||--o{ PROJET : "crée (createur_id)"
+    PROJET ||--o{ TACHE : "contient"
+    MEMBRE ||--o{ TACHE : "assignée à (assigne_a)"
+
+    UTILISATEUR {
         integer id PK
-        text name
-        text email UK
-        text mdp
+        varchar nom
+        varchar email UK
+        varchar mot_de_passe
+        timestamptz date_inscription
     }
-    Organisation{
+    ORGANISATION {
         integer id PK
-        interger id_owner FK
-        text name
+        varchar nom
+        timestamptz date_creation
+        boolean est_actif
+        integer proprietaire_id FK
     }
-    Membre {
-        integer id_utilisateur FK
-        integer id_organisation FK
-        text role
-    }
-    Projet{
+    MEMBRE {
         integer id PK
-        integer id_association FK
-        text Name
-        text Description
-        timestamp Date_debut
-        timestamp Date_fin
-        timestamp Date_evenement
-        text lieu
-        boolean is_done
+        integer organisation_id FK
+        integer utilisateur_id FK
+        enum role "admin | benevole | licencie"
     }
-    Tache{
+    PROJET {
         integer id PK
-        integer id_projet FK
-        text name
-        text description
-        enums avancement 
-        enums Priorite
+        integer organisation_id FK
+        integer createur_id FK
+        varchar titre
+        varchar description
+        timestamptz date_creation
+        timestamptz date_debut
+        timestamptz date_fin
+        varchar adresse
+        boolean est_termine
     }
-    avancement{
-        enums pas_commencer
-        enums en_cours
-        enums fini
+    TACHE {
+        integer id PK
+        integer projet_id FK
+        varchar titre
+        varchar description
+        enum statut "a_faire | en_cours | termine"
+        enum priorite "faible | moyenne | haute | tres_haute"
+        timestamptz date_echeance
+        integer assigne_a FK
     }
-    priorite{
-        enums faible
-        enums moyenne
-        enums haute
-        enums tres_haute
-    }
+```
