@@ -3,49 +3,51 @@ import "./pages.css"
 export function Organisation() {
   return (
     <>
-    <header className="organisation">
-      <span>/organisation</span>
-    </header>
-    <main>
-      
-      <section className="section-bar">
-        <button> Logo home</button>
-        <button> Liste déroulante Organisation</button>
-        <button> Logo Pofil</button>
-      </section>
-      
-      <section className="mes-organisation">
-        <div className="organisation-1">
-          <div >
-            <div >
-              <h1>MES ORGANISATIONS</h1>
-              <p>Text</p>
+    <div className="body">
+      <header className="organisation">
+        <span>/organisation</span>
+      </header>
+      <main>
+        
+        <section className="section-bar">
+          <button> Logo home</button>
+          <button> Liste déroulante Organisation</button>
+          <button> Logo Pofil</button>
+        </section>
+        
+        <section className="mes-organisation">
+          <div className="organisation-1">
+            <div className="entete-1">
+              <div >
+                <p>MES ORGANISATIONS</p>
+                <p>Text</p>
+              </div>
+              <button> Nouvelle organisation</button>
             </div>
-            <button> Nouvelle organisation</button>
-          </div>
-          <hr/>
-          <div>
-            <p>texte</p>
-            <button> Créer ma première organisation</button>
-          </div>
-        </div>
-        <div className="organisation-2">
-          <div >
-            <div >
-            <h1>MES ORGANISATIONS</h1>
-            <p>texte</p>
+            <hr/>
+            <div className="création-organisation">
+              <p>texte</p>
+              <button> Créer ma première organisation</button>
             </div>
-            <button> Nouvelle organisation</button>
           </div>
-          <hr/>
-          <div>
+          <div className="organisation-2">
+            <div className="entete-2">
+              <div >
+              <p>MES ORGANISATIONS</p>
+              <p>texte</p>
+              </div>
+              <button> Nouvelle organisation</button>
+            </div>
+            <hr/>
             <div>
-              <OrganisationCard/>
-            </div>
-          </div>  
-        </div>
-      </section>
-    </main>
+              <div className="organisationCarte">
+                <OrganisationCard/>
+              </div>
+            </div>  
+          </div>
+        </section>
+      </main>
+    </div>
     </>
   );
 }

@@ -1,3 +1,9 @@
+.body{
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    padding: 0 20px;
+    background-color: rgb(100, 237, 107);
+}
 .organisation {
     padding: 20px 0; 
 }
@@ -9,29 +15,60 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    background-color: coral;
 }
 
 .mes-organisation{
+    width: 100%;
     margin: 20px 0;
     border: 1px solid #1a1a1a;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: cornflowerblue;
 }
 
+
 .organisation-1{
+    width: 90%;
     background-color: aqua;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+.entete-1{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.création-organisation{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .organisation-2{
-    background-color: aqua;
+    width: 90%;
+    background-color: rgb(255, 51, 0);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
 }
+
+.entete-2{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
 .orga-card {
   background: #fff;
   border: 1px solid #f0d9d3;
-  border-left: 3px solid #d85a30;
-  border-radius: 0 8px 8px 0;
+  border-radius: 8px;
   padding: 1rem 1.25rem;
   max-width: 260px;
 }
@@ -40,7 +77,6 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: #d85a30;
   text-transform: uppercase;
 }
 
