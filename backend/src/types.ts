@@ -40,7 +40,7 @@ export interface Tache {
   projet_id: number;
   titre: string;
   description: string | null;          
-  statut: "a_faire" | "en_cours" | "terminee";
+  statut: "a_faire" | "en_cours" | "termine";
   priorite: "faible" | "moyenne" | "haute" | "tres_haute";
   date_echeance: Date | null;          
   assigne_a: number | null;            
