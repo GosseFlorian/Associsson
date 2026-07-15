@@ -1,19 +1,29 @@
 import "./pages.css"
 
-export function Organisation() {
-  return (
+function SectionBar () {
+  return(
     <>
-    <div className="body">
-      <header className="organisation">
-        <span>/organisation</span>
-      </header>
-      <main>
-        
-        <section className="section-bar">
+      <section className="section-bar">
           <button> Logo home</button>
           <button> Liste déroulante Organisation</button>
           <button> Logo Pofil</button>
         </section>
+    </>
+  )
+}
+
+export function Organisation() {
+  return (
+    <>
+    <div id="organisation">
+      <header className="organisation">
+        <a href="/organisation">
+          /organisation
+        </a>
+      </header>
+      <main>
+        
+        <SectionBar/>
         
         <section className="mes-organisation">
           <div className="organisation-1">
@@ -52,11 +62,41 @@ export function Organisation() {
   );
 }
 
-export function OrganisationCard({ label = "ORGA1" }: { label?: string }) {
+function OrganisationCard({ label = "ORGA1" }: { label?: string }) {
   return (
-    <div className="orga-card">
+    <div
+      className="orga-card"
+      onClick={() => (window.location.href = "/organisations/membre")}
+    >
       <span className="orga-card__eyebrow">ORGANISATION</span>
       <p className="orga-card__label">{label}</p>
     </div>
   );
+}
+
+
+export function Membre(){
+  return (
+    <>
+      <div id="membre">
+        
+        <header className="membre">
+          <a href="#organisation">/Organisation</a>
+          <a href="#membre">/membre</a>
+        </header>
+
+        <SectionBar/>
+        <div>
+          <div>
+            <button>Mes Tâches</button>
+            <button> Calendrier</button>
+            <button>Mon profil</button>
+          </div>
+          <div>
+
+          </div>
+        </div>
+      </div>
+    </>
+  )
 }
