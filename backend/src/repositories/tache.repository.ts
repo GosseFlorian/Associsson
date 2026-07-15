@@ -19,3 +19,30 @@ export const getTacheByIdRepository = async (
 
   return result.rows[0]; // ✔ peut être undefined → cohérent avec ton modèle Utilisateur
 };
+
+export const postTacheRepository = async (
+  data: Tache,
+): Promise<Tache> => {
+  const query = `
+    INSERT INTO tache (titre, description, statut, priorite, date_echeance, assigne_a, projet_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *;
+  `;
+  const values = [
+    data.titre,
+    data.description,
+    data.statut,
+    data.priorite,
+    data.date_echeance,
+    data.assigne_a,
+    data.projet_id,
+  ];
+
+  const result = await pool.query<Tache>(query, values);
+
+  if (!result.rows[0]) {
+    throw new Error("Échec de la création de la tâche");
+  }
+
+  return result.rows[0];
+};

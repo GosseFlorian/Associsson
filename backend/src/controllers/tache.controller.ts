@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getTachesService,
-   getTacheIdService } from "../services/tache.service";
+   getTacheIdService ,
+   postTacheService} from "../services/tache.service";
 
 export const getTachesController = async (
   req: Request,
@@ -40,6 +41,22 @@ export const getTacheIdController = async (
     return;
   } catch (error) {
     console.error("Erreur lors de la récupération :", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
+  }
+};
+
+export const postTacheController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const data = req.body;
+    const nouvelleTache = await postTacheService(data);
+    res.status(200).json(nouvelleTache);
+    return;
+  } catch (error) {
+    console.error("Erreur lors de la création :", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
     return;
   }
