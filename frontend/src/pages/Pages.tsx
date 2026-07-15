@@ -8,16 +8,16 @@ export function Organisation() {
     </header>
     <main>
       
-      <section>
+      <section className="section-bar">
         <button> Logo home</button>
         <button> Liste déroulante Organisation</button>
         <button> Logo Pofil</button>
       </section>
       
-      <section>
-        <div>
-          <div>
-            <div>
+      <section className="mes-organisation">
+        <div className="organisation-1">
+          <div >
+            <div >
               <h1>MES ORGANISATIONS</h1>
               <p>Text</p>
             </div>
@@ -29,9 +29,9 @@ export function Organisation() {
             <button> Créer ma première organisation</button>
           </div>
         </div>
-        <div>
-          <div>
-            <div>
+        <div className="organisation-2">
+          <div >
+            <div >
             <h1>MES ORGANISATIONS</h1>
             <p>texte</p>
             </div>
