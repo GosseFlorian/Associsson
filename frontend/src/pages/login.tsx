@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import "./login.css";
+import { useState } from "react";
+import "../style/login.css";
 
-const LoginSimple: React.FC = () => {
+
+const LoginSimple = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
 
-  const handleLogin = () => {
+  const Login = () => {
     console.log("Email:", email);
     console.log("Password:", password);
     console.log("Remember me:", remember);
@@ -46,11 +47,10 @@ const LoginSimple: React.FC = () => {
           <label>Remember me</label>
         </div>
 
-        <button className="login-btn" onClick={handleLogin}>
+        <button className="login-btn" onClick={Login}>
           Se connecter
         </button>
 
-        {/* ⭐ Le texte est maintenant DANS le cadre */}
         <div className="signup-text">
           Pas de compte ? <a href="/register">S’inscrire</a>
         </div>
