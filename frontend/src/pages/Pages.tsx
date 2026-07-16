@@ -1,6 +1,8 @@
 import "./pages.css"
 import { useState } from "react";
 
+type Organisation = { nom: string; description: string };
+
 function SectionBar () {
   return(
     <>
@@ -14,6 +16,8 @@ function SectionBar () {
 }
 
 export function Organisation() {
+  const [organisations, setOrganisations] = useState<Organisation[]>([]);
+
   return (
     <>
       <div id="organisation">
@@ -21,9 +25,9 @@ export function Organisation() {
             <a href="/organisations">/Organisation</a>
           </header>
         <main>
-          
+
           <SectionBar/>
-          
+
           <section className="mes-organisation">
             <div className="organisation-1">
               <div className="entete-1">
@@ -36,7 +40,10 @@ export function Organisation() {
               <hr/>
               <div className="création-organisation">
                 <p>texte</p>
-                <CreateOrganisationForm/>
+                <CreateOrganisationForm onCreate={(orga) => setOrganisations((prev) => [...prev, orga])}/>
+              </div>
+              <div>
+                <OrganisationList organisations={organisations}/>
               </div>
             </div>
           </section>
@@ -46,19 +53,19 @@ export function Organisation() {
   );
 }
 
-function CreateOrganisationForm() {
+function CreateOrganisationForm({
+  onCreate,
+}: {
+  onCreate: (orga: Organisation) => void;
+}) {
   const [afficherFormulaire, setAfficherFormulaire] = useState(false);
-
   const [nom, setNom] = useState("");
   const [description, setDescription] = useState("");
-
-  const [organisations, setOrganisations] = useState<{ nom: string; description: string }[]>([]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    // On ajoute un objet complet (nom + description), pas juste le nom
-    setOrganisations((prev) => [...prev, { nom, description }]);
+    onCreate({ nom, description });
 
     setNom("");
     setDescription("");
@@ -105,20 +112,28 @@ function CreateOrganisationForm() {
           </button>
         </form>
       )}
+    </div>
+  );
+}
 
-      <div className="orga-list">
-        {organisations.length === 0 ? (
-          <p>Pas d'organisation ajoutée</p>
-        ) : (
-          organisations.map((orga, index) => (
-            <OrganisationCard
-              key={index}
-              nom={orga.nom}
-              description={orga.description}
-            />
-          ))
-        )}
-      </div>
+function OrganisationList({
+  organisations,
+}: {
+  organisations: Organisation[];
+}) {
+  return (
+    <div className="orga-list">
+      {organisations.length === 0 ? (
+        <p>Pas d'organisation ajoutée</p>
+      ) : (
+        organisations.map((orga, index) => (
+          <OrganisationCard
+            key={index}
+            nom={orga.nom}
+            description={orga.description}
+          />
+        ))
+      )}
     </div>
   );
 }
@@ -153,14 +168,14 @@ export function Membre(){
   return (
     <>
       <div id="membre">
-        
+
         <header className="membre">
           <a href="/organisations">/Organisation</a>
           <a href="/organisations/membre">/membre</a>
         </header>
 
         <SectionBar/>
-        <CarteMembre/>        
+        <CarteMembre/>
       </div>
     </>
   )
