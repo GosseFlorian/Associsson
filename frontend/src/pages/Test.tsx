@@ -3,7 +3,7 @@ import { ProfilCard } from "../components/ProfilCard";
 import { ProjetCard } from "../components/ProjetCard";
 import { TacheCard } from "../components/TacheCard";
 
-export function Pages() {
+export function Test() {
 
   function test() {
     console.log("test");
