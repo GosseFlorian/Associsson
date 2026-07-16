@@ -1,0 +1,32 @@
+header{
+    padding: 1rem 20px;
+    background-color: var(--primary-pale);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    color: var(--text-principal);
+}
+
+.logo-home{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 40px;
+}
+
+.orga-p,
+.orga{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.orga-p{
+    font-size: 25px;
+}
+
+.navBar-a{
+    padding: 7px;
+    text-decoration: none;
+    color: var(--text-principal);
+    font-size: 20px;
+}

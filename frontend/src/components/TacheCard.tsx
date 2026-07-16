@@ -1,41 +1,18 @@
-import "../style/TacheCard.css";
-import { useEffect, useState } from "react";
-
-type Tache = {
-  titre: string;
-  description: string;
-  statut: string;
-  priorite: string;
-  date_echeance: string;
-};
+import "../style/components/TacheCard.css";
+import { useEffect } from "react";
+import { useTacheStore } from "../stores/tacheStore";
 
 export function TacheCard() {
-  const [taches, setTaches] = useState<Tache[]>([]);
-  const [error, setError] = useState(false);
+  const taches = useTacheStore((state) => state.taches);
+  const chargement = useTacheStore((state) => state.chargement);
+  const fetchTache = useTacheStore((state) => state.fetchTache);
 
   useEffect(() => {
-    fetch("http://localhost:3000/tache")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Tâches introuvables");
-        }
+    fetchTache();
+  }, [fetchTache]);
 
-        return response.json();
-      })
-      .then((data) => {
-        setTaches(data);
-      })
-      .catch(() => {
-        setError(true);
-      });
-  }, []);
-
-  if (error) {
-    return <p>Impossible de charger les tâches.</p>;
-  }
-
-  if (taches.length === 0) {
-    return <p>Chargement...</p>;
+  if (chargement) {
+    return <p> chargement</p>
   }
 
   function formatDate(date: string): string {

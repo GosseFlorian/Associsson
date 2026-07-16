@@ -1,4 +1,4 @@
-import "../style/ProjetCard.css";
+import "../style/components/ProjetCard.css";
 import { useEffect, useState } from "react";
 import { Button } from "./Button";
 

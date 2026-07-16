@@ -1,4 +1,4 @@
-import '../style/Button.css'
+import '../style/components/Button.css'
 
 type ButtonComponent = {
   text: string;

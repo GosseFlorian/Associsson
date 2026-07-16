@@ -1,4 +1,4 @@
-import "../style/ProfilCard.css"
+import "../style/components/ProfilCard.css"
 import { useState, useEffect } from "react";
 
 type ProfilCardProps = {
