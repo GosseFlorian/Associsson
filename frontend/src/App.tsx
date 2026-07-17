@@ -1,7 +1,6 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import  LoginPage from "./pages/LoginPage";
-// On importe les pages depuis notre dossier pages/
 
 function App() {
   return (
