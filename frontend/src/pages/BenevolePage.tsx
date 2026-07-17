@@ -1,6 +1,6 @@
+import "../style/pages/BenevolePage.css";
 import { Button } from "../components/Button";
 import { useState} from "react";
-import "../style/pages/BenevolePage.css";
 import { ProfilCard } from "../components/ProfilCard";
 import { useLoginStore } from "../stores/loginStore";
 import { ProjetCard } from "../components/ProjetCard";
@@ -27,17 +27,17 @@ export function BenevolePage() {
       </div>
       <div>
         {sectionActive === "profil" && (
-          <div>
+          <div className="benevole-profil">
             <ProfilCard/>
           </div>
         )}
         {sectionActive === "projets" && (
-          <div>
+          <div className="benevole-projet">
             <ProjetCard />
           </div>
         )}
         {sectionActive === "taches" && (
-          <div>
+          <div className="benevole-tache">
             <TacheCard />
           </div>
         )}

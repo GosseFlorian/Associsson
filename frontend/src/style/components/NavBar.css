@@ -9,18 +9,16 @@ header{
 }
 
 .logo-home{
+    color: var(--text-principal);
+    text-decoration: none;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 40px;
 }
 
-.orga-p,
-.orga{
+.orga-p{
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-}
-
-.orga-p{
     font-size: 25px;
 }
 

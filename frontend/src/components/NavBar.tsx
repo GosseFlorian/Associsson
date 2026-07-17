@@ -31,7 +31,7 @@ export function NavBar() {
   let Orga = <p className="orga-p">Choisir Organisation</p>;
 
   if(idOrganisation) {
-    Orga = <p className="navBar-a orga">{ organisation.nom}</p>
+    Orga = <p className="orga-p">{ organisation.nom}</p>
   }
 
   return (

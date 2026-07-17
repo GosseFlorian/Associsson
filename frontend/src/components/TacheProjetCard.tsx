@@ -1,3 +1,4 @@
+import "../style/components/TacheProjetCard.css"
 import { useEffect } from "react";
 import { useTacheStore } from "../stores/tacheStore";
 
@@ -40,7 +41,7 @@ export function TacheProjetCard({ idProjet }: TacheProjetCardProps) {
     <>
       {tachesProjet.map((tache) => (
         <div
-          className="tacheCard-container"
+          className="tacheProjetCard-container"
           key={tache.id}
         >
           <h2 className="tacheCard tacheCard-titre">{tache.titre}</h2>
