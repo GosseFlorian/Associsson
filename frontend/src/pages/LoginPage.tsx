@@ -1,16 +1,12 @@
 import { useState } from "react";
-import "../style/login.css";
+import "../style/loginPage.css";
 
-
-const LoginSimple = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
 
   const Login = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Remember me:", remember);
+    // Appel API plus tard
   };
 
   return (
@@ -38,15 +34,6 @@ const LoginSimple = () => {
           />
         </div>
 
-        <div className="checkbox-group">
-          <input
-            type="checkbox"
-            checked={remember}
-            onChange={(e) => setRemember(e.target.checked)}
-          />
-          <label>Remember me</label>
-        </div>
-
         <button className="login-btn" onClick={Login}>
           Se connecter
         </button>
@@ -59,4 +46,4 @@ const LoginSimple = () => {
   );
 };
 
-export default LoginSimple;
+export default LoginPage;
