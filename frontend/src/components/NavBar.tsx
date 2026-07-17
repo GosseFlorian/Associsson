@@ -1,24 +1,43 @@
-import { useLoginStore } from "../stores/loginStore";
+import { useEffect } from "react";
+import { useOrganisationStore } from "../stores/organisationStore";
 import "../style/components/NavBar.css"
-import { useLocation } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
 export function NavBar() {
+  const { idUtilisateurPath, idOrganisation } = useParams()
+  const {
+    organisations,
+    chargementOrganisation,
+    errorOrganisation,
+    fetchOrganisation,
+  } = useOrganisationStore();
 
-  const idUtilisateur = useLoginStore(
-    (state) => state.idUtilisateur
+  useEffect(() => {
+    fetchOrganisation();
+  }, [fetchOrganisation]);
+
+  if (chargementOrganisation) {
+    return <p>Chargement des organisations...</p>;
+  }
+
+  if (errorOrganisation) {
+    return <p>Erreur : {errorOrganisation}</p>;
+  }
+
+  const organisation = organisations.find(
+    (org) => org.id === Number(idOrganisation)
   );
 
-  const location = useLocation();
-  let Orga = <p className="orga-p">Organisations</p>;
+  let Orga = <p className="orga-p">Choisir Organisation</p>;
 
-  if(location.pathname !== "/organisations") {
-    Orga = <a className="navBar-a orga" href={`/${idUtilisateur}/organisations`}>Revenir au choix des Organisations</a>
+  if(idOrganisation) {
+    Orga = <p className="navBar-a orga">{ organisation.nom}</p>
   }
 
   return (
     <>
       <header>
-        <p className="logo-home">Associsson</p>
+        <a className="logo-home" href={`/${idUtilisateurPath}/organisations`}>Accueil</a>
         {Orga}
         <a href="/profilPage" className="navBar-a">Mon Profil</a>
       </header>
