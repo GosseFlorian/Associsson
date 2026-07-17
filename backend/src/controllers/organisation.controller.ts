@@ -77,7 +77,7 @@ export const putOrganisationController = async (
     const organisation = await putOrganisationService(id, data);
 
     if (!organisation) {
-      res.status(404).json({ messsage: "Organisation non trouvé" });
+      res.status(404).json({ message: "Organisation non trouvé" });
       return;
     }
 
