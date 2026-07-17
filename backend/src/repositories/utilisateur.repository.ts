@@ -42,8 +42,8 @@ export const putUtilisateurRepository = async (
     UPDATE utilisateur
     SET nom = COALESCE($1, nom),
         email = COALESCE($2, email),
-        mot_de_passe = COALESCE($3, mot_de_passe),
-    WHERE id = $5
+        mot_de_passe = COALESCE($3, mot_de_passe)
+    WHERE id = $4
     RETURNING *;
   `;
 
