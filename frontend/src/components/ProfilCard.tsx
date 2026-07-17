@@ -2,14 +2,11 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useMembreStore } from "../stores/membreStore";
 import "../style/components/ProfilCard.css";
-import { useLoginStore } from "../stores/loginStore";
 
 export function ProfilCard() {
-  const { idOrganisation } = useParams();
+  const { idOrganisation, idUtilisateurPath } = useParams();
 
-  const idUtilisateur = useLoginStore(
-    (state) => state.idUtilisateur
-  );
+  const idUtilisateur = Number(idUtilisateurPath);
 
   const membres = useMembreStore(
     (state) => state.membres

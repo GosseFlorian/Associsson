@@ -9,7 +9,7 @@ function App() {
     <>
       <NavBar />
       <Routes>
-        <Route path=":idUtilisateur/organisations/:idOrganisation/:role" element={<WorkSpacePage />}/>
+        <Route path=":idUtilisateurPath/organisations/:idOrganisation/:role" element={<WorkSpacePage />}/>
         <Route path="/:idUtilisateurPath/organisations" element={<OrganisationPage />} />
         <Route path="*" element={<h2>Page non trouvée 404 🔍</h2>} />
       </Routes>

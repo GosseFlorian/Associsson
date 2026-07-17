@@ -44,10 +44,9 @@ export function TacheCard() {
   if (tachesMembre.length === 0) {
     return <p>Aucune tâche assignée</p>;
   }
-
   return (
     <>
-      {taches.map((tache) => (
+      {tachesMembre.map((tache) => (
         <div className="tacheCard-container" key={tache.titre}>
           <h2 className="tacheCard tacheCard-titre">{tache.titre}</h2>
           <p className="tacheCard">{tache.description}</p>

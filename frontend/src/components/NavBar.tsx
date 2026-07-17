@@ -12,7 +12,7 @@ export function NavBar() {
   let Orga = <p className="orga-p">Organisations</p>;
 
   if(location.pathname !== "/organisations") {
-    Orga = <a className="navBar-a orga" href={`/organisations/${idUtilisateur}`}>Revenir au choix des Organisations</a>
+    Orga = <a className="navBar-a orga" href={`/${idUtilisateur}/organisations`}>Revenir au choix des Organisations</a>
   }
 
   return (
