@@ -104,6 +104,7 @@ export const deleteOrganisationController = async (
 
     if (!organisation) {
       res.status(404).json({ message: "Organisation non trouvé" });
+      return;
     }
     res.status(200).json(organisation);
   } catch (error) {
