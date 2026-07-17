@@ -8,22 +8,23 @@ interface Tache {
   statut: string;
   priorite: string;
   date_echeance: string;
+  assigne_a: number;
 };
 
 interface TacheStore {
   taches: Tache[];
-  chargement: boolean;
-  error: string | null;
+  chargementTache: boolean;
+  errorTache: string | null;
   fetchTache: () => Promise<void>;
 }
 
 export const useTacheStore = create<TacheStore>((set) => ({
   taches: [],
-  chargement: false,
-  error: null,
+  chargementTache: false,
+  errorTache: null,
 
   fetchTache: async () => {
-    set({ chargement: true, error: null });
+    set({ chargementTache: true, errorTache: null });
 
     try {
       const response = await fetch("http://localhost:3000/tache");
@@ -35,12 +36,12 @@ export const useTacheStore = create<TacheStore>((set) => ({
 
       set({
         taches: data,
-        chargement: false,
+        chargementTache: false,
       });
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : "Erreur inconnue", //instanceof = verifie si error bien creer a partir de Error
-        chargement: false,
+        errorTache: error instanceof Error ? error.message : "Erreur inconnue", //instanceof = verifie si error bien creer a partir de Error
+        chargementTache: false,
       });
     }
   },

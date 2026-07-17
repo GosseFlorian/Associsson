@@ -1,48 +1,42 @@
-import "../style/components/ProfilCard.css"
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useMembreStore } from "../stores/membreStore";
+import "../style/components/ProfilCard.css";
+import { useLoginStore } from "../stores/loginStore";
 
-type ProfilCardProps = {
-  id: number;
-};
+export function ProfilCard() {
+  const { idOrganisation } = useParams();
 
-type Membre = {
-  nomUtilisateur: string;
-  nomOrganisation: string;
-  role: string;
-};
+  const idUtilisateur = useLoginStore(
+    (state) => state.idUtilisateur
+  );
 
-export function ProfilCard({ id }: ProfilCardProps) {
-  const [membre, setMembre] = useState<Membre | null>(null);
-  const [error, setError] = useState(false);
+  const membres = useMembreStore(
+    (state) => state.membres
+  );
+
+  const fetchMembre = useMembreStore(
+    (state) => state.fetchMembre
+  );
 
   useEffect(() => {
-    fetch(`http://localhost:3000/membre/${id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Membre introuvable");
-        }
+    if (membres.length === 0) {
+      fetchMembre();
+    }
+  }, [membres.length, fetchMembre]);
 
-        return response.json();
-      })
-      .then((data) => {
-        setMembre(data);
-      })
-      .catch(() => {
-        setError(true);
-      });
-  }, [id]);
-
-  if (error) {
-    return (
-      <div className="profilCard-container">
-        <h1>Membre introuvable</h1>
-        <p>Ce membre n'existe pas.</p>
-      </div>
-    );
+  if (!idUtilisateur || !idOrganisation) {
+    return <p>Chargement...</p>;
   }
 
+  const membre = membres.find(
+    (m) =>
+      m.utilisateur_id === idUtilisateur &&
+      m.organisation_id === Number(idOrganisation)
+  );
+
   if (!membre) {
-    return <p>Chargement...</p>;
+    return <p>Chargement du profil...</p>;
   }
 
   function getInitiales(nom: string): string {
@@ -53,7 +47,7 @@ export function ProfilCard({ id }: ProfilCardProps) {
     }
 
     return morceaux
-      .map(mot => mot[0])
+      .map((mot) => mot[0])
       .join("")
       .toUpperCase();
   }
@@ -63,13 +57,13 @@ export function ProfilCard({ id }: ProfilCardProps) {
   }
 
   return (
-    <>
-      <div className="profilCard-container">
-        <div className="profilCard-img">{ getInitiales(membre.nomUtilisateur)}</div>
-        <h1 className="profilCard-name profilMargin">{membre.nomUtilisateur}</h1>
-        <p className="profilCard-orga profilMargin">{membre.nomOrganisation}</p>
-        <p className="profilCard-role profilMargin">{capitalize(membre.role)}</p>
+    <div className="profilCard-container">
+      <div className="profilCard-img">
+        {getInitiales(membre.nomUtilisateur)}
       </div>
-    </>
+      <h1 className="profilCard-name profilMargin">{membre.nomUtilisateur}</h1>
+      <p className="profilCard-orga profilMargin">{membre.nomOrganisation}</p>
+      <p className="profilCard-role profilMargin">{capitalize(membre.role)}</p>
+    </div>
   );
 }

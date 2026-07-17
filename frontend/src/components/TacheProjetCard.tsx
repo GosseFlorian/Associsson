@@ -1,13 +1,11 @@
-import "../style/components/TacheCard.css";
 import { useEffect } from "react";
 import { useTacheStore } from "../stores/tacheStore";
-import { useLoginStore } from "../stores/loginStore";
 
-export function TacheCard() {
-  const idMembre = useLoginStore(
-    (state) => state.idMembre
-  );
+interface TacheProjetCardProps {
+  idProjet: number;
+}
 
+export function TacheProjetCard({ idProjet }: TacheProjetCardProps) {
   const fetchTache = useTacheStore(
     (state) => state.fetchTache
   );
@@ -22,12 +20,8 @@ export function TacheCard() {
     }
   }, [taches.length, fetchTache]);
 
-  if (!idMembre) {
-    return <p>Aucun membre connecté</p>;
-  }
-
-  const tachesMembre = taches.filter(
-    (tache) => tache.assigne_a === idMembre
+  const tachesProjet = taches.filter(
+    (tache) => tache.projet_id === idProjet
   );
 
   function formatDate(date: string): string {
@@ -35,20 +29,20 @@ export function TacheCard() {
   }
 
   function formtext(texte: string): string {
-    return texte
-      .replace("_", " ")
-      .charAt(0)
-      .toUpperCase() + texte.slice(1);
+    return texte.charAt(0).toUpperCase() + texte.slice(1);
   }
 
-  if (tachesMembre.length === 0) {
-    return <p>Aucune tâche assignée</p>;
+  if (tachesProjet.length === 0) {
+    return <p>Aucune tâche pour ce projet</p>;
   }
 
   return (
     <>
-      {taches.map((tache) => (
-        <div className="tacheCard-container" key={tache.titre}>
+      {tachesProjet.map((tache) => (
+        <div
+          className="tacheCard-container"
+          key={tache.id}
+        >
           <h2 className="tacheCard tacheCard-titre">{tache.titre}</h2>
           <p className="tacheCard">{tache.description}</p>
           <p className="tacheCard">Date d'échéance : {formatDate(tache.date_echeance)}</p>

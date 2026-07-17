@@ -1,0 +1,19 @@
+.organisation-header{
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0px;
+}
+
+.organisation-body{
+    display: flex;
+    flex-wrap: wrap;
+}
+.organisation-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 500px;
+    border: 1px solid black;
+    margin: 5px;
+}
