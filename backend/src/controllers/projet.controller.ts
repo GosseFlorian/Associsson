@@ -66,6 +66,10 @@ export const putProjetController = async (
 ): Promise<void> => {
   try {
     const id = Number(req.params.id);
+    if (isNaN(id) || id <= 0) {
+      res.status(400).json({ message: "ID invalide" });
+      return;
+    }
     const data = req.body;
     const projetModifie = await putProjetService(id, data);
     res.status(200).json(projetModifie);
