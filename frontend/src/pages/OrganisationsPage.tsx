@@ -6,8 +6,8 @@ import { useMembreStore } from "../stores/membreStore";
 import { Link, useParams } from "react-router-dom";
 
 export function OrganisationPage() {
-  const { idPath } = useParams();
-  const idUtilisateur = Number(idPath);
+  const { idUtilisateurPath } = useParams();
+  const idUtilisateur = Number(idUtilisateurPath);
   const setRole = useLoginStore(
     (state) => state.setRole
   );
@@ -29,6 +29,7 @@ export function OrganisationPage() {
     errorMembre
   } = useMembreStore();
 
+  setRole(null);
   useEffect(() => {
     fetchUtilisateurById(idUtilisateur);
     fetchMembre();
@@ -63,7 +64,7 @@ export function OrganisationPage() {
             <div className="organisation-container" key={membre.organisation_id}>
               <p className="organisation-nom">{membre.nomOrganisation}</p>
               <p className="organisation-role">role : {membre.role}</p>
-              <Link to={`/organisations/${membre.organisation_id}/${membre.role}`} onClick={() => { setRole(membre.role);  setIdMembre(membre.idMembre)}}>
+              <Link to={`${membre.organisation_id}/${membre.role}`} onClick={() => { setRole(membre.role);  setIdMembre(membre.idMembre)}}>
                 Voir organisation
               </Link>
             </div>
