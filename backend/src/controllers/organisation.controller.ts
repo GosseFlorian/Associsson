@@ -1,11 +1,26 @@
 import { Request, Response } from "express";
 import {
   getOrganisationIdService,
-  getOrganisationService,
+  getOrganisationsService,
   postOrganisationService,
   putOrganisationService,
   deleteOrganisationService,
 } from "../services/organisation.service";
+
+export const getOrganisationsController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const organisations = await getOrganisationsService();
+    res.status(200).json(organisations);
+    return;
+  } catch (error) {
+    console.error("Erreur lors de la récuperation des organisations : ", error);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+    return;
+  }
+};
 
 export const getOrganisationIdController = async (
   req: Request,
@@ -26,21 +41,7 @@ export const getOrganisationIdController = async (
     }
     res.status(200).json(organisation);
   } catch (error) {
-    res.status(500).json({ message: "Erreur interne du serveur" });
-    return;
-  }
-};
-
-export const getOrganisationController = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const organisation = await getOrganisationService();
-    res.status(200).json(organisation);
-    return;
-  } catch (error) {
-    console.error("Erreur lors de la récuperation : ", error);
+    console.error("Erreur lors de la récuperation de organisation : ", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
     return;
   }
@@ -52,11 +53,22 @@ export const postOrganisationController = async (
 ): Promise<void> => {
   try {
     const data = req.body;
+    if (!data || !data.nom) {
+      res
+        .status(400)
+        .json({ message: "Le nom de l'organisation est obligatoire" });
+      return;
+    }
     const nouvelleOrganisation = await postOrganisationService(data);
-    res.status(200).json(nouvelleOrganisation);
+    res.status(201).json(nouvelleOrganisation);
     return;
-  } catch (error) {
-    console.error("Erreur lors de la récuperation :", error);
+  } catch (error: any) {
+    console.error("Erreur lors de la création de l'organisation :", error);
+    // On gère les erreurs de validation métier renvoyées par le service
+    if (error.message && error.message.includes("obligatoire")) {
+      res.status(400).json({ message: error.message });
+      return;
+    }
     res.status(500).json({ message: "Erreur interne du serveur" });
     return;
   }
@@ -74,17 +86,22 @@ export const putOrganisationController = async (
   }
   try {
     const data = req.body;
+    // Validation qu'au moins un champ est fourni pour la mise à jour
+    if (!data || Object.keys(data).length === 0) {
+      res.status(400).json({ message: "Aucune donnée à modifier fournie" });
+      return;
+    }
     const organisation = await putOrganisationService(id, data);
 
     if (!organisation) {
-      res.status(404).json({ messsage: "Organisation non trouvé" });
+      res.status(404).json({ message: "Organisation non trouvé" });
       return;
     }
 
     res.status(200).json(organisation);
     return;
   } catch (error) {
-    console.error("Erreur lors de la récupération : ", error);
+    console.error("Erreur lors de la modification de l'organisation : ", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
     return;
   }
@@ -104,10 +121,11 @@ export const deleteOrganisationController = async (
 
     if (!organisation) {
       res.status(404).json({ message: "Organisation non trouvé" });
+      return;
     }
     res.status(200).json(organisation);
   } catch (error) {
-    console.error("Erreur lors de la récupération : ", error);
+    console.error("Erreur lors de la suppression de l'organisation : ", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
     return;
   }
