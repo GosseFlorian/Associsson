@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   getOrganisationIdController,
-  getOrganisationController,
+  getOrganisationsController,
   postOrganisationController,
   putOrganisationController,
   deleteOrganisationController,
@@ -9,7 +9,7 @@ import {
 
 const router = Router();
 
-router.get("/", getOrganisationController);
+router.get("/", getOrganisationsController);
 router.get("/:id", getOrganisationIdController);
 router.post("/", postOrganisationController);
 router.put("/:id", putOrganisationController);
