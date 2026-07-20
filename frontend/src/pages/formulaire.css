@@ -1,0 +1,90 @@
+.en-tete{
+  margin: 30px 10px;
+}
+/* même pour tous style formulaire*/
+
+.formulaire{
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 500px;   
+  margin: 0 auto;     
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  border: 1px solid #1a1a1a;
+  border-radius: 10px;
+  background-color: aliceblue;
+  padding: 20px;      
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 20px; 
+  }
+.nom{
+  margin: 0 20px;
+  position: relative;
+  width: 250px;
+}
+.choix{
+  margin: 20px;
+  position: relative;
+  width: 250px;
+}
+
+.date{
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.description{
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.btnValidation {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+/* projet*/
+
+.popup-dropdown {
+  position: absolute;
+  top: 100%;               
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 999;
+  margin-top: 4px;
+}
+
+.popup-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.popup-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.popup-dropdown li:hover {
+  background: #2f61f6;
+}
+
+/* tache*/
+
+.carte-projet {
+  margin: 20px;
+  position: relative;
+  width: 250px;
+}

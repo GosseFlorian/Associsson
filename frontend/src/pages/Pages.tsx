@@ -1,7 +1,6 @@
 import "./pages.css"
 import { useState } from "react";
-
-type Organisation = { nom: string; description: string };
+import { Link } from "react-router-dom";
 
 function SectionBar () {
   return(
@@ -16,11 +15,10 @@ function SectionBar () {
 }
 
 export function Organisation() {
-  const [organisations, setOrganisations] = useState<Organisation[]>([]);
-
+  
   return (
     <>
-      <div id="organisation">
+      <div>
         <header className="organisation">
             <a href="/organisations">/Organisation</a>
           </header>
@@ -35,15 +33,15 @@ export function Organisation() {
                   <p>MES ORGANISATIONS</p>
                   <p>Text</p>
                 </div>
-                <button> fitre des association</button>
+                <ListeFormulaire/>
               </div>
               <hr/>
               <div className="création-organisation">
                 <p>texte</p>
-                <CreateOrganisationForm onCreate={(orga) => setOrganisations((prev) => [...prev, orga])}/>
+                <button> fitre des listes des associations</button>
               </div>
               <div>
-                <OrganisationList organisations={organisations}/>
+                <span>card</span>
               </div>
             </div>
           </section>
@@ -53,114 +51,36 @@ export function Organisation() {
   );
 }
 
-function CreateOrganisationForm({
-  onCreate,
-}: {
-  onCreate: (orga: Organisation) => void;
-}) {
-  const [afficherFormulaire, setAfficherFormulaire] = useState(false);
-  const [nom, setNom] = useState("");
-  const [description, setDescription] = useState("");
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    onCreate({ nom, description });
-
-    setNom("");
-    setDescription("");
-    setAfficherFormulaire(false);
-  }
+export function ListeFormulaire() {
+  const [menuOuvert, setMenuOuvert] = useState(false);
 
   return (
-    <div>
-      {!afficherFormulaire && (
-        <button onClick={() => setAfficherFormulaire(true)}>
-          Créer une organisation
-        </button>
+    <section>
+      <button onClick={() => setMenuOuvert(!menuOuvert)}>
+        Liste de formulaires
+      </button>
+
+      {menuOuvert && (
+        <ul className="menu-formulaire">
+          <li>
+            <Link to="/organisations/ListeFormulaire/formulaire-organisation">
+              Créer un organisation
+            </Link>
+          </li>
+          <li>
+            <Link to="/organisations/ListeFormulaire/formulaire-projet">
+              Créer un projet
+            </Link>
+          </li>
+          <li>
+            <Link to="/organisations/ListeFormulaire/formulaire-tache">
+              Créer une tache
+            </Link>
+          </li>
+        </ul>
+
       )}
-
-      {afficherFormulaire && (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Nom de l'association</label>
-            <br />
-            <input
-              type="text"
-              value={nom}
-              onChange={(e) => setNom(e.target.value)}
-              required
-            />
-          </div>
-
-          <br />
-
-          <div>
-            <label>Description</label>
-            <br />
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-
-          <br />
-
-          <button type="submit">Créer</button>
-          <button type="button" onClick={() => setAfficherFormulaire(false)}>
-            Annuler
-          </button>
-        </form>
-      )}
-    </div>
-  );
-}
-
-function OrganisationList({
-  organisations,
-}: {
-  organisations: Organisation[];
-}) {
-  return (
-    <div className="orga-list">
-      {organisations.length === 0 ? (
-        <p>Pas d'organisation ajoutée</p>
-      ) : (
-        organisations.map((orga, index) => (
-          <OrganisationCard
-            key={index}
-            nom={orga.nom}
-            description={orga.description}
-          />
-        ))
-      )}
-    </div>
-  );
-}
-
-function OrganisationCard({
-  nom,
-  description,
-}: {
-  nom: string;
-  description: string;
-}) {
-  return (
-    <div
-      className="orga-card"
-      onClick={() => (window.location.href = "/organisations/membre")}
-    >
-      <span className="orga-card__eyebrow">Nom de l'association :</span>
-      <br/>
-      <p className="orga-card__label">{nom}</p>
-      <br/>
-      {description && (
-        <>
-          <span className="orga-card__eyebrow">Description :</span>
-          <p className="orga-card__description">{description}</p>
-        </>
-      )}
-    </div>
+    </section>
   );
 }
 
