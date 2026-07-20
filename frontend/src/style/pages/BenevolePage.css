@@ -1,0 +1,14 @@
+.benevole-selection{
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px;
+}
+
+.benevole-tache,
+.benevole-projet,
+.benevole-profil{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}

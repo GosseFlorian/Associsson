@@ -1,14 +1,17 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import { Organisation, Membre } from './pages/Pages';
+import { OrganisationPage } from "./pages/OrganisationsPage";
+import { WorkSpacePage } from "./pages/WorkSpacePage";
+import { Layout } from "./pages/Layout";
 
 function App() {
   return (
     <>
       <Routes>
-        
-        <Route path="/organisations" element={<Organisation/>} />
-        <Route path="/organisations/membre" element={<Membre/>} />
+        <Route path="/:idUtilisateurPath" element={<Layout />}>
+            <Route path="organisations" element={<OrganisationPage />} />
+            <Route path="organisations/:idOrganisation/:role"element={<WorkSpacePage />}/>
+          </Route>
         <Route path="*" element={<h2>Page non trouvée 404 🔍</h2>} />
       </Routes>
     </>

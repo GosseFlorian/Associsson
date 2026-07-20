@@ -1,0 +1,32 @@
+.organisation-header{
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0px;
+}
+
+.organisation-body{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.organisation-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 100px;
+    width: 400px;
+    border: 1px solid black;
+    border-radius: var(--radius);
+    margin: 5px;
+}
+
+.organisation-nom{
+    font-size: 20px;
+}
+
+.organisation-link{
+    text-decoration: none;
+    color: var(--text-principale);
+}

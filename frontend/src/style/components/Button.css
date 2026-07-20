@@ -1,0 +1,13 @@
+.button{
+    background-color:var(--background) ;
+    color: var(--text-principale);
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.active{
+    background-color: var(--primary);
+    color: var(--primary-pale);
+}

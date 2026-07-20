@@ -1,0 +1,39 @@
+.profilCard-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 400px;
+    margin: 10px;
+    padding: 20px;
+    background-color: var(--card);
+}
+
+.profilMargin{
+    margin: 10px;
+}
+
+.profilCard-img{
+    background-color: var(--primary);
+    padding: 25px;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: black;
+  width: 100%;
+}
+
+.profilCard-role{
+
+    color: var(--primary);
+    font-size: 15px;
+}
