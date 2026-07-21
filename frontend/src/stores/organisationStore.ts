@@ -1,17 +1,18 @@
-import { create } from "zustand"
+import { create } from "zustand";
 
 interface Organisation {
   id: number;
   nom: string;
   date_creation: string;
   proprietaire_id: number;
-};
+}
 
 interface OrganisationStore {
   organisations: Organisation[];
   chargementOrganisation: boolean;
   errorOrganisation: string | null;
   fetchOrganisation: () => Promise<void>;
+  deleteOrganisation: (id: number) => Promise<void>;
 }
 
 export const useOrganisationStore = create<OrganisationStore>((set) => ({
@@ -36,9 +37,27 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
       });
     } catch (error) {
       set({
-        errorOrganisation: error instanceof Error ? error.message : "Erreur inconnue",
+        errorOrganisation:
+          error instanceof Error ? error.message : "Erreur inconnue",
         chargementOrganisation: false,
       });
+    }
+  },
+
+  deleteOrganisation: async (id: number) => {
+    set({ chargementOrganisation: true, errorOrganisation: null });
+
+    try {
+      const response = await fetch(`http://localhost:3000/organisation/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        set((state) => ({
+          organisations: state.organisations.filter((o) => o.id !== id),
+        }));
+      }
+    } catch (err) {
+      console.error("Erreur suppréssion skill", err);
     }
   },
 }));
