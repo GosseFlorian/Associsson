@@ -1,65 +1,6 @@
-
-.formulaire{
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 500px;   
-  margin: 0 auto;     
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: center;
-  border: 1px solid #1a1a1a;
-  border-radius: 10px;
-  background-color: aliceblue;
-  padding: 20px;      
-}
-
 label {
-    display: inline-block;
-    margin-bottom: 20px; 
-  }
-.liste{
-  margin:20px;
-  position: relative;
-  width: 250px;
-}
-.listeTaches{
-  margin:20px;
-  width: 250px;
-}
-.nom{
-  margin:20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.date{
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-}
-.description{
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-}
-.btnAjout{
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.btnValidation {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-bottom: 50px;
-}
-
-.carte-projet {
-  margin: 20px;
-  position: relative;
-  width: 250px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .popup-overlay {
@@ -78,11 +19,85 @@ label {
 }
 
 .popup-contenu {
-  background: white;
+  background: rgb(246, 245, 245);
   padding: 2rem;
   border-radius: 8px;
   min-width: 300px;
   position: relative;
   z-index: 1001;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.nomdetache{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px ;
+}
+
+.description-tache {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* espace entre le label et le textarea */
+    margin-bottom: 20px;
+}
+
+.statut-tache{
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.statut-rouge {
+  color: #fa0404;
+  border: 1px solid #b80b0b;
+}
+
+.statut-vert {
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+.priorité-tache{
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.priorite-rouge {
+  color: #fa0404;
+  border: 1px solid #b80b0b;
+}
+
+.priorite-vert {
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.assignation{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.btnValidation{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.btnfermer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 20px;
 }

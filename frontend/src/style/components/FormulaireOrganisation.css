@@ -1,39 +1,7 @@
-.formulaire{
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 500px;   
-  margin: 0 auto;     
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: center;
-  border: 1px solid #1a1a1a;
-  border-radius: 10px;
-  background-color: aliceblue;
-  padding: 20px;      
-}
-
 label {
-    display: inline-block;
-    margin-bottom: 20px; 
-  }
-.nom{
-  margin:20px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
-
-.description{
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.btnValidation {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-bottom: 50px;
-}
-
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -58,3 +26,27 @@ label {
   z-index: 1001;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
+
+.titre-formulaire{
+  margin-bottom: 20px;
+}
+
+.nomOrganisation{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px ;
+}
+
+.btnValidation{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.btnfermer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 20px;
+}
+

@@ -16,28 +16,33 @@ export function FormulaireOrganisation() {
 }
 
 function PopupFormulaire({ onClose }: { onClose: () => void }) {
+  const [nomOrganisation, setNomOrganisation] = useState("");
+
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
-        <h1>Formulaire Organisation</h1>
+        <h1 className="titre-formulaire">Formulaire Organisation</h1>
 
         <form>
-          <div className="nom">
+          <div className="nomOrganisation">
             <label>Nom de l'organisation :</label><br />
-            <input type="text" />
-          </div>
-          <div className="description">
-            <label>Description de l'organisation :</label>
-            <textarea />
+            <input 
+            type="text"
+            value={nomOrganisation}
+            onChange={(e) => setNomOrganisation(e.target.value)}
+             />
+            
           </div>
           <div className="btnValidation">
             <button type="submit">Valider</button>
           </div>
         </form>
 
-        <button type="button" onClick={onClose}>
-          Fermer
-        </button>
+        <div className='btnfermer'>
+          <button type="button" onClick={onClose}>
+            Fermer
+          </button>
+        </div>
       </div>
     </div>
   );

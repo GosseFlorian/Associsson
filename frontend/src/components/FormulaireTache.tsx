@@ -15,179 +15,99 @@ export function FormulaireTache() {
   );
 }
 
-interface Tache {
-  id: number;
-  titre: string;
-  echeance?: string;
-  description?: string;
-}
-
 function PopupFormulaire({ onClose }: { onClose: () => void }) {
-    const [liste, setListe] = useState<Tache[]>([]);
-    const [idEnEdition, setIdEnEdition] = useState<number | null>(null);
-    const [texteEdition, setTexteEdition] = useState("");
-    const [echeanceEdition, setEcheanceEdition] = useState("");
-    const [descriptionEdition, setDescriptionEdition] = useState("");
-
-    const ajouterTache = (titre: string, echeance: string, description: string) => {
-        const nouvelleTache: Tache = {
-            id: Date.now(),
-            titre,
-            echeance: echeance || undefined,
-            description: description || undefined,
-        };
-        setListe([...liste, nouvelleTache]);
-    };
-
-    const supprimerTache = (id: number) => {
-        setListe(liste.filter((t) => t.id !== id));
-    };
-
-    const commencerEdition = (t: Tache) => {
-        setIdEnEdition(t.id);
-        setTexteEdition(t.titre);
-        setEcheanceEdition(t.echeance ?? "");
-        setDescriptionEdition(t.description ?? "");
-    };
-
-    const validerEdition = (id: number) => {
-        if (texteEdition.trim() === "") return;
-        setListe(
-            liste.map((t) =>
-                t.id === id
-                    ? {
-                          ...t,
-                          titre: texteEdition,
-                          echeance: echeanceEdition,
-                          description: descriptionEdition,
-                      }
-                    : t
-            )
-        );
-        setIdEnEdition(null);
-        setTexteEdition("");
-        setEcheanceEdition("");
-        setDescriptionEdition("");
-    };
-
-    const annulerEdition = () => {
-        setIdEnEdition(null);
-        setTexteEdition("");
-        setEcheanceEdition("");
-        setDescriptionEdition("");
-    };
-
-    return (
-        <div className="popup-overlay" onClick={onClose}>
-            <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
-                <h1>Formulaire de Tache</h1>
-
-                <form>
-                    <AjoutTache onAjouter={ajouterTache} />
-
-                    <div className="listeTaches">
-                        {liste.length === 0 ? (
-                            <p>Aucune tâche pour le moment</p>
-                        ) : (
-                            <ul>
-                                {liste.map((t) => (
-                                    <li key={t.id}>
-                                        {idEnEdition === t.id ? (
-                                            <>
-                                                <input
-                                                    type="text"
-                                                    value={texteEdition}
-                                                    onChange={(e) => setTexteEdition(e.target.value)}
-                                                />
-                                                <input
-                                                    type="date"
-                                                    value={echeanceEdition}
-                                                    onChange={(e) => setEcheanceEdition(e.target.value)}
-                                                />
-                                                <textarea
-                                                    value={descriptionEdition}
-                                                    onChange={(e) => setDescriptionEdition(e.target.value)}
-                                                />
-                                                <button type="button" onClick={() => validerEdition(t.id)}>
-                                                    Enregistrer
-                                                </button>
-                                                <button type="button" onClick={annulerEdition}>
-                                                    Annuler
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <span>{t.titre}</span>
-                                                <button type="button" onClick={() => commencerEdition(t)}>
-                                                    Modifier
-                                                </button>
-                                                <button type="button" onClick={() => supprimerTache(t.id)}>
-                                                    Supprimer
-                                                </button>
-                                            </>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-
-                    <div className="btnValidation">
-                        <button type="button" onClick={onClose}>
-                            Valider
-                        </button>
-                    </div>
-                </form>
-
-                <button type="button" onClick={onClose}>
-                    Fermer
-                </button>
-            </div>
-        </div>
+    const [dateEcheance, setDateEcheance] = useState(() =>
+        new Date().toLocaleDateString("fr") // format YYYY-MM-DD
     );
-}
+    const [nomTache, setNomTache] = useState ("")
+    const [descriptionTache, setDescriptionTache] = useState("")
+    const [statut, setStatut] = useState("en cours");
+    const [priorite, setPriorite] = useState("basse"); // ou "haute", selon ton choix par défaut
+    const [assigiantion, setAssigniantion] = useState ("");
+    
+    return (
+    <div className="popup-overlay" onClick={onClose}>
+      <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
+        <h1 className="titre-formulaire">Formulaire tâche</h1>
 
-function AjoutTache({ onAjouter }: { onAjouter: (titre: string, echeance: string, description: string) => void }) {
-  const [tache, setTache] = useState("");
-  const [echeance, setEcheance] = useState("");
-  const [description, setDescription] = useState("");
+        <form className="formulaire">
+          
+            <div className="nomdetache">
+                <label htmlFor="nomTache">Nom de la tâche :</label>
+                <input 
+                type="text" 
+                id="nomTache" 
+                value={nomTache}
+                onChange={(e) => setNomTache (e.target.value)}
+                />
+            </div>
+          
+            <div className="description-tache">
+                <label htmlFor="descriptionTache">Description de la tâche :</label>
+                <textarea 
+                id="descriptionTache" 
+                value={descriptionTache}
+                onChange={(e) => setDescriptionTache (e.target.value)}
+                />
+            </div>
 
-  const ajouterTache = () => {
-    if (tache.trim() === "") return;
-    onAjouter(tache, echeance, description);
-    setTache("");
-    setEcheance("");
-    setDescription("");
-  };
+            <div className="statut-tache">
+                <label htmlFor="statut">Statut :</label>
+                <select 
+                    id="statut"
+                    className={statut == 'terminé' ? 'statut-vert' : 'statut-rouge'}
+                    value={statut} 
+                    onChange={(e) => setStatut(e.target.value)}
+                >
+                    <option value="en cours">En cours</option>
+                    <option value="terminé">Terminé</option>
+                </select>
+            </div>
 
-  return (
-    <div>
-        <div className="nom">
-            <label> Tache :</label>
-            <input
-                type="text"
-                placeholder="Nouvelle tâche"
-                value={tache}
-                onChange={(e) => setTache(e.target.value)}
-            />
+            <div className="priorité-tache">
+                <label htmlFor="priorite">Priorité :</label>
+                <select
+                    id="priorite"
+                    className={priorite == 'obligatoire' ? 'priorite-rouge' : 'priorite-vert'}
+                    value={priorite}
+                    onChange={(e) => setPriorite(e.target.value)}
+                >
+                    <option value="pas obligatiore">Pas obligatiore</option>
+                    <option value="obligatoire">Obligatoire</option>
+                </select>
+            </div>
+            
+            <div className="date">
+                <label htmlFor="dateEcheance">Date d'échéance :</label>
+                <input
+                    type="date"
+                    id="dateEcheance"
+                    value={dateEcheance}
+                    onChange={(e) => setDateEcheance(e.target.value)}
+                />
+            </div>
+          
+            <div className= "assignation">
+                <label htmlFor="assignation">Assigné à :</label>
+                <input 
+                type="text" 
+                id="assignation" 
+                value={assigiantion}
+                onChange={(e) => setAssigniantion(e.target.value)}
+                />
+            </div>
+             <div className="btnValidation">
+                <button type="submit">Valider</button>
+            </div>
+        </form>
+        <div className="btnfermer">
+            <button type="button" onClick={onClose}>
+            Fermer
+            </button>
         </div>
-            <div className="date" >
-            <label> date d'échéance :</label>
-            <input
-                type="date"
-                value={echeance}
-                onChange={(e) => setEcheance(e.target.value)}
-            />
-        </div>
-        <div className="description">
-            <label>Description de l'organisation :</label>
-            <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-            />
-        </div>
-        <button className="btnAjout" type="button" onClick={ajouterTache}>Ajouter</button>
-        <p className="liste">Liste des tâches</p>
+      </div>
     </div>
   );
 }
+
+

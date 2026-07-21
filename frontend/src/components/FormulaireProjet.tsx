@@ -17,47 +17,93 @@ export function FormulaireProjet() {
 }
 
 function PopupFormulaire({ onClose }: { onClose: () => void }) {
+  const [dateDebut, setDateDebut] = useState(() =>
+    new Date().toLocaleDateString("fr") // format YYYY-MM-DD
+  );
+  const [dateFin, setDateFin] = useState(() =>
+    new Date().toLocaleDateString("fr") // format YYYY-MM-DD
+  );
+  const [nomProjet, setNomProjet] = useState("");
+  const [description, setDescription] = useState("");
+  const [adresse, setAdresse] = useState("");
+  const [estTerminer, setEstTerminer] = useState("");
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
-        <h1>Formulaire projet</h1>
+        
+        <h1 className="titre-formulaire">Formulaire projet</h1>
 
-        <form>
-            <div className="nom">
-                <label>Nom du Projet :</label>
-                <input type="text" />
-            </div>
-            <CreationDate />
-            <div className="description">
-                <label>Description du projet :</label>
-                <textarea />
-            </div>
-            <div className="btnValidation">
-                <button type="submit">Valider</button>
-            </div>
+        <form className="formulaire">
+          
+          <div className="nomProjet">
+              <label htmlFor="nomProjet">Nom du projet :</label>
+              <input 
+              type="text" 
+              id="nomProjet"
+              value={nomProjet} 
+              onChange={(e) => setNomProjet(e.target.value)} />
+          </div>
+          
+          <div className="description">
+              <label htmlFor="description">Description du projet :</label>
+              <textarea 
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+          </div>
+          
+          <div className="dateDebut">
+            <label htmlFor="dateDebut">Date de début :</label>
+            <input
+                type="date"
+                id="dateDebut"
+                value={dateDebut}
+                onChange={(e) => setDateDebut(e.target.value)}
+            />
+          </div>
+
+          <div className="dateFin">
+            <label htmlFor="dateFin">Date de fin :</label>
+            <input
+                type="date"
+                id="dateFin"
+                value={dateFin}
+                onChange={(e) => setDateFin(e.target.value)}
+            />
+          </div>
+
+          <div className="adresse">
+            <label htmlFor="adresse">Adresse:</label>
+            <input
+              type="text"
+              id="adresse"
+              value={adresse}
+              onChange={(e) => setAdresse(e.target.value)}
+            />
+          </div>
+          
+          <div className="estTerminer">
+            <input 
+            type="checkbox"
+            id="estTerminer"
+            value={estTerminer}
+            onChange={(e) => setEstTerminer(e.target.value)}
+            />
+            <label htmlFor="ProjetTerminer">Projet terminer</label>
+          </div>
+          
+          <div className="btnValidation">
+              <button type="submit">Valider</button>
+          </div>
+        
         </form>
-
-        <button type="button" onClick={onClose}>
-          Fermer
-        </button>
+        <div className="btnfermer">
+          <button type="button" onClick={onClose}>
+            Fermer
+          </button>
+        </div>
       </div>
     </div>
   );
-}
-
-function CreationDate() {
-    const [createdAt, setCreatedAt] = useState(() =>
-        new Date().toLocaleDateString("fr-CA") // format YYYY-MM-DD
-    );
-
-    return (
-        <div className="date">
-            <label>Date de création :</label>
-            <input
-                type="date"
-                value={createdAt}
-                onChange={(e) => setCreatedAt(e.target.value)}
-            />
-        </div>
-    );
 }
