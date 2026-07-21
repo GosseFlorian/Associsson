@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useOrganisationStore } from "../stores/organisationStore";
 import "../style/components/NavBar.css"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 export function NavBar() {
-  const { idUtilisateurPath, idOrganisation } = useParams()
+  const { idUtilisateurPath, idOrganisation, role } = useParams()
   const {
     organisations,
     chargementOrganisation,
@@ -28,18 +28,29 @@ export function NavBar() {
     (org) => org.id === Number(idOrganisation)
   );
 
-  let Orga = <p className="orga-p">Choisir Organisation</p>;
+  let Orga = <p className="orga-p">Choisir Organisation</p>
 
-  if(idOrganisation) {
+  if (organisation && organisation.nom) {
     Orga = <p className="orga-p">{ organisation.nom}</p>
+  }
+
+  let link = <Link to={`profilPage`} className="navBar-a">Mon Profil</Link>
+  if (idOrganisation) {
+    link = <Link to={`organisations/${idOrganisation}/${role}/profilPage`} className="navBar-a">Mon Profil</Link>
+  }
+
+  const url = window.location.href;
+  let accueil = <a className="logo-home" href={`/${idUtilisateurPath}/organisations`}>Accueil</a>
+  if (url.includes(`${role}/profilPage`)) {
+    accueil = <a className="logo-home" href={`/${idUtilisateurPath}/organisations/${idOrganisation}/${role}`}>Revenir à l'organisation</a>
   }
 
   return (
     <>
       <header>
-        <a className="logo-home" href={`/${idUtilisateurPath}/organisations`}>Accueil</a>
+        {accueil}
         {Orga}
-        <a href="/profilPage" className="navBar-a">Mon Profil</a>
+        {link}
       </header>
     </>
   )
