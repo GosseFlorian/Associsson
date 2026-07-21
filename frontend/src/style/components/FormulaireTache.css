@@ -1,3 +1,4 @@
+
 .formulaire{
   box-sizing: border-box;
   width: 100%;
@@ -17,15 +18,19 @@ label {
     display: inline-block;
     margin-bottom: 20px; 
   }
-.nom{
-  margin: 0 20px;
+.liste{
+  margin:20px;
   position: relative;
   width: 250px;
 }
-.choix{
-  margin: 20px;
-  position: relative;
+.listeTaches{
+  margin:20px;
   width: 250px;
+}
+.nom{
+  margin:20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .date{
@@ -34,6 +39,11 @@ label {
   flex-direction: column;
 }
 .description{
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.btnAjout{
   margin: 20px;
   display: flex;
   flex-direction: column;

@@ -17,38 +17,15 @@ export function FormulaireProjet() {
 }
 
 function PopupFormulaire({ onClose }: { onClose: () => void }) {
-    const [menuOuvert, setMenuOuvert] = useState(false);
-    const [choix, setChoix] = useState("");
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
-        <h1>Formulaire Organisation</h1>
+        <h1>Formulaire projet</h1>
 
         <form>
             <div className="nom">
                 <label>Nom du Projet :</label>
                 <input type="text" />
-            </div>
-
-            <div className="choix">
-                <label>Nom de organisation :</label>
-                <input
-                    type="text"
-                    placeholder="Choisir l'Organisation"
-                    value={choix}
-                    readOnly
-                    onClick={() => setMenuOuvert(!menuOuvert)}
-                    style={{ width: "100%" }}
-                />
-                {menuOuvert && (
-                    <div className="popup-dropdown">
-                        <ul>
-                            <li onClick={() => { setChoix("Choix 1"); setMenuOuvert(false); }}>Choix 1</li>
-                            <li onClick={() => { setChoix("Choix 2"); setMenuOuvert(false); }}>Choix 2</li>
-                            <li onClick={() => { setChoix("Choix 3"); setMenuOuvert(false); }}>Choix 3</li>
-                        </ul>
-                    </div>
-                )}
             </div>
             <CreationDate />
             <div className="description">
