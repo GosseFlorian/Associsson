@@ -1,62 +1,89 @@
 import "../style/components/TacheCard.css";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useTacheStore } from "../stores/tacheStore";
 import { useLoginStore } from "../stores/loginStore";
 
 export function TacheCard() {
-  const idMembre = useLoginStore(
-    (state) => state.idMembre
-  );
+  const idMembre = useLoginStore((state) => state.idMembre);
 
-  const fetchTache = useTacheStore(
-    (state) => state.fetchTache
-  );
-
-  const taches = useTacheStore(
-    (state) => state.taches
-  );
+  const fetchTache = useTacheStore((state) => state.fetchTache);
+  const taches = useTacheStore((state) => state.taches);
 
   useEffect(() => {
-    if (taches.length === 0) {
-      fetchTache();
-    }
-  }, [taches.length, fetchTache]);
+    fetchTache();
+  }, [fetchTache]);
 
-  if (!idMembre) {
-    return <p>Aucun membre connecté</p>;
-  }
+  const tachesMembre = useMemo(() => {
+    if (!idMembre) return [];
+    return taches.filter(
+      (tache) => tache.assigne_a === idMembre
+    );
+  }, [taches, idMembre]);
 
-  const tachesMembre = taches.filter(
-    (tache) => tache.assigne_a === idMembre
-  );
+  const statistiques = useMemo(() => {
+    return {
+      aFaire: tachesMembre.filter(
+        (tache) => tache.statut === "a_faire"
+      ).length,
+
+      enCours: tachesMembre.filter(
+        (tache) => tache.statut === "en_cours"
+      ).length,
+
+      termine: tachesMembre.filter(
+        (tache) => tache.statut === "termine"
+      ).length,
+    };
+  }, [tachesMembre]);
 
   function formatDate(date: string): string {
     return new Date(date).toLocaleDateString("fr-FR");
   }
 
-  function formtext(texte: string): string {
-    return texte
-      .replace("_", " ")
-      .charAt(0)
-      .toUpperCase() + texte.slice(1);
+  function formatText(texte: string): string {
+    const texteFormate = texte.replace("_", " ");
+
+    return texteFormate.charAt(0).toUpperCase() + texteFormate.slice(1);
   }
 
-  if (tachesMembre.length === 0) {
-    return <p>Aucune tâche assignée</p>;
+  if (!idMembre) {
+    return <p>Aucun membre connecté</p>;
   }
+
   return (
     <>
-      {tachesMembre.map((tache) => (
-        <div className="tacheCard-container" key={tache.titre}>
-          <h2 className="tacheCard tacheCard-titre">{tache.titre}</h2>
-          <p className="tacheCard">{tache.description}</p>
-          <p className="tacheCard">Date d'échéance : {formatDate(tache.date_echeance)}</p>
-          <div className="tache-info">
-            <p className={`bg tacheCard ${tache.statut}`}>{formtext(tache.statut)}</p>
-            <p className={`bg tacheCard ${tache.priorite}`}>{formtext(tache.priorite)}</p>
-          </div>
+      <div className="tache-stats">
+        <div>
+          <p>À faire : {statistiques.aFaire}</p>
         </div>
-      ))}
+        <div>
+          <p>En cours : {statistiques.enCours}</p>
+        </div>
+        <div>
+          <p>Terminées : {statistiques.termine}</p>
+        </div>
+      </div>
+
+      {tachesMembre.length === 0 ? (
+        <p>Aucune tâche assignée</p>
+      ) : (
+        tachesMembre.map((tache) => (
+          <div
+            className="tacheCard-container"
+            key={tache.id}
+          >
+            <h2 className="tacheCard tacheCard-titre">{tache.titre}</h2>
+
+            <p className="tacheCard">{tache.description}</p>
+            <p className="tacheCard">Date d'échéance : {formatDate(tache.date_echeance)}</p>
+
+            <div className="tache-info">
+              <p className={`bg tacheCard ${tache.statut}`}>{formatText(tache.statut)}</p>
+              <p className={`bg tacheCard ${tache.priorite}`}>{formatText(tache.priorite)}</p>
+            </div>
+          </div>
+        ))
+      )}
     </>
   );
 }
