@@ -15,7 +15,7 @@ function App() {
           <Route path="profilPage" element={<ProfilPage/>}/>
           <Route path="organisations/:idOrganisation/:role/profilPage" element={<ProfilPage/>}/>
         </Route>
-          <Route path="/*" element={<h2>Page non trouvée 404 🔍</h2>} />
+        <Route path="/*" element={<h2>Page non trouvée 404 🔍</h2>} />
       </Routes>
     </>
   );

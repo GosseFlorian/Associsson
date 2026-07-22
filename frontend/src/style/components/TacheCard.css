@@ -1,3 +1,8 @@
+.tacheCard{
+    display: flex;
+    flex-direction: column;
+}
+
 .tacheCard-container{
     display: flex;
     flex-direction: column;
@@ -50,5 +55,21 @@
 }
 
 .termine{
-    background-color: var(--succes);
+    background-color: var(--success);
+}
+
+.tache-stats{
+    display: flex;
+    justify-content: space-around;
+    width: 700px;
+    margin-bottom: 100px;
+    div{
+        border: 1px solid black;
+        padding: 10px 15px;
+        border-radius: var(--radius);
+    }
+}
+
+.no-tache{
+    text-align: center;
 }

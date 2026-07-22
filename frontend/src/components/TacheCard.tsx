@@ -51,27 +51,24 @@ export function TacheCard() {
   }
 
   return (
-    <>
+    <div className="tacheCard">
       <div className="tache-stats">
-        <div>
+        <div className="a_faire">
           <p>À faire : {statistiques.aFaire}</p>
         </div>
-        <div>
+        <div className="en_cours">
           <p>En cours : {statistiques.enCours}</p>
         </div>
-        <div>
+        <div className="termine">
           <p>Terminées : {statistiques.termine}</p>
         </div>
       </div>
 
       {tachesMembre.length === 0 ? (
-        <p>Aucune tâche assignée</p>
+          <p className="no-tache">Aucune tâche assignée</p>
       ) : (
         tachesMembre.map((tache) => (
-          <div
-            className="tacheCard-container"
-            key={tache.id}
-          >
+          <div className="tacheCard-container" key={tache.id}>
             <h2 className="tacheCard tacheCard-titre">{tache.titre}</h2>
 
             <p className="tacheCard">{tache.description}</p>
@@ -84,6 +81,6 @@ export function TacheCard() {
           </div>
         ))
       )}
-    </>
+    </div>
   );
 }
