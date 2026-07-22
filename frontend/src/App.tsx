@@ -4,6 +4,7 @@ import { OrganisationPage } from "./pages/OrganisationsPage";
 import { WorkSpacePage } from "./pages/WorkSpacePage";
 import { Layout } from "./pages/Layout";
 import { ProfilPage } from "./pages/ProfilPage";
+import  LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="organisations/:idOrganisation/:role/profilPage" element={<ProfilPage/>}/>
         </Route>
         <Route path="/*" element={<h2>Page non trouvée 404 🔍</h2>} />
+      <Route path="/login" element={< LoginPage />} />
       </Routes>
     </>
   );
