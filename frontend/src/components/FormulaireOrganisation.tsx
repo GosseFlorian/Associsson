@@ -25,7 +25,7 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
 
         <form>
           <div className="nomOrganisation">
-            <label>Nom de l'organisation :</label><br />
+            <label htmlFor='nomOgranisation'>Nom de l'organisation :</label><br />
             <input 
             type="text"
             value={nomOrganisation}

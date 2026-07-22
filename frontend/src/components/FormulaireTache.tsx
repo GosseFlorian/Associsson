@@ -9,7 +9,6 @@ export function FormulaireTache() {
       <button type="button" onClick={() => setPopupOuvert(true)}>
         Ouvrir le formulaire
       </button>
-
       {popupOuvert && <PopupFormulaire onClose={() => setPopupOuvert(false)} />}
     </>
   );
@@ -17,7 +16,7 @@ export function FormulaireTache() {
 
 function PopupFormulaire({ onClose }: { onClose: () => void }) {
     const [dateEcheance, setDateEcheance] = useState(() =>
-        new Date().toLocaleDateString("fr") // format YYYY-MM-DD
+        new Date().toLocaleDateString("fr") 
     );
     const [nomTache, setNomTache] = useState ("")
     const [descriptionTache, setDescriptionTache] = useState("")
@@ -53,14 +52,21 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
 
             <div className="statut-tache">
                 <label htmlFor="statut">Statut :</label>
-                <select 
+                <select
                     id="statut"
-                    className={statut == 'terminé' ? 'statut-vert' : 'statut-rouge'}
-                    value={statut} 
+                    className={
+                        statut === 'a faire'
+                            ? 'statut-rouge'
+                            : statut === 'en cours'
+                            ? 'statut-orange'
+                            : 'statut-vert'
+                    }
+                    value={statut}
                     onChange={(e) => setStatut(e.target.value)}
                 >
-                    <option value="en cours">En cours</option>
-                    <option value="terminé">Terminé</option>
+                    <option value="a faire" className="option-rouge">a faire</option>
+                    <option value="en cours" className="option-orange">en cours</option>
+                    <option value="terminé" className="option-vert">Terminé</option>
                 </select>
             </div>
 
@@ -68,14 +74,25 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
                 <label htmlFor="priorite">Priorité :</label>
                 <select
                     id="priorite"
-                    className={priorite == 'obligatoire' ? 'priorite-rouge' : 'priorite-vert'}
+                    className={
+                        priorite === 'tres_haute'
+                            ? 'priorite-rouge'
+                            : priorite === 'haute'
+                            ? 'priorite-orange'
+                            : priorite === 'moyenne'
+                            ? 'priorite-jaune'
+                            : 'priorite-vert'
+                    }
                     value={priorite}
                     onChange={(e) => setPriorite(e.target.value)}
                 >
-                    <option value="pas obligatiore">Pas obligatiore</option>
-                    <option value="obligatoire">Obligatoire</option>
+                    <option value="basse" className="option-vert">basse</option>
+                    <option value="moyenne" className="option-jaune">moyenne</option>
+                    <option value="haute" className="option-orange">haute</option>
+                    <option value="tres_haute" className="option-rouge">très haute</option>
                 </select>
             </div>
+
             
             <div className="date">
                 <label htmlFor="dateEcheance">Date d'échéance :</label>

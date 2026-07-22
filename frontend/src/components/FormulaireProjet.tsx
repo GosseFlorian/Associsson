@@ -18,15 +18,15 @@ export function FormulaireProjet() {
 
 function PopupFormulaire({ onClose }: { onClose: () => void }) {
   const [dateDebut, setDateDebut] = useState(() =>
-    new Date().toLocaleDateString("fr") // format YYYY-MM-DD
+    new Date().toLocaleDateString("fr") 
   );
   const [dateFin, setDateFin] = useState(() =>
-    new Date().toLocaleDateString("fr") // format YYYY-MM-DD
+    new Date().toLocaleDateString("fr") 
   );
   const [nomProjet, setNomProjet] = useState("");
   const [description, setDescription] = useState("");
   const [adresse, setAdresse] = useState("");
-  const [estTerminer, setEstTerminer] = useState("");
+  const [estTerminer, setEstTerminer] = useState(false);
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
@@ -85,12 +85,16 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
           
           <div className="estTerminer">
             <input 
-            type="checkbox"
-            id="estTerminer"
-            value={estTerminer}
-            onChange={(e) => setEstTerminer(e.target.value)}
+              type="checkbox"
+              id="estTerminer"
+              checked={estTerminer}
+              onChange={(e) => setEstTerminer(e.target.checked)}
+              // utiliser directement e.target.checked (recommandé)
+              // e.target.checked est déjà un booléen fourni par le navigateur (true si cochée, false sinon).
+              // C'est la façon la plus simple et la plus fiable.
+              // onChange={(e) => setEstTerminer(e.target.checked)}
             />
-            <label htmlFor="ProjetTerminer">Projet terminer</label>
+            <label htmlFor="estTerminer">Projet terminé</label>
           </div>
           
           <div className="btnValidation">
