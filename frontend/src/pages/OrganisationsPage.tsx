@@ -1,33 +1,28 @@
-import "../style/pages/OrganisationPage.css"
+import "../style/pages/OrganisationPage.css";
 import { useEffect } from "react";
-import { useLoginStore } from "../stores/loginStore"
+import { useLoginStore } from "../stores/loginStore";
 import { useUtilisateurStore } from "../stores/utilisateurStore";
 import { useMembreStore } from "../stores/membreStore";
 import { Link, useParams } from "react-router-dom";
+import { useOrganisationStore } from "../stores/organisationStore";
 
 export function OrganisationPage() {
   const { idUtilisateurPath } = useParams();
   const idUtilisateur = Number(idUtilisateurPath);
-  const setRole = useLoginStore(
-    (state) => state.setRole
-  );
-  const setIdMembre = useLoginStore(
-    (state) => state.setIdMembre
-  );
+  const setRole = useLoginStore((state) => state.setRole);
+  const setIdMembre = useLoginStore((state) => state.setIdMembre);
 
   const {
     utilisateur,
     fetchUtilisateurById,
     chargementUtilisateur,
-    errorUtilisateur
+    errorUtilisateur,
   } = useUtilisateurStore();
 
-  const {
-    membres,
-    fetchMembre,
-    chargementMembre,
-    errorMembre
-  } = useMembreStore();
+  const { membres, fetchMembre, chargementMembre, errorMembre } =
+    useMembreStore();
+
+  const { deleteOrganisation } = useOrganisationStore();
 
   setRole(null);
   useEffect(() => {
@@ -40,14 +35,12 @@ export function OrganisationPage() {
   }
 
   if (errorUtilisateur || errorMembre) {
-    return (
-      <p>{errorUtilisateur || errorMembre}</p>
-    );
+    return <p>{errorUtilisateur || errorMembre}</p>;
   }
 
-  const OrganisationMembre = membres
-    .filter(
-      (membre) => membre.nomUtilisateur === utilisateur.nom)
+  const OrganisationMembre = membres.filter(
+    (membre) => membre.nomUtilisateur === utilisateur.nom,
+  );
 
 
   return (
@@ -56,21 +49,33 @@ export function OrganisationPage() {
         <h1>Mes Organisations</h1>
         <button>Nouvelle Organisation</button>
       </div>
-      <hr/>
+      <hr />
       <div className="organisation-body">
         {OrganisationMembre.length === 0 ? (
           <p>Vous n'avez pas encore d'organisation.</p>
         ) : (
           OrganisationMembre.map((membre) => (
-            <div className="organisation-container" key={membre.organisation_id}>
-              <p className="organisation-nom">{membre.nomOrganisation}</p>
+            <div
+              className="organisation-container"
+              key={membre.organisation_id}
+            >
+              <div className="container-header">
+                <p className="organisation-nom">{membre.nomOrganisation}</p>
+                <button
+                  className="delete-button"
+                  onClick={() => deleteOrganisation(membre.organisation_id)}
+                >
+                  x
+                </button>
+              </div>
               <p className="organisation-role">role : {membre.role}</p>
               <Link className="organisation-link" to={`${membre.organisation_id}/${membre.role}`} onClick={() => { setRole(membre.role); setIdMembre(membre.id)}}>
                 Voir organisation
               </Link>
             </div>
-        )))}
+          ))
+        )}
       </div>
     </>
-  )
+  );
 }
