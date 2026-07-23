@@ -20,9 +20,9 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
     );
     const [nomTache, setNomTache] = useState ("")
     const [descriptionTache, setDescriptionTache] = useState("")
-    const [statut, setStatut] = useState("en cours");
-    const [priorite, setPriorite] = useState("basse"); // ou "haute", selon ton choix par défaut
-    const [assigiantion, setAssigniantion] = useState ("");
+    const [statut, setStatut] = useState("a_faire");
+    const [priorite, setPriorite] = useState("tres_haute");
+    const [assigniantion, setAssigniantion] = useState ("");
     
     return (
     <div className="popup-overlay" onClick={onClose}>
@@ -55,17 +55,17 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
                 <select
                     id="statut"
                     className={
-                        statut === 'a faire'
+                        statut === 'a_faire'
                             ? 'statut-rouge'
-                            : statut === 'en cours'
+                            : statut === 'en_cours'
                             ? 'statut-orange'
                             : 'statut-vert'
                     }
                     value={statut}
                     onChange={(e) => setStatut(e.target.value)}
                 >
-                    <option value="a faire" className="option-rouge">a faire</option>
-                    <option value="en cours" className="option-orange">en cours</option>
+                    <option value="a_faire" className="option-rouge">a faire</option>
+                    <option value="en_cours" className="option-orange">en cours</option>
                     <option value="terminé" className="option-vert">Terminé</option>
                 </select>
             </div>
@@ -78,17 +78,17 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
                         priorite === 'tres_haute'
                             ? 'priorite-rouge'
                             : priorite === 'haute'
-                            ? 'priorite-orange'
+                            ? 'priorite-orangered'
                             : priorite === 'moyenne'
-                            ? 'priorite-jaune'
+                            ? 'priorite-orange'
                             : 'priorite-vert'
                     }
                     value={priorite}
                     onChange={(e) => setPriorite(e.target.value)}
                 >
-                    <option value="basse" className="option-vert">basse</option>
-                    <option value="moyenne" className="option-jaune">moyenne</option>
-                    <option value="haute" className="option-orange">haute</option>
+                    <option value="faible" className="option-vert">faible</option>
+                    <option value="moyenne" className="option-orange">moyenne</option>
+                    <option value="haute" className="option-orangered">haute</option>
                     <option value="tres_haute" className="option-rouge">très haute</option>
                 </select>
             </div>
@@ -109,7 +109,7 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
                 <input 
                 type="text" 
                 id="assignation" 
-                value={assigiantion}
+                value={assigniantion}
                 onChange={(e) => setAssigniantion(e.target.value)}
                 />
             </div>

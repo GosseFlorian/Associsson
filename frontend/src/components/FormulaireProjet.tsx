@@ -89,10 +89,6 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
               id="estTerminer"
               checked={estTerminer}
               onChange={(e) => setEstTerminer(e.target.checked)}
-              // utiliser directement e.target.checked (recommandé)
-              // e.target.checked est déjà un booléen fourni par le navigateur (true si cochée, false sinon).
-              // C'est la façon la plus simple et la plus fiable.
-              // onChange={(e) => setEstTerminer(e.target.checked)}
             />
             <label htmlFor="estTerminer">Projet terminé</label>
           </div>

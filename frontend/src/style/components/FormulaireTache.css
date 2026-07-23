@@ -41,6 +41,11 @@ label {
     margin-bottom: 20px;
 }
 
+.option-vert{ color: #2e7d32;}
+.option-orange{color: orange;}
+.option-orangered{color: orangered;}
+.option-rouge{color: red;}
+
 .statut-tache{
   display: flex;
   flex-direction:row;
@@ -51,6 +56,11 @@ label {
 .statut-rouge {
   color: #fa0404;
   border: 1px solid #b80b0b;
+}
+
+.statut-orange {
+  color: orange;
+  border: 1px solid orange;
 }
 
 .statut-vert {
@@ -66,8 +76,16 @@ label {
 }
 
 .priorite-rouge {
-  color: #fa0404;
-  border: 1px solid #b80b0b;
+  color: red;
+  border: 1px solid red;
+}
+.priorite-orangered {
+  color: orangered;
+  border: 1px solid orangered;
+}
+.priorite-orange {
+  color: orange;
+  border: 1px solid orange;
 }
 
 .priorite-vert {
