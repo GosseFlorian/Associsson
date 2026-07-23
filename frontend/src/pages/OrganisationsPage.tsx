@@ -38,10 +38,14 @@ export function OrganisationPage() {
     return <p>{errorUtilisateur || errorMembre}</p>;
   }
 
+  const handleDeleteOrganisation = async (id: number) => {
+    await deleteOrganisation(id);
+    await fetchMembre();
+  };
+
   const OrganisationMembre = membres.filter(
     (membre) => membre.nomUtilisateur === utilisateur.nom,
   );
-
 
   return (
     <>
@@ -63,8 +67,7 @@ export function OrganisationPage() {
                 <p className="organisation-nom">{membre.nomOrganisation}</p>
                 <button
                   className="delete-button"
-                  onClick={() => deleteOrganisation(membre.organisation_id)}
-                >
+                  onClick={() => handleDeleteOrganisation(membre.organisation_id)}>
                   x
                 </button>
               </div>
