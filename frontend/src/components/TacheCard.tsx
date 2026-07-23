@@ -53,14 +53,17 @@ export function TacheCard() {
   return (
     <div className="tacheCard">
       <div className="tache-stats">
-        <div className="a_faire">
-          <p>À faire : {statistiques.aFaire}</p>
+        <div>
+          <p className="tache-a_faire">À faire</p>
+          <p>{statistiques.aFaire}</p>
         </div>
-        <div className="en_cours">
-          <p>En cours : {statistiques.enCours}</p>
+        <div>
+          <p className="tache-en_cours">En cours</p>
+          <p>{statistiques.enCours}</p>
         </div>
-        <div className="termine">
-          <p>Terminées : {statistiques.termine}</p>
+        <div>
+          <p className="tache-termine">Terminées</p>
+          <p>{statistiques.termine}</p>
         </div>
       </div>
 

@@ -64,10 +64,37 @@
     width: 700px;
     margin-bottom: 100px;
     div{
-        border: 1px solid black;
-        padding: 10px 15px;
+        background-color: var(--card);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        border: 1px solid var(--border);
+        padding: 20px;
+        height: 120px;
+        width: 200px;
         border-radius: var(--radius);
+        font-size: 20px;
     }
+}
+
+.tache-a_faire{
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    background-color: color-mix(in srgb, var(--danger) 70%, white);
+    color: color-mix(in srgb, var(--danger) 30%, black);
+}
+.tache-en_cours{
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    background-color: color-mix(in srgb, var(--warning) 70%, white);
+    color: color-mix(in srgb, var(--warning) 30%, black);
+}
+.tache-termine{
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    background-color: color-mix(in srgb, var(--success) 70%, white);
+    color: color-mix(in srgb, var(--success) 30%, black);
 }
 
 .no-tache{

@@ -19,11 +19,11 @@ export function BenevolePage() {
   }
 
   return (
-    <>
+    <section className="benevole">
       <div className="benevole-selection">
-      <Button text="Mon profil" action={() => setSectionActive("profil")} active={sectionActive === "profil"}/>
-      <Button text="Projets" action={() => setSectionActive("projets")} active={sectionActive === "projets"}/>
-      <Button text="Mes tâches" action={() => setSectionActive("taches")} active={sectionActive === "taches"}/>
+        <Button text="Mon profil" action={() => setSectionActive("profil")} active={sectionActive === "profil"}/>
+        <Button text="Projets" action={() => setSectionActive("projets")} active={sectionActive === "projets"}/>
+        <Button text="Mes tâches" action={() => setSectionActive("taches")} active={sectionActive === "taches"}/>
       </div>
       <div>
         {sectionActive === "profil" && (
@@ -42,6 +42,6 @@ export function BenevolePage() {
           </div>
         )}
       </div>
-    </>
+    </section>
   );
 }

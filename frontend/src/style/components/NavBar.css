@@ -6,6 +6,7 @@ header{
     justify-content: space-between;
     position: relative;
     color: var(--text-principal);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .logo-home{
