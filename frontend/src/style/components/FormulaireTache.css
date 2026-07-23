@@ -1,0 +1,121 @@
+label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px); /* pour compatibilité Safari */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup-contenu {
+  background: rgb(246, 245, 245);
+  padding: 2rem;
+  border-radius: 8px;
+  min-width: 300px;
+  position: relative;
+  z-index: 1001;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.nomdetache{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px ;
+}
+
+.description-tache {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* espace entre le label et le textarea */
+    margin-bottom: 20px;
+}
+
+.option-vert{ color: #2e7d32;}
+.option-orange{color: orange;}
+.option-orangered{color: orangered;}
+.option-rouge{color: red;}
+
+.statut-tache{
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.statut-rouge {
+  color: #fa0404;
+  border: 1px solid #b80b0b;
+}
+
+.statut-orange {
+  color: orange;
+  border: 1px solid orange;
+}
+
+.statut-vert {
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+.priorité-tache{
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.priorite-rouge {
+  color: red;
+  border: 1px solid red;
+}
+.priorite-orangered {
+  color: orangered;
+  border: 1px solid orangered;
+}
+.priorite-orange {
+  color: orange;
+  border: 1px solid orange;
+}
+
+.priorite-vert {
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.assignation{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.btnValidation{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.btnfermer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 20px;
+}

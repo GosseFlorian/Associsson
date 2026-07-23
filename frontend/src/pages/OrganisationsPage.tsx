@@ -5,6 +5,8 @@ import { useUtilisateurStore } from "../stores/utilisateurStore";
 import { useMembreStore } from "../stores/membreStore";
 import { Link, useParams } from "react-router-dom";
 import { useOrganisationStore } from "../stores/organisationStore";
+import { FormulaireOrganisation } from "../components/FormulaireOrganisation";
+
 
 export function OrganisationPage() {
   const { idUtilisateurPath } = useParams();
@@ -51,7 +53,7 @@ export function OrganisationPage() {
     <>
       <div className="organisation-header">
         <h1>Mes Organisations</h1>
-        <button>Nouvelle Organisation</button>
+        <FormulaireOrganisation/>
       </div>
       <hr />
       <div className="organisation-body">
@@ -82,3 +84,4 @@ export function OrganisationPage() {
     </>
   );
 }
+
