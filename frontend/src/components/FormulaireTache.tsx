@@ -22,7 +22,7 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
     const [descriptionTache, setDescriptionTache] = useState("")
     const [statut, setStatut] = useState("a_faire");
     const [priorite, setPriorite] = useState("tres_haute");
-    const [assigniantion, setAssigniantion] = useState ("");
+    const [assignation, setAssignation] = useState ("");
     
     return (
     <div className="popup-overlay" onClick={onClose}>
@@ -109,8 +109,8 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
                 <input 
                 type="text" 
                 id="assignation" 
-                value={assigniantion}
-                onChange={(e) => setAssigniantion(e.target.value)}
+                value={assignation}
+                onChange={(e) => setAssignation(e.target.value)}
                 />
             </div>
              <div className="btnValidation">
