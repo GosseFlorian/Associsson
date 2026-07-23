@@ -1,7 +1,7 @@
 import { create } from "zustand"
 
 interface Membre {
-  idMembre: number;
+  id: number;
   organisation_id: number;
   utilisateur_id: number;
   nomUtilisateur: string;
