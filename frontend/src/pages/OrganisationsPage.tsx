@@ -42,6 +42,7 @@ export function OrganisationPage() {
     (membre) => membre.nomUtilisateur === utilisateur.nom,
   );
 
+
   return (
     <>
       <div className="organisation-header">
@@ -68,14 +69,7 @@ export function OrganisationPage() {
                 </button>
               </div>
               <p className="organisation-role">role : {membre.role}</p>
-              <Link
-                className="organisation-link"
-                to={`${membre.organisation_id}/${membre.role}`}
-                onClick={() => {
-                  setRole(membre.role);
-                  setIdMembre(membre.idMembre);
-                }}
-              >
+              <Link className="organisation-link" to={`${membre.organisation_id}/${membre.role}`} onClick={() => { setRole(membre.role); setIdMembre(membre.id)}}>
                 Voir organisation
               </Link>
             </div>
