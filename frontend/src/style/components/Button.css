@@ -1,5 +1,5 @@
 .button{
-    background-color:var(--background) ;
+    background-color:var(--card) ;
     color: var(--text-principale);
     padding: 10px 20px;
     border: none;
