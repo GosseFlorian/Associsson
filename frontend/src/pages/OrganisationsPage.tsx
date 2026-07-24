@@ -5,7 +5,7 @@ import { useUtilisateurStore } from "../stores/utilisateurStore";
 import { useMembreStore } from "../stores/membreStore";
 import { Link, useParams } from "react-router-dom";
 import { useOrganisationStore } from "../stores/organisationStore";
-import { FormulaireOrganisation } from "../components/FormulaireOrganisation";
+import { FormulaireCreateOrganisation } from "../components/FormulaireCreateOrganisation";
 
 
 export function OrganisationPage() {
@@ -53,9 +53,8 @@ export function OrganisationPage() {
     <>
       <div className="organisation-header">
         <h1>Mes Organisations</h1>
-        <FormulaireOrganisation/>
+        <FormulaireCreateOrganisation/>
       </div>
-      <hr />
       <div className="organisation-body">
         {OrganisationMembre.length === 0 ? (
           <p>Vous n'avez pas encore d'organisation.</p>
@@ -84,4 +83,3 @@ export function OrganisationPage() {
     </>
   );
 }
-

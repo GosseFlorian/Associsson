@@ -2,6 +2,8 @@
   display: flex;
   justify-content: space-around;
   margin: 20px 0px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 30px;
 }
 
 .organisation-body {
@@ -12,32 +14,42 @@
 .organisation-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 10px;
   height: 100px;
   width: 400px;
-  border: 1px solid black;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   margin: 5px;
+  overflow: hidden;
 }
 .container-header {
   display: flex;
   width: 400px;
-  justify-content: center;
+  justify-content: space-between;
   background: lightblue;
 }
 
 .organisation-nom {
-  font-size: 20px;
-  margin: 0 auto;
+    font-size: 20px;
+    margin: 5px;
 }
 
 .delete-button {
-  font-size: 15px;
+    margin-right: 5px;
+    font-size: 15px;
+    height: 25px;
+    width: 25px;
+    align-self: center;
+    border: none;
+    color: white;
+    background-color: var(--danger);
+    border-radius: var(--radius);
+    cursor: pointer;
 }
 
 .organisation-link {
-  text-decoration: none;
-  color: var(--text-principale);
+    text-decoration: none;
+    color: var(--text-principale);
 }

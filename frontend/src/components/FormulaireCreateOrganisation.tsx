@@ -1,15 +1,13 @@
 import { useState } from 'react'
-import '../style/components/FormulaireOrganisation.css'
+import '../style/components/FormulaireCreateOrganisation.css'
+import { Button } from './Button';
 
-export function FormulaireOrganisation() {
+export function FormulaireCreateOrganisation() {
   const [popupOuvert, setPopupOuvert] = useState(false)
 
   return (
     <>
-      <button type="button" onClick={() => setPopupOuvert(true)}>
-        Ouvrir le formulaire
-      </button>
-
+      <Button text='Ouvrir le Formulaire' action={() => setPopupOuvert(true)} active={ false} />
       {popupOuvert && <PopupFormulaire onClose={() => setPopupOuvert(false)} />}
     </>
   );
@@ -26,12 +24,12 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
         <form>
           <div className="nomOrganisation">
             <label htmlFor='nomOgranisation'>Nom de l'organisation :</label><br />
-            <input 
+            <input
             type="text"
             value={nomOrganisation}
             onChange={(e) => setNomOrganisation(e.target.value)}
              />
-            
+
           </div>
           <div className="btnValidation">
             <button type="submit">Valider</button>
