@@ -4,7 +4,9 @@ import { Tache, TacheDetails } from "../types";
 export const getTachesRepository = async (): Promise<TacheDetails[]> => {
   const result = await pool.query<TacheDetails>(
     `SELECT 
-      t.id, 
+      t.id,
+      t.createur_id,
+      u.nom AS "nomCreateur",
       t.projet_id, 
       p.titre AS "nomProjet",
       t.titre, 
@@ -28,7 +30,9 @@ export const getTacheByIdRepository = async (
 ): Promise<TacheDetails | null> => {
   const result = await pool.query<TacheDetails>(
     `SELECT 
-      t.id, 
+      t.id,
+      t.createur_id,
+      u.nom AS "nomCreateur", 
       t.projet_id, 
       p.titre AS "nomProjet",
       t.titre, 
@@ -50,9 +54,9 @@ export const getTacheByIdRepository = async (
 
 export const postTacheRepository = async (data: Tache): Promise<Tache> => {
   const query = `
-    INSERT INTO tache (titre, description, statut, priorite, date_echeance, assigne_a, projet_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING id, titre, description, statut, priorite, date_echeance, assigne_a, projet_id;
+    INSERT INTO tache (titre, description, statut, priorite, date_echeance, assigne_a, projet_id, createur_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING id, titre, description, statut, priorite, date_echeance, assigne_a, projet_id, createur_id;
   `;
   const values = [
     data.titre,
@@ -62,6 +66,7 @@ export const postTacheRepository = async (data: Tache): Promise<Tache> => {
     data.date_echeance,
     data.assigne_a,
     data.projet_id,
+    data.createur_id,
   ];
   const result = await pool.query<Tache>(query, values);
   if (!result.rows[0]) {
@@ -82,9 +87,10 @@ export const putTacheRepository = async (
         priorite = COALESCE($4, priorite),
         date_echeance = COALESCE($5, date_echeance),
         assigne_a = COALESCE($6, assigne_a),
-        projet_id = COALESCE($7, projet_id)
-    WHERE id = $8
-    RETURNING id, titre, description, statut, priorite, date_echeance, assigne_a, projet_id;
+        projet_id = COALESCE($7, projet_id),
+        createur_id = COALESCE($8, createur_id)
+    WHERE id = $9
+    RETURNING id, titre, description, statut, priorite, date_echeance, assigne_a, projet_id, createur_id;
   `;
   const values = [
     data.titre,
@@ -94,6 +100,7 @@ export const putTacheRepository = async (
     data.date_echeance,
     data.assigne_a,
     data.projet_id,
+    data.createur_id,
     id,
   ];
   const result = await pool.query<Tache>(query, values);
@@ -105,7 +112,7 @@ export const deleteTacheRepository = async (
 ): Promise<Tache | null> => {
   const query = `DELETE FROM tache 
     WHERE id = $1 
-    RETURNING id, titre, description, statut, priorite, date_echeance, assigne_a, projet_id`;
+    RETURNING id, titre, description, statut, priorite, date_echeance, assigne_a, projet_id, createur_id`;
   const result = await pool.query<Tache>(query, [id]);
   return result.rows[0] || null;
 };
