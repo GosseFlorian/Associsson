@@ -15,11 +15,15 @@ export const getProjetsRepository = async (): Promise<ProjetDetails[]> => {
         p.date_debut, 
         p.date_fin, 
         p.adresse, 
-        p.est_termine
+        p.est_termine,
+        p.nombre_place,
+        COUNT(ip.id)::int AS "nombreInscrit"
         FROM projet p
         JOIN organisation o ON p.organisation_id = o.id
         JOIN membre m ON p.createur_id = m.id
         JOIN utilisateur u ON m.utilisateur_id = u.id
+        LEFT JOIN inscription_projet ip ON p.id = ip.projet_id
+        GROUP BY p.id, o.nom, u.nom
         ORDER BY p.id`,
   );
   return result.rows;
@@ -30,23 +34,27 @@ export const getProjetByIdRepository = async (
 ): Promise<ProjetDetails | null> => {
   const result = await pool.query<ProjetDetails>(
     `SELECT 
-      p.id, 
-      p.organisation_id, 
-      o.nom AS "nomOrganisation",
-      p.createur_id, 
-      u.nom AS "nomCreateur",
-      p.titre, 
-      p.description, 
-      p.date_creation, 
-      p.date_debut, 
-      p.date_fin, 
-      p.adresse, 
-      p.est_termine
-    FROM projet p
-    JOIN organisation o ON p.organisation_id = o.id
-    JOIN membre m ON p.createur_id = m.id
-    JOIN utilisateur u ON m.utilisateur_id = u.id
-    WHERE p.id = $1`,
+        p.id, 
+        p.organisation_id, 
+        o.nom AS "nomOrganisation",
+        p.createur_id, 
+        u.nom AS "nomCreateur",
+        p.titre, 
+        p.description, 
+        p.date_creation, 
+        p.date_debut, 
+        p.date_fin, 
+        p.adresse, 
+        p.est_termine,
+        p.nombre_place,
+        COUNT(ip.id)::int AS "nombreInscrit"
+        FROM projet p
+        JOIN organisation o ON p.organisation_id = o.id
+        JOIN membre m ON p.createur_id = m.id
+        JOIN utilisateur u ON m.utilisateur_id = u.id
+        LEFT JOIN inscription_projet ip ON p.id = ip.projet_id
+        WHERE p.id = $1
+        GROUP BY p.id, o.nom, u.nom`,
     [id],
   );
   return result.rows[0] || null;
@@ -54,9 +62,9 @@ export const getProjetByIdRepository = async (
 
 export const postProjetRepository = async (data: Projet): Promise<Projet> => {
   const query = `
-  INSERT INTO projet (organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
-  RETURNING id, organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine;
+  INSERT INTO projet (organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine, nombre_place)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+  RETURNING id, organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine, nombre_place;
   `;
   const values = [
     data.organisation_id,
@@ -67,6 +75,7 @@ export const postProjetRepository = async (data: Projet): Promise<Projet> => {
     data.date_fin,
     data.adresse,
     data.est_termine,
+    data.nombre_place,
   ];
   const result = await pool.query<Projet>(query, values);
   if (!result.rows[0]) {
@@ -88,9 +97,10 @@ export const putProjetRepository = async (
             date_debut      = COALESCE($5, date_debut),
             date_fin        = COALESCE($6, date_fin),
             adresse         = COALESCE($7, adresse),
-            est_termine     = COALESCE($8, est_termine)
-        WHERE id = $9
-        RETURNING id, organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine;
+            est_termine     = COALESCE($8, est_termine),
+            nombre_place     = COALESCE($9, nombre_place)
+        WHERE id = $10
+        RETURNING id, organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine, nombre_place;
     `;
   const values = [
     data.organisation_id,
@@ -101,6 +111,7 @@ export const putProjetRepository = async (
     data.date_fin,
     data.adresse,
     data.est_termine,
+    data.nombre_place,
     id,
   ];
   const result = await pool.query<Projet>(query, values);
@@ -112,7 +123,7 @@ export const deleteProjetRepository = async (
 ): Promise<Projet | null> => {
   const query = `DELETE FROM projet
     WHERE id = $1
-    RETURNING id, organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine`;
+    RETURNING id, organisation_id, createur_id, titre, description, date_debut, date_fin, adresse, est_termine, nombre_place`;
   const result = await pool.query<Projet>(query, [id]);
   return result.rows[0] || null;
 };

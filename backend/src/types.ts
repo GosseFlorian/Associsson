@@ -1,4 +1,4 @@
-export type StatutTache = "a_faire" | "en_cours" | "termine";
+export type StatutTache = "a_assigne" | "en_cours" | "termine";
 export type PrioriteTache = "faible" | "moyenne" | "haute" | "tres_haute";
 export type RoleMembre = "admin" | "benevole" | "licencie";
 
@@ -22,12 +22,13 @@ export interface Projet {
   organisation_id: number;
   createur_id: number;
   titre: string;
-  description?: string;
+  description?: string | null;
   date_creation: Date;
-  date_debut?: Date;
-  date_fin?: Date;
-  adresse?: string;
+  date_debut?: Date | null;
+  date_fin?: Date | null;
+  adresse?: string | null;
   est_termine: boolean;
+  nombre_place?: number;
 }
 
 export interface Organisation {
@@ -40,13 +41,20 @@ export interface Organisation {
 
 export interface Tache {
   id: number;
+  createur_id: number;
   projet_id: number;
   titre: string;
-  description?: string;
+  description?: string | null;
   statut: StatutTache;
   priorite: PrioriteTache;
-  date_echeance?: Date;
+  date_echeance?: Date | null;
   assigne_a?: number | null;
+}
+
+export interface InscriptionProjet {
+  id: number;
+  projet_id: number;
+  membre_id: number;
 }
 
 // Pour getMembresRepository et getMembreParIdRepository
@@ -64,10 +72,18 @@ export interface OrganisationDetails extends Organisation {
 export interface ProjetDetails extends Projet {
   nomOrganisation: string;
   nomCreateur: string;
+  nombreInscrit: number;
 }
 
 // Pour getTachesRepository et getTacheByIdRepository
 export interface TacheDetails extends Tache {
   nomProjet: string;
-  nomAssigneA?: string;
+  nomAssigneA?: string | null;
+  nomCreateur: string;
+}
+// Pour getInscriptionProjetRepository et getInscriptionProjetByIdRepository
+export interface InscriptionProjetDetails extends InscriptionProjet {
+  nomProjet: string;
+  nomMembre: string;
+  nombrePlaceProjet?: number | null;
 }
