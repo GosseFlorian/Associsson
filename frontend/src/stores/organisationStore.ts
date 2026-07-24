@@ -52,12 +52,17 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
         method: "DELETE",
       });
       if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de l'organisations");
+      }
         set((state) => ({
           organisations: state.organisations.filter((o) => o.id !== id),
+          chargementOrganisation: false,
         }));
-      }
-    } catch (err) {
-      console.error("Erreur suppréssion skill", err);
-    }
+    } catch (error) {
+      set({
+        errorOrganisation:
+          error instanceof Error ? error.message : "Erreur inconnue",
+        chargementOrganisation: false,
+      });    }
   },
 }));

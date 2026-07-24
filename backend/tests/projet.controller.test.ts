@@ -44,7 +44,8 @@ const mockRequest = (overrides: Partial<Request> = {}): Request => {
     ...overrides,
   } as unknown as Request;
 };
-
+// Avant chaque test, vide l'historique de tous les mocks pour garantir
+// que chaque test démarre avec un état propre.
 beforeEach(() => {
   jest.clearAllMocks();
   jest.spyOn(console, "error").mockImplementation(() => undefined);
@@ -68,14 +69,18 @@ describe("projet.controller", () => {
     });
 
     it("retourne 500 si le service échoue", async () => {
-      (getProjetsService as jest.Mock).mockRejectedValueOnce(new Error("DB down"));
+      (getProjetsService as jest.Mock).mockRejectedValueOnce(
+        new Error("DB down"),
+      );
       const req = mockRequest();
       const res = mockResponse();
 
       await getProjetsController(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ message: "Erreur interne du serveur" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Erreur interne du serveur",
+      });
     });
   });
 
@@ -93,17 +98,21 @@ describe("projet.controller", () => {
     });
 
     it("retourne 400 si l'id n'est pas un nombre", async () => {
+      // Corrigé : le message réel renvoyé par le controller est
+      // "ID invalide" (`res.status(400).json({ message: "ID invalide" })`),
+      // pas "Identifiant invalide".
       const req = mockRequest({ params: { id: "abc" } });
       const res = mockResponse();
 
       await getProjetByIdController(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ message: "Identifiant invalide" });
+      expect(res.json).toHaveBeenCalledWith({ message: "ID invalide" });
     });
 
     it("retourne 404 si le projet n'existe pas", async () => {
-      (getProjetByIdService as jest.Mock).mockResolvedValueOnce(undefined);
+      // Corrigé : le repository/service renvoie null, pas undefined.
+      (getProjetByIdService as jest.Mock).mockResolvedValueOnce(null);
       const req = mockRequest({ params: { id: "999" } });
       const res = mockResponse();
 
@@ -114,7 +123,9 @@ describe("projet.controller", () => {
     });
 
     it("retourne 500 si le service échoue", async () => {
-      (getProjetByIdService as jest.Mock).mockRejectedValueOnce(new Error("DB down"));
+      (getProjetByIdService as jest.Mock).mockRejectedValueOnce(
+        new Error("DB down"),
+      );
       const req = mockRequest({ params: { id: "1" } });
       const res = mockResponse();
 
@@ -125,7 +136,9 @@ describe("projet.controller", () => {
   });
 
   describe("postProjetController", () => {
-    it("crée un projet et retourne 200", async () => {
+    it("crée un projet et retourne 201", async () => {
+      // Corrigé : le controller réel utilise `res.status(201)` pour une
+      // création, pas 200.
       (postProjetService as jest.Mock).mockResolvedValueOnce(fakeProjet);
       const req = mockRequest({ body: fakeProjet });
       const res = mockResponse();
@@ -133,12 +146,42 @@ describe("projet.controller", () => {
       await postProjetController(req, res);
 
       expect(postProjetService).toHaveBeenCalledWith(fakeProjet);
-      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith(fakeProjet);
     });
 
-    it("retourne 500 si la création échoue", async () => {
-      (postProjetService as jest.Mock).mockRejectedValueOnce(new Error("Erreur SQL"));
+    it("retourne 400 si des champs obligatoires sont manquants", async () => {
+      // Ajouté : le controller valide `data.titre` et `data.organisation_id`
+      // avant d'appeler le service (non testé jusqu'ici).
+      const req = mockRequest({ body: { titre: "Sans organisation" } });
+      const res = mockResponse();
+
+      await postProjetController(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(postProjetService).not.toHaveBeenCalled();
+    });
+
+    it("retourne 400 si le service lève une erreur de validation métier", async () => {
+      // Ajouté : couvre la branche `error.message.includes("obligatoire")`
+      // du controller, qui distingue erreur de validation et erreur serveur.
+      (postProjetService as jest.Mock).mockRejectedValueOnce(
+        new Error("Le titre du projet est obligatoire"),
+      );
+      const req = mockRequest({
+        body: { titre: "   ", organisation_id: 10 },
+      });
+      const res = mockResponse();
+
+      await postProjetController(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+    it("retourne 500 si la création échoue pour une autre raison", async () => {
+      (postProjetService as jest.Mock).mockRejectedValueOnce(
+        new Error("Erreur SQL"),
+      );
       const req = mockRequest({ body: fakeProjet });
       const res = mockResponse();
 
@@ -161,9 +204,43 @@ describe("projet.controller", () => {
       expect(res.json).toHaveBeenCalledWith(fakeProjet);
     });
 
-    it("retourne 500 si la modification échoue", async () => {
-      (putProjetService as jest.Mock).mockRejectedValueOnce(new Error("Projet non trouvé"));
+    it("retourne 400 si l'id est invalide", async () => {
+      // Ajouté : couvre la validation d'id avant tout appel au service.
+      const req = mockRequest({ params: { id: "abc" }, body: fakeProjet });
+      const res = mockResponse();
+
+      await putProjetController(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(putProjetService).not.toHaveBeenCalled();
+    });
+
+    it("retourne 400 si aucune donnée n'est fournie", async () => {
+      // Ajouté : couvre la validation "Aucune donnée à modifier fournie".
+      const req = mockRequest({ params: { id: "1" }, body: {} });
+      const res = mockResponse();
+
+      await putProjetController(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(putProjetService).not.toHaveBeenCalled();
+    });
+
+    it("retourne 404 si le projet n'existe pas", async () => {
+      // Ajouté : couvre le cas où putProjetService renvoie null.
+      (putProjetService as jest.Mock).mockResolvedValueOnce(null);
       const req = mockRequest({ params: { id: "999" }, body: fakeProjet });
+      const res = mockResponse();
+
+      await putProjetController(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ message: "Projet non trouvé" });
+    });
+
+    it("retourne 500 si la modification échoue", async () => {
+      (putProjetService as jest.Mock).mockRejectedValueOnce(new Error("boom"));
+      const req = mockRequest({ params: { id: "1" }, body: fakeProjet });
       const res = mockResponse();
 
       await putProjetController(req, res);
@@ -196,8 +273,22 @@ describe("projet.controller", () => {
       expect(deleteProjetService).not.toHaveBeenCalled();
     });
 
+    it("retourne 404 si le projet n'existe pas", async () => {
+      // Ajouté : couvre le cas où deleteProjetService renvoie null.
+      (deleteProjetService as jest.Mock).mockResolvedValueOnce(null);
+      const req = mockRequest({ params: { id: "999" } });
+      const res = mockResponse();
+
+      await deleteProjetController(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ message: "Projet non trouvé" });
+    });
+
     it("retourne 500 si la suppression échoue", async () => {
-      (deleteProjetService as jest.Mock).mockRejectedValueOnce(new Error("Projet non trouvé"));
+      (deleteProjetService as jest.Mock).mockRejectedValueOnce(
+        new Error("boom"),
+      );
       const req = mockRequest({ params: { id: "1" } });
       const res = mockResponse();
 

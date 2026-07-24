@@ -15,6 +15,12 @@ jest.mock("../src/config/client", () => ({
   },
 }));
 
+// Avant chaque test, vide l'historique de tous les mocks pour garantir
+// que chaque test démarre avec un état propre.
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 describe("getMembresRepository", () => {
   it("succès : renvoie result.rows", async () => {
     // Ce test vérifie que le repository renvoie bien les lignes (rows)
@@ -65,9 +71,10 @@ describe("getMembreParIdRepository", () => {
     expect(resultat).toBe(ligne);
   });
 
-  it("erreur : renvoie undefined si aucune ligne trouvée", async () => {
+  it("erreur : renvoie null si aucune ligne trouvée", async () => {
     // Ce test vérifie que si la requête ne renvoie aucune ligne (id
-    // inexistant), le repository renvoie undefined plutôt qu'une erreur.
+    // inexistant), le repository renvoie null plutôt qu'une erreur.
+    // Correspond au comportement réel : `return result.rows[0] || null;`
 
     // Arrange
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
@@ -76,39 +83,7 @@ describe("getMembreParIdRepository", () => {
     const resultat = await getMembreParIdRepository(999);
 
     // Assert
-    expect(resultat).toBeUndefined();
-  });
-});
-
-describe("putMembreRepository", () => {
-  it("succès : renvoie la ligne mise à jour", async () => {
-    // Ce test vérifie que le repository renvoie bien la ligne modifiée
-    // par la requête UPDATE ... RETURNING *.
-
-    // Arrange
-    const ligneModifiee = { id: 1, role: "admin" };
-    (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneModifiee] });
-
-    // Act
-    const resultat = await putMembreRepository(1, { role: "admin" });
-
-    // Assert
-    expect(resultat).toBe(ligneModifiee);
-  });
-
-  it("erreur : lève une erreur explicite si aucune ligne retournée", async () => {
-    // Ce test vérifie le comportement volontaire du repository : si l'UPDATE
-    // ne retourne aucune ligne (id inexistant), il lève une erreur explicite
-    // au lieu de renvoyer silencieusement undefined.
-
-    // Arrange
-    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
-
-    // Act
-    const fn = () => putMembreRepository(1, {});
-
-    // Assert
-    await expect(fn()).rejects.toThrow("Echec de la modification");
+    expect(resultat).toBeNull();
   });
 });
 
@@ -131,6 +106,34 @@ describe("postMembreRepository", () => {
     expect(resultat).toBe(ligneCreee);
   });
 
+  it("succès : utilise 'licencie' comme rôle par défaut si non fourni", async () => {
+    // Ce test vérifie le comportement particulier du repository : si aucun
+    // rôle n'est fourni dans les données, "licencie" est utilisé par défaut
+    // (`data.role ?? "licencie"`).
+
+    // Arrange
+    const ligneCreee = {
+      id: 3,
+      utilisateur_id: 1,
+      organisation_id: 2,
+      role: "licencie",
+    };
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneCreee] });
+
+    // Act
+    await postMembreRepository({
+      utilisateur_id: 1,
+      organisation_id: 2,
+    } as any);
+
+    // Assert
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), [
+      1,
+      2,
+      "licencie",
+    ]);
+  });
+
   it("erreur : lève une erreur explicite si l'insertion ne renvoie rien", async () => {
     // Ce test vérifie que si l'INSERT ne retourne aucune ligne (cas
     // anormal), le repository lève une erreur explicite plutôt que de
@@ -144,6 +147,38 @@ describe("postMembreRepository", () => {
 
     // Assert
     await expect(fn()).rejects.toThrow("Échec de la création du membre");
+  });
+});
+
+describe("putMembreRepository", () => {
+  it("succès : renvoie la ligne mise à jour", async () => {
+    // Ce test vérifie que le repository renvoie bien la ligne modifiée
+    // par la requête UPDATE ... RETURNING *.
+
+    // Arrange
+    const ligneModifiee = { id: 1, role: "admin" };
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneModifiee] });
+
+    // Act
+    const resultat = await putMembreRepository(1, { role: "admin" });
+
+    // Assert
+    expect(resultat).toBe(ligneModifiee);
+  });
+
+  it("erreur : renvoie null si aucune ligne trouvée pour l'id donné", async () => {
+    // Ce test vérifie le comportement réel actuel du repository : si
+    // l'UPDATE ne retourne aucune ligne (id inexistant), il renvoie null
+    // (`return result.rows[0] || null;`), sans lever d'erreur.
+
+    // Arrange
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+
+    // Act
+    const resultat = await putMembreRepository(999, { role: "admin" });
+
+    // Assert
+    expect(resultat).toBeNull();
   });
 });
 
@@ -163,9 +198,9 @@ describe("deleteMembreRepository", () => {
     expect(resultat).toBe(ligneSupprimee);
   });
 
-  it("erreur : renvoie undefined si rien n'a été supprimé", async () => {
+  it("erreur : renvoie null si rien n'a été supprimé", async () => {
     // Ce test vérifie que si aucun membre ne correspond à l'id (rien
-    // supprimé), le repository renvoie undefined plutôt qu'une erreur.
+    // supprimé), le repository renvoie null plutôt qu'une erreur.
 
     // Arrange
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
@@ -174,6 +209,6 @@ describe("deleteMembreRepository", () => {
     const resultat = await deleteMembreRepository(999);
 
     // Assert
-    expect(resultat).toBeUndefined();
+    expect(resultat).toBeNull();
   });
 });

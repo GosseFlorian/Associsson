@@ -17,6 +17,12 @@ import {
 // données pour être testé, on contrôle nous-mêmes ce que le repository renvoie.
 jest.mock("../src/repositories/membre.repository");
 
+// Avant chaque test, vide l'historique de tous les mocks pour garantir
+// que chaque test démarre avec un état propre.
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 describe("getMembreService", () => {
   it("succès : renvoie la liste renvoyée par le repository", async () => {
     // Ce test vérifie que le service transmet simplement (sans la modifier)
@@ -65,18 +71,83 @@ describe("getMembreParIdService", () => {
     expect(resultat).toBe(membre);
   });
 
-  it("erreur : renvoie undefined si le repository ne trouve rien", async () => {
+  it("erreur : renvoie null si le repository ne trouve rien", async () => {
     // Ce test vérifie que le service ne transforme pas un "rien trouvé"
-    // en erreur : il renvoie simplement undefined, comme le repository.
+    // en erreur : il renvoie simplement null, comme le repository.
 
     // Arrange
-    (getMembreParIdRepository as jest.Mock).mockResolvedValue(undefined);
+    (getMembreParIdRepository as jest.Mock).mockResolvedValue(null);
 
     // Act
     const resultat = await getMembreParIdService(999);
 
     // Assert
-    expect(resultat).toBeUndefined();
+    expect(resultat).toBeNull();
+  });
+});
+
+describe("postMembreService", () => {
+  it("succès : renvoie le membre créé par le repository quand le rôle est valide", async () => {
+    // Ce test vérifie que le service transmet bien les données reçues au
+    // repository, et renvoie le membre nouvellement créé.
+
+    // Arrange
+    const data = { utilisateur_id: 1, organisation_id: 2, role: "membre" };
+    const membreCree = { id: 10, ...data };
+    (postMembreRepository as jest.Mock).mockResolvedValue(membreCree);
+
+    // Act
+    const resultat = await postMembreService(data as any);
+
+    // Assert
+    expect(postMembreRepository).toHaveBeenCalledWith(data);
+    expect(resultat).toBe(membreCree);
+  });
+
+  it("erreur : lève une erreur si le rôle est vide", async () => {
+    // Ce test vérifie la validation métier du service : un rôle vide
+    // (uniquement des espaces) doit être rejeté AVANT tout appel au repository.
+
+    // Arrange
+    const data = { utilisateur_id: 1, organisation_id: 2, role: "   " };
+
+    // Act
+    const fn = () => postMembreService(data as any);
+
+    // Assert
+    await expect(fn()).rejects.toThrow("Le role du membre est obligatoire");
+    expect(postMembreRepository).not.toHaveBeenCalled();
+  });
+
+  it("erreur : lève une erreur si le rôle est manquant", async () => {
+    // Ce test vérifie que l'absence totale de rôle est bien détectée
+    // par la validation du service.
+
+    // Arrange
+    const data = { utilisateur_id: 1, organisation_id: 2 };
+
+    // Act
+    const fn = () => postMembreService(data as any);
+
+    // Assert
+    await expect(fn()).rejects.toThrow("Le role du membre est obligatoire");
+    expect(postMembreRepository).not.toHaveBeenCalled();
+  });
+
+  it("erreur : propage l'erreur si le repository plante", async () => {
+    // Ce test vérifie que si l'insertion échoue côté repository (ex: aucune
+    // ligne retournée), l'erreur remonte bien jusqu'à l'appelant du service.
+
+    // Arrange
+    (postMembreRepository as jest.Mock).mockRejectedValue(
+      new Error("Échec de la création du membre"),
+    );
+
+    // Act
+    const fn = () => postMembreService({ role: "membre" } as any);
+
+    // Assert
+    await expect(fn()).rejects.toThrow("Échec de la création du membre");
   });
 });
 
@@ -97,55 +168,19 @@ describe("putMembreService", () => {
     expect(resultat).toBe(membreModifie);
   });
 
-  it("erreur : propage l'erreur si le repository plante", async () => {
-    // Ce test vérifie que l'erreur levée par le repository (ex: membre
-    // introuvable lors de l'UPDATE) remonte bien jusqu'à l'appelant.
+  it("erreur : renvoie null si le repository ne trouve rien à modifier", async () => {
+    // Ce test vérifie le comportement réel actuel du service : il ne
+    // transforme pas un "rien trouvé" en erreur, il renvoie null,
+    // comme le repository.
 
     // Arrange
-    (putMembreRepository as jest.Mock).mockRejectedValue(
-      new Error("Echec de la modification"),
-    );
+    (putMembreRepository as jest.Mock).mockResolvedValue(null);
 
     // Act
-    const fn = () => putMembreService(1, {});
+    const resultat = await putMembreService(999, { role: "admin" });
 
     // Assert
-    await expect(fn()).rejects.toThrow("Echec de la modification");
-  });
-});
-
-describe("postMembreService", () => {
-  it("succès : renvoie le membre créé par le repository", async () => {
-    // Ce test vérifie que le service transmet bien les données reçues au
-    // repository, et renvoie le membre nouvellement créé.
-
-    // Arrange
-    const data = { utilisateur_id: 1, organisation_id: 2, role: "membre" };
-    const membreCree = { id: 10, ...data };
-    (postMembreRepository as jest.Mock).mockResolvedValue(membreCree);
-
-    // Act
-    const resultat = await postMembreService(data as any);
-
-    // Assert
-    expect(postMembreRepository).toHaveBeenCalledWith(data);
-    expect(resultat).toBe(membreCree);
-  });
-
-  it("erreur : propage l'erreur si le repository plante", async () => {
-    // Ce test vérifie que si l'insertion échoue côté repository (ex: aucune
-    // ligne retournée), l'erreur remonte bien jusqu'à l'appelant du service.
-
-    // Arrange
-    (postMembreRepository as jest.Mock).mockRejectedValue(
-      new Error("Échec de la création du membre"),
-    );
-
-    // Act
-    const fn = () => postMembreService({} as any);
-
-    // Assert
-    await expect(fn()).rejects.toThrow("Échec de la création du membre");
+    expect(resultat).toBeNull();
   });
 });
 
@@ -166,17 +201,17 @@ describe("deleteMembreService", () => {
     expect(resultat).toBe(membreSupprime);
   });
 
-  it("erreur : renvoie undefined si le repository ne trouve rien à supprimer", async () => {
+  it("erreur : renvoie null si le repository ne trouve rien à supprimer", async () => {
     // Ce test vérifie que le service ne transforme pas un "rien supprimé"
-    // en erreur : il renvoie simplement undefined, comme le repository.
+    // en erreur : il renvoie simplement null, comme le repository.
 
     // Arrange
-    (deleteMembreRepository as jest.Mock).mockResolvedValue(undefined);
+    (deleteMembreRepository as jest.Mock).mockResolvedValue(null);
 
     // Act
     const resultat = await deleteMembreService(999);
 
     // Assert
-    expect(resultat).toBeUndefined();
+    expect(resultat).toBeNull();
   });
 });

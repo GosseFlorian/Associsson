@@ -27,21 +27,27 @@ function mockResponse() {
   return res as Response;
 }
 
+// Avant chaque test, vide l'historique de tous les mocks pour garantir
+// que chaque test démarre avec un état propre.
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 describe("getMembresController", () => {
   it("succès : renvoie 200 et la liste des membres", async () => {
     // Ce test vérifie que si le service renvoie une liste sans erreur,
     // le controller répond bien avec le status 200 et cette liste en JSON.
 
-    // Arrange — préparer les données
+    // Arrange
     const membres = [{ role: "membre" }];
     (getMembreService as jest.Mock).mockResolvedValue(membres);
     const req = {} as Request;
     const res = mockResponse();
 
-    // Act — exécuter le code à tester
+    // Act
     await getMembresController(req, res);
 
-    // Assert — vérifier le résultat
+    // Assert
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(membres);
   });
@@ -96,6 +102,38 @@ describe("getMembresParIdController", () => {
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
   });
+
+  it("erreur : renvoie 404 si le membre n'existe pas", async () => {
+    // Ce test vérifie que si le service ne trouve aucun membre pour
+    // l'id donné, le controller répond 404.
+
+    // Arrange
+    (getMembreParIdService as jest.Mock).mockResolvedValue(null);
+    const req = { params: { id: "999" } } as unknown as Request;
+    const res = mockResponse();
+
+    // Act
+    await getMembresParIdController(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("erreur : renvoie 500 si le service plante", async () => {
+    // Ce test vérifie que si le service lève une exception, le controller
+    // répond 500 (branche catch de getMembresParIdController).
+
+    // Arrange
+    (getMembreParIdService as jest.Mock).mockRejectedValue(new Error("boom"));
+    const req = { params: { id: "5" } } as unknown as Request;
+    const res = mockResponse();
+
+    // Act
+    await getMembresParIdController(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(500);
+  });
 });
 
 describe("putMembreController", () => {
@@ -134,12 +172,67 @@ describe("putMembreController", () => {
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
   });
+
+  it("erreur : renvoie 400 si aucune donnée n'est fournie", async () => {
+    // Ce test vérifie que la modification est bloquée si le body est
+    // vide, sans jamais appeler le service.
+
+    // Arrange
+    const req = { params: { id: "3" }, body: {} } as unknown as Request;
+    const res = mockResponse();
+
+    // Act
+    await putMembreController(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(putMembreService).not.toHaveBeenCalled();
+  });
+
+  it("erreur : renvoie 404 si le membre n'existe pas", async () => {
+    // Ce test vérifie que si le service ne trouve aucun membre pour
+    // l'id donné, le controller répond 404.
+
+    // Arrange
+    (putMembreService as jest.Mock).mockResolvedValue(null);
+    const req = {
+      params: { id: "999" },
+      body: { role: "admin" },
+    } as unknown as Request;
+    const res = mockResponse();
+
+    // Act
+    await putMembreController(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("erreur : renvoie 500 si le service plante", async () => {
+    // Ce test vérifie que si le service lève une exception, le controller
+    // répond 500.
+
+    // Arrange
+    (putMembreService as jest.Mock).mockRejectedValue(new Error("boom"));
+    const req = {
+      params: { id: "3" },
+      body: { role: "admin" },
+    } as unknown as Request;
+    const res = mockResponse();
+
+    // Act
+    await putMembreController(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(500);
+  });
 });
 
 describe("postMembreController", () => {
-  it("succès : renvoie 200 et le membre créé", async () => {
+  it("succès : renvoie 201 et le membre créé", async () => {
     // Ce test vérifie que le controller transmet bien le body de la
-    // requête au service, et renvoie le membre créé avec 200.
+    // requête au service, et renvoie le membre créé avec 201.
+    // Le code réel utilise `res.status(201)` pour une création.
 
     // Arrange
     const nouveauMembre = { id: 1, role: "membre" };
@@ -153,17 +246,57 @@ describe("postMembreController", () => {
     await postMembreController(req, res);
 
     // Assert
-    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(nouveauMembre);
   });
 
-  it("erreur : renvoie 500 si le service plante", async () => {
-    // Ce test vérifie que si la création échoue côté service, le
-    // controller répond 500 plutôt que de laisser planter le serveur.
+  it("erreur : renvoie 400 si des champs obligatoires sont manquants", async () => {
+    // Ce test vérifie que la validation d'entrée du controller bloque
+    // la création si utilisateur_id ou organisation_id ne sont pas
+    // fournis, sans appeler le service.
+
+    // Arrange
+    const req = { body: { utilisateur_id: 1 } } as unknown as Request;
+    const res = mockResponse();
+
+    // Act
+    await postMembreController(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(postMembreService).not.toHaveBeenCalled();
+  });
+
+  it("erreur : renvoie 400 si le service lève une erreur de validation métier", async () => {
+    // Ce test vérifie que le controller distingue les erreurs de validation
+    // métier (ex: rôle obligatoire manquant) des erreurs serveur, et
+    // renvoie 400 dans ce cas (branche `error.message.includes("obligatoire")`).
+
+    // Arrange
+    (postMembreService as jest.Mock).mockRejectedValue(
+      new Error("Le role du membre est obligatoire"),
+    );
+    const req = {
+      body: { utilisateur_id: 1, organisation_id: 2, role: "" },
+    } as unknown as Request;
+    const res = mockResponse();
+
+    // Act
+    await postMembreController(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it("erreur : renvoie 500 si le service plante pour une autre raison", async () => {
+    // Ce test vérifie que si la création échoue côté service pour une
+    // raison qui n'est pas de la validation, le controller répond 500.
 
     // Arrange
     (postMembreService as jest.Mock).mockRejectedValue(new Error("boom"));
-    const req = { body: {} } as unknown as Request;
+    const req = {
+      body: { utilisateur_id: 1, organisation_id: 2 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -206,5 +339,37 @@ describe("deleteMembreController", () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it("erreur : renvoie 404 si le membre n'existe pas", async () => {
+    // Ce test vérifie que si le service ne trouve aucun membre pour
+    // l'id donné, le controller répond 404.
+
+    // Arrange
+    (deleteMembreService as jest.Mock).mockResolvedValue(null);
+    const req = { params: { id: "999" } } as unknown as Request;
+    const res = mockResponse();
+
+    // Act
+    await deleteMembreController(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("erreur : renvoie 500 si le service plante", async () => {
+    // Ce test vérifie que si le service lève une exception, le controller
+    // répond 500.
+
+    // Arrange
+    (deleteMembreService as jest.Mock).mockRejectedValue(new Error("boom"));
+    const req = { params: { id: "7" } } as unknown as Request;
+    const res = mockResponse();
+
+    // Act
+    await deleteMembreController(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 });

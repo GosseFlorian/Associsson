@@ -5,6 +5,8 @@ import { useUtilisateurStore } from "../stores/utilisateurStore";
 import { useMembreStore } from "../stores/membreStore";
 import { Link, useParams } from "react-router-dom";
 import { useOrganisationStore } from "../stores/organisationStore";
+import { FormulaireOrganisation } from "../components/FormulaireOrganisation";
+
 
 export function OrganisationPage() {
   const { idUtilisateurPath } = useParams();
@@ -38,16 +40,20 @@ export function OrganisationPage() {
     return <p>{errorUtilisateur || errorMembre}</p>;
   }
 
+  const handleDeleteOrganisation = async (id: number) => {
+    await deleteOrganisation(id);
+    await fetchMembre();
+  };
+
   const OrganisationMembre = membres.filter(
     (membre) => membre.nomUtilisateur === utilisateur.nom,
   );
-
 
   return (
     <>
       <div className="organisation-header">
         <h1>Mes Organisations</h1>
-        <button>Nouvelle Organisation</button>
+        <FormulaireOrganisation/>
       </div>
       <hr />
       <div className="organisation-body">
@@ -63,8 +69,7 @@ export function OrganisationPage() {
                 <p className="organisation-nom">{membre.nomOrganisation}</p>
                 <button
                   className="delete-button"
-                  onClick={() => deleteOrganisation(membre.organisation_id)}
-                >
+                  onClick={() => handleDeleteOrganisation(membre.organisation_id)}>
                   x
                 </button>
               </div>
@@ -79,3 +84,4 @@ export function OrganisationPage() {
     </>
   );
 }
+
