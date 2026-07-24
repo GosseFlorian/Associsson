@@ -1,8 +1,8 @@
 import {useState } from "react";
-import '../style/components/FormulaireProjet.css'
+import '../style/components/FormulaireCreateProjet.css'
 
 
-export function FormulaireProjet() {
+export function FormulaireCreateProjet() {
   const [popupOuvert, setPopupOuvert] = useState(false)
 
   return (
@@ -18,10 +18,10 @@ export function FormulaireProjet() {
 
 function PopupFormulaire({ onClose }: { onClose: () => void }) {
   const [dateDebut, setDateDebut] = useState(() =>
-    new Date().toLocaleDateString("fr") 
+    new Date().toLocaleDateString("fr")
   );
   const [dateFin, setDateFin] = useState(() =>
-    new Date().toLocaleDateString("fr") 
+    new Date().toLocaleDateString("fr")
   );
   const [nomProjet, setNomProjet] = useState("");
   const [description, setDescription] = useState("");
@@ -30,29 +30,29 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
-        
+
         <h1 className="titre-formulaire">Formulaire projet</h1>
 
         <form className="formulaire">
-          
+
           <div className="nomProjet">
               <label htmlFor="nomProjet">Nom du projet :</label>
-              <input 
-              type="text" 
+              <input
+              type="text"
               id="nomProjet"
-              value={nomProjet} 
+              value={nomProjet}
               onChange={(e) => setNomProjet(e.target.value)} />
           </div>
-          
+
           <div className="description">
               <label htmlFor="description">Description du projet :</label>
-              <textarea 
+              <textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
           </div>
-          
+
           <div className="dateDebut">
             <label htmlFor="dateDebut">Date de début :</label>
             <input
@@ -82,9 +82,9 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
               onChange={(e) => setAdresse(e.target.value)}
             />
           </div>
-          
+
           <div className="estTerminer">
-            <input 
+            <input
               type="checkbox"
               id="estTerminer"
               checked={estTerminer}
@@ -92,11 +92,11 @@ function PopupFormulaire({ onClose }: { onClose: () => void }) {
             />
             <label htmlFor="estTerminer">Projet terminé</label>
           </div>
-          
+
           <div className="btnValidation">
               <button type="submit">Valider</button>
           </div>
-        
+
         </form>
         <div className="btnfermer">
           <button type="button" onClick={onClose}>
