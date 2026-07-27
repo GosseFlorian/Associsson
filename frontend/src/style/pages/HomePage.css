@@ -1,0 +1,78 @@
+html {
+    scroll-behavior: smooth;
+}
+
+.Acceuil{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 100px;
+}
+
+.bouton{
+    display: flex;
+    gap: 5px
+}
+
+.navbar{
+    display: flex;
+    flex-direction:row;
+    margin: 0 20px;
+    gap: 10px
+}
+
+.nav-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navbar {
+  display: flex;
+  gap: 1.5rem;
+  overflow: hidden;
+  transform-origin: right center; /* le point d'ancrage = côté de la flèche */
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* état "rentré dans la flèche" */
+.nav-exit {
+  transform: scaleX(0) translateX(20px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* état "sorti de la flèche" */
+.nav-enter {
+  transform: scaleX(1) translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.arrow-btn {
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 16px; /* ajuste selon la taille voulue */
+}
+
+.Equipe{
+  text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 100px;
+}
+
+.Contact{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 100px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
