@@ -26,7 +26,10 @@ export function OrganisationPage() {
 
   const { deleteOrganisation } = useOrganisationStore();
 
-  setRole(null);
+  useEffect(() => {
+    setRole(null);
+  }, [setRole]);
+
   useEffect(() => {
     fetchUtilisateurById(idUtilisateur);
     fetchMembre();
