@@ -1,78 +1,135 @@
-html {
-    scroll-behavior: smooth;
+
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  background: none;
+}
+
+header.header-hidden {
+  transform: translateY(-100%);
 }
 
 .Acceuil{
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 100px;
-}
-
-.bouton{
-    display: flex;
-    gap: 5px
-}
-
-.navbar{
-    display: flex;
-    flex-direction:row;
-    margin: 0 20px;
-    gap: 10px
-}
-
-.nav-wrapper {
-  position: relative;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  width: auto;
   display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  background-image: url("../img/image.png");
+  background-size: cover;         
+  background-repeat: no-repeat; 
+    
+}
+
+.logo{
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
   align-items: center;
 }
 
-.navbar {
+.logo img{
+  margin-right: 10px;
+}
+
+.logo p{
+  font-size: 30px;
+  color: aliceblue;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.texte{
+  margin: 10px;
   display: flex;
-  gap: 1.5rem;
-  overflow: hidden;
-  transform-origin: right center; /* le point d'ancrage = côté de la flèche */
-  transition: transform 0.4s ease, opacity 0.4s ease;
+  flex-direction: column;
+  align-items: center;
+  color: rgb(0, 0, 0);
+  font-size: 20 px;
 }
 
-/* état "rentré dans la flèche" */
-.nav-exit {
-  transform: scaleX(0) translateX(20px);
-  opacity: 0;
-  pointer-events: none;
+.texte h3 {
+   margin-bottom: 20px;
+   font-size: 30px; /* Taille du texte */
+}
+.texte p {
+   margin-bottom: 20px;
+   font-size: 20px; /* Taille du texte */
 }
 
-/* état "sorti de la flèche" */
-.nav-enter {
-  transform: scaleX(1) translateX(0);
-  opacity: 1;
-  pointer-events: auto;
+
+.image img {
+  width: 448px;
+  height: auto;
 }
 
-.arrow-btn {
-  border: none;
-  background: transparent;
-  outline: none;
-  padding: 0;
-  cursor: pointer;
-  font-size: 16px; /* ajuste selon la taille voulue */
-}
 
-.Equipe{
+.btnI{
+  border: 0;
+  line-height: 2.5;
+  padding: 0 20px;
+  font-size: 1rem;
   text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 100px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  border-radius: 10px;
+  background-color: tomato;
+  background-image: linear-gradient(
+    to top left,
+    rgb(0 0 0 / 0.2),
+    rgb(0 0 0 / 0.2) 30%,
+    transparent
+  );
+  box-shadow:
+    inset 2px 2px 3px rgb(255 255 255 / 0.6),
+    inset -2px -2px 3px rgb(0 0 0 / 0.6);
 }
 
-.Contact{
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 100px;
-    border: 1px solid black;
-    border-radius: 10px;
+.btnI:hover {
+  background-color: red;
 }
+
+.btnI:active {
+  box-shadow:
+    inset -2px -2px 3px rgb(255 255 255 / 0.6),
+    inset 2px 2px 3px rgb(0 0 0 / 0.6);
+}
+
+.btnC{
+  margin-right: 10px;
+  border: 0;
+  line-height: 2.5;
+  padding: 0 20px;
+  font-size: 1rem;
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  border-radius: 10px;
+  background-color: rgb(15, 34, 250);
+  background-image: linear-gradient(
+    to top left,
+    rgb(0 0 0 / 0.2),
+    rgb(0 0 0 / 0.2) 30%,
+    transparent
+  );
+  box-shadow:
+    inset 2px 2px 3px rgb(15, 34, 250),
+    inset -2px -2px 3px rgb(0 0 0 / 0.6);
+}
+
+.btnC:hover {
+  background-color: rgb(0, 153, 255);
+}
+
+.btnC:active {
+  box-shadow:
+    inset -2px -2px 3px rgb(255 255 255 / 0.6),
+    inset 2px 2px 3px rgb(0 0 0 / 0.6);
+}
+

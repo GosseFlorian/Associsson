@@ -1,105 +1,60 @@
+import { useEffect, useState } from "react";
 import "../style/pages/HomePage.css";
-import { useState } from 'react'
+import Logo from "../style/img/Logo.png";
+import Logo2 from "../style/img/Logo2.png";
 
 export function HomePage() {
-    const [nomPrenom, setNomPrenom] = useState("");
-    const [email, setEmail] = useState("");
-    const [objet, setObjet] = useState("");
-    const [message, setMessage] = useState("");
-    const [isVisible, setIsVisible] = useState(true);
+  const [hidden, setHidden] = useState(true);
 
-    return (
-        <>
-            <header>
-                <div>
-                    <img src="logo" alt="logo de Associsson" />
-                </div>
-                <div className="bouton">
- 
-                    <div className="nav-wrapper">
-                        <nav className={`navbar ${isVisible ? 'nav-exit' : 'nav-enter' }`}>
-                            <a href="#accueil">Accueil</a>
-                            <a href="#equipe">Équipe</a>
-                            <a href="#contact">Contact</a>
-                        </nav>
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (e.clientY < 60) {
+        setHidden(false);
+      } else {
+        setHidden(true);
+      }
+    };
 
-                        <button className="arrow-btn" onClick={() => setIsVisible(!isVisible)}>
-                            {isVisible ? '▶' : '◀'  }
-                        </button>
-                    </div>
-                    <br />
-                    <button>Connexion</button>
-                    <button>Inscription</button>
-                </div>
-            </header>
-            <main>
-                <div id="accueil" className="Acceuil">
-                    <div className="titre">
-                        <h1>Bienvenue à Associsson</h1>
-                        <br />
-                        <h3>Une application pour les remplacer toutes</h3>
-                        <br />
-                        <p>Faites travailler vos équipes sur une seule plateforme conçue pour gérer tout type de travail.</p>
-                    </div>
-                    <br />
-                    <div className="liste">
-                        <button>Voir la liste des associations</button>
-                    </div>                        
-                </div>
-                
-                <div id="equipe" className="Equipe">
-                    <h2>Notre équipe</h2>
-                </div>
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
-                <div id="contact" className="Contact">
-                    <div>
-                        <form>
-                            <h3>Envoyez-nous un message</h3>
-                            <div>
-                                <div className="nomPrenom">
-                                    <label htmlFor='nomPrenom'>Nom et Prénom</label><br />
-                                    <input 
-                                    type="text"
-                                    value={nomPrenom}
-                                    onChange={(e) => setNomPrenom(e.target.value)}
-                                    />
-                                </div>
-                                <div className="email">
-                                    <label htmlFor='email'>Email</label><br />
-                                    <input 
-                                    type="text"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <div className="objet">
-                                    <label htmlFor='objet'>objet</label><br />
-                                    <input 
-                                    type="text"
-                                    value={objet}
-                                    onChange={(e) => setObjet(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <div className="message">
-                                    <label htmlFor='message'>Message</label><br />
-                                    <textarea
-                                        id="description"
-                                        value={message}
-                                        onChange={(e) => setMessage(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="btnValidation">
-                                <button type="submit">Envoyer le message</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </main>
-        </>
-    )
+  return (
+    <>
+      <header className={hidden ? "header-hidden" : ""}>
+        <div className="logo">
+          <img
+            src={Logo2}
+            alt="Logo2"
+            draggable="false"
+            style={{ width: 50, height: "auto" }}
+          />
+          <p>Associsson</p>
+        </div>
+        <div className="bouton">
+          <button className="btnC">Connexion</button>
+          <button className="btnI">Inscription</button>
+        </div>
+      </header>
+
+      <main>
+        <div id="accueil" className="Acceuil">
+          <div className="image">
+            <img src={Logo} alt="Logo" draggable="false"/>
+          </div>
+          <div className="texte">
+            <h3>Une application pour les remplacer toutes.</h3>
+            <br />
+            <p>
+              Faites travailler vos équipes sur une seule plateforme conçue pour gérer tout type de travail.
+            </p>
+          </div>
+          <div className="bouton">
+            <button className="btnC">Connection</button>
+            <button className="btnI">Inscription</button>
+          </div>
+        </div>
+      </main>
+    </>
+  );
 }
