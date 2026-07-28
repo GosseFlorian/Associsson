@@ -1,17 +1,30 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../style/pages/RegisterPage.css";
 
 const RegisterPage = () => {
   const [nom, setNom] = useState("");
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
+  const [erreur, setErreur] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const Register = () => {
-    console.log("Nom :", nom);
-    console.log("Email :", email);
-    console.log("Mot de passe :", motDePasse);
+  const Register = async () => {
+    setErreur(null);
 
-    
+    const response = await fetch("http://localhost:3000/utilisateur", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nom, email, mot_de_passe: motDePasse }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      setErreur(data.message ?? "Erreur lors de l'inscription");
+      return;
+    }
+
+    navigate("/login");
   };
 
   return (
@@ -48,6 +61,8 @@ const RegisterPage = () => {
             onChange={(e) => setMotDePasse(e.target.value)}
           />
         </div>
+
+        {erreur && <p className="erreur-text">{erreur}</p>}
 
         <button className="register-btn" onClick={Register}>
           S'inscrire

@@ -1,11 +1,37 @@
 import { Request, Response } from "express";
 import {
+  postConnexionService,
   getUtilisateursService,
   getUtilisateurIdService,
   postUtilisateurService,
   putUtilisateurService,
   deleteUtilisateurService,
 } from "../services/utilisateur.service";
+
+export const postConnexionController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { email, mot_de_passe } = req.body;
+
+    if (!email || !mot_de_passe) {
+      res.status(400).json({ message: "Identifiants manquants" });
+      return;
+    }
+
+    const resultat = await postConnexionService(email, mot_de_passe);
+    res.status(200).json(resultat);
+    return;
+  } catch (error: any) {
+    console.error("Erreur lors de la connexion : ", error);
+    if (error.message === "Identifiants invalides") {
+      res.status(401).json({ message: error.message });
+      return;
+    }
+    res.status(500).json({ message: "Erreur interne du serveur" });
+  }
+};
 
 export const getUtilisateursController = async (
   req: Request,

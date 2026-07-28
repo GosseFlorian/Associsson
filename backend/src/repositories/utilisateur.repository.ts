@@ -1,5 +1,17 @@
 import { pool } from "../config/client";
-import { Utilisateur } from "../types";
+import { Utilisateur } from "../types/types";
+
+export const getUtilisateurByEmailRepository = async (
+  email: string,
+): Promise<Utilisateur | null> => {
+  const result = await pool.query<Utilisateur>(
+    `SELECT id, nom, email, mot_de_passe, date_inscription
+    FROM utilisateur
+    WHERE email = $1`,
+    [email],
+  );
+  return result.rows[0] || null;
+};
 
 export const getUtilisateursRepository = async (): Promise<Utilisateur[]> => {
   const result = await pool.query<Utilisateur>(

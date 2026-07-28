@@ -7,7 +7,6 @@ import { Link, useParams } from "react-router-dom";
 import { useOrganisationStore } from "../stores/organisationStore";
 import { FormulaireCreateOrganisation } from "../components/FormulaireCreateOrganisation";
 
-
 export function OrganisationPage() {
   const { idUtilisateurPath } = useParams();
   const idUtilisateur = Number(idUtilisateurPath);
@@ -26,7 +25,10 @@ export function OrganisationPage() {
 
   const { deleteOrganisation } = useOrganisationStore();
 
-  setRole(null);
+  useEffect(() => {
+    setRole(null);
+  }, [setRole]);
+
   useEffect(() => {
     fetchUtilisateurById(idUtilisateur);
     fetchMembre();
@@ -53,7 +55,7 @@ export function OrganisationPage() {
     <>
       <div className="organisation-header">
         <h1>Mes Organisations</h1>
-        <FormulaireCreateOrganisation/>
+        <FormulaireCreateOrganisation />
       </div>
       <div className="organisation-body">
         {OrganisationMembre.length === 0 ? (
@@ -64,16 +66,70 @@ export function OrganisationPage() {
               className="organisation-container"
               key={membre.organisation_id}
             >
-              <div className="container-header">
-                <p className="organisation-nom">{membre.nomOrganisation}</p>
-                <button
-                  className="delete-button"
-                  onClick={() => handleDeleteOrganisation(membre.organisation_id)}>
-                  x
-                </button>
-              </div>
+              {membre.role !== "admin" ? (
+                <div className="container-header">
+                  <p className="organisation-nom">{membre.nomOrganisation}</p>
+                </div>
+              ) : (
+                <div className="container-header">
+                  <p className="organisation-nom">{membre.nomOrganisation}</p>
+                  <button
+                    className="update-button"
+                    // onClick={() =>
+                    //   handleUpdateOrganisation(membre.organisation_id)
+                    // }
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
+                      <path d="m15 5 4 4"></path>
+                    </svg>
+                  </button>
+                  <button
+                    className="delete-button"
+                    onClick={() =>
+                      handleDeleteOrganisation(membre.organisation_id)
+                    }
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6h18"></path>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                      <line x1="10" x2="10" y1="11" y2="17"></line>
+                      <line x1="14" x2="14" y1="11" y2="17"></line>
+                    </svg>
+                  </button>
+                </div>
+              )}
+
               <p className="organisation-role">role : {membre.role}</p>
-              <Link className="organisation-link" to={`${membre.organisation_id}/${membre.role}`} onClick={() => { setRole(membre.role); setIdMembre(membre.id)}}>
+              <Link
+                className="organisation-link"
+                to={`${membre.organisation_id}/${membre.role}`}
+                onClick={() => {
+                  setRole(membre.role);
+                  setIdMembre(membre.id);
+                }}
+              >
                 Voir organisation
               </Link>
             </div>

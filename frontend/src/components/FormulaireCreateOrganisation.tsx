@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import '../style/components/FormulaireCreateOrganisation.css'
 import { Button } from './Button';
+import { useOrganisationStore } from '../stores/organisationStore';
+import { useLoginStore } from '../stores/loginStore';
+import { useMembreStore } from '../stores/membreStore';
 
 export function FormulaireCreateOrganisation() {
-  const [popupOuvert, setPopupOuvert] = useState(false)
+  const [popupOuvert, setPopupOuvert] = useState(false);
 
   return (
     <>
@@ -14,23 +17,36 @@ export function FormulaireCreateOrganisation() {
 }
 
 function PopupFormulaire({ onClose }: { onClose: () => void }) {
+  const { createOrganisation } = useOrganisationStore();
+  const { idUtilisateur } = useLoginStore();
+  const { fetchMembre } = useMembreStore();
   const [nomOrganisation, setNomOrganisation] = useState("");
+
+  const handleSubmit = async () => {
+    event.preventDefault();
+    await createOrganisation(nomOrganisation, idUtilisateur);
+    await fetchMembre();
+  onClose();
+}
 
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
         <h1 className="titre-formulaire">Formulaire Organisation</h1>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="nomOrganisation">
-            <label htmlFor='nomOgranisation'>Nom de l'organisation :</label><br />
+            <label htmlFor="nomOrganisation">
+              Nom de l'organisation :
+            </label>
             <input
-            type="text"
-            value={nomOrganisation}
-            onChange={(e) => setNomOrganisation(e.target.value)}
-             />
-
+              id="nomOrganisation"
+              type="text"
+              value={nomOrganisation}
+              onChange={(e) => setNomOrganisation(e.target.value)}
+            />
           </div>
+
           <div className="btnValidation">
             <button type="submit">Valider</button>
           </div>
