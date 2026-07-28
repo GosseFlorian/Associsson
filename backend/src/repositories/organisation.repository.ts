@@ -1,5 +1,5 @@
 import { pool } from "../config/client";
-import { Organisation, OrganisationDetails } from "../types";
+import { Organisation, OrganisationDetails } from "../types/types";
 
 export const getOrganisationsRepository = async (): Promise<
   OrganisationDetails[]

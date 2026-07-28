@@ -1,5 +1,5 @@
 import { pool } from "../config/client";
-import { Membre, MembreDetails } from "../types";
+import { Membre, MembreDetails } from "../types/types";
 
 export async function getMembresRepository(): Promise<MembreDetails[]> {
   const result = await pool.query<MembreDetails>(
