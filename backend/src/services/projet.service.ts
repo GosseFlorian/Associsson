@@ -1,4 +1,4 @@
-import { Projet, ProjetDetails } from "../types";
+import { Projet, ProjetDetails } from "../types/types";
 import {
   getProjetsRepository,
   getProjetByIdRepository,
