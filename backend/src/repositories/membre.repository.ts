@@ -3,7 +3,7 @@ import { Membre, MembreDetails } from "../types/types";
 
 export async function getMembresRepository(): Promise<MembreDetails[]> {
   const result = await pool.query<MembreDetails>(
-    `SELECT 
+    `SELECT
       m.id,
       m.utilisateur_id,
       u.nom AS "nomUtilisateur",
@@ -22,7 +22,7 @@ export async function getMembreParIdRepository(
   id: number,
 ): Promise<MembreDetails | null> {
   const result = await pool.query<MembreDetails>(
-    `SELECT 
+    `SELECT
       m.id,
       m.utilisateur_id,
       u.nom AS "nomUtilisateur",

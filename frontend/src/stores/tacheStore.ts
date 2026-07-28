@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 interface Tache {
   id: number;
+  createur_id: number;
   projet_id: number;
   titre: string;
   description: string;
@@ -28,6 +29,7 @@ interface TacheStore {
   errorTache: string | null;
   fetchTache: () => Promise<void>;
   toggleTache: (id: number) => Promise<void>;
+  deleteTache: (id: number) => Promise<void>;
   createTache: (data: CreateTacheData) => Promise<Tache>;
 }
 
@@ -58,14 +60,15 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
       });
     }
   },
+
   toggleTache: async (id: number) => {
     try {
       const tache = get().taches.find((t) => t.id === id);
       if (!tache) return;
       const newValue = tache.statut === "termine" ? "en_cours" : "termine";
 
-      await fetch(`http://localhost:3000/taches/${id}`, {
-        method: "PATCH",
+      await fetch(`http://localhost:3000/tache/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ statut: newValue }),
       });
@@ -80,6 +83,27 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
     }
   },
 
+  deleteTache: async (id: number) => {
+    set({ chargementTache: true, errorTache: null });
+
+    try {
+      const response = await fetch(`http://localhost:3000/tache/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de la tache");
+      }
+        set((state) => ({
+          taches: state.taches.filter((o) => o.id !== id),
+          chargementOrganisation: false,
+        }));
+          } catch (error) {
+      set({
+        errorTache:
+          error instanceof Error ? error.message : "Erreur inconnue",
+        chargementTache: false,
+              });    }
+    },
   createTache: async (data: CreateTacheData) => {
 
     set({ chargementTache: true, errorTache: null });
@@ -100,12 +124,12 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
         chargementTache: false,
       });
       return nouvelleTache;
-    } catch (error) {
+          } catch (error) {
       set({
         errorTache:
           error instanceof Error ? error.message : "Erreur inconnue",
         chargementTache: false,
-      });
+              });
       throw error;
     }
   },

@@ -3,24 +3,31 @@ import { Tache, TacheDetails } from "../types/types";
 
 export const getTachesRepository = async (): Promise<TacheDetails[]> => {
   const result = await pool.query<TacheDetails>(
-    `SELECT 
+    `SELECT
       t.id,
       t.createur_id,
-      u.nom AS "nomCreateur",
-      t.projet_id, 
+      uc.nom AS "nomCreateur",
+      t.projet_id,
       p.titre AS "nomProjet",
-      t.titre, 
-      t.description, 
-      t.statut, 
-      t.priorite, 
-      t.date_echeance, 
+      t.titre,
+      t.description,
+      t.statut,
+      t.priorite,
+      t.date_echeance,
       t.assigne_a,
-      u.nom AS "nomAssigneA"
+      ua.nom AS "nomAssigneA"
     FROM tache t
-    LEFT JOIN projet p ON t.projet_id = p.id
-    LEFT JOIN membre m ON t.assigne_a = m.id
-    LEFT JOIN utilisateur u ON m.utilisateur_id = u.id
-    ORDER BY t.id`,
+    LEFT JOIN projet p
+      ON t.projet_id = p.id
+    LEFT JOIN membre mc
+      ON t.createur_id = mc.id
+    LEFT JOIN utilisateur uc
+      ON mc.utilisateur_id = uc.id
+    LEFT JOIN membre ma
+      ON t.assigne_a = ma.id
+    LEFT JOIN utilisateur ua
+      ON ma.utilisateur_id = ua.id
+    ORDER BY t.id;`,
   );
   return result.rows;
 };
@@ -29,17 +36,17 @@ export const getTacheByIdRepository = async (
   id: number,
 ): Promise<TacheDetails | null> => {
   const result = await pool.query<TacheDetails>(
-    `SELECT 
+    `SELECT
       t.id,
       t.createur_id,
-      u.nom AS "nomCreateur", 
-      t.projet_id, 
+      u.nom AS "nomCreateur",
+      t.projet_id,
       p.titre AS "nomProjet",
-      t.titre, 
-      t.description, 
-      t.statut, 
-      t.priorite, 
-      t.date_echeance, 
+      t.titre,
+      t.description,
+      t.statut,
+      t.priorite,
+      t.date_echeance,
       t.assigne_a,
       u.nom AS "nomAssigneA"
     FROM tache t
@@ -110,8 +117,8 @@ export const putTacheRepository = async (
 export const deleteTacheRepository = async (
   id: number,
 ): Promise<Tache | null> => {
-  const query = `DELETE FROM tache 
-    WHERE id = $1 
+  const query = `DELETE FROM tache
+    WHERE id = $1
     RETURNING id, titre, description, statut, priorite, date_echeance, assigne_a, projet_id, createur_id`;
   const result = await pool.query<Tache>(query, [id]);
   return result.rows[0] || null;

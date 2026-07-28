@@ -105,3 +105,7 @@
 .no-tache {
   text-align: center;
 }
+
+.cache{
+    display: none;
+}
