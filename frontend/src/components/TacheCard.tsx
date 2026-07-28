@@ -5,8 +5,8 @@ import { useLoginStore } from "../stores/loginStore";
 
 export function TacheCard() {
   const idMembre = useLoginStore((state) => state.idMembre);
-  const { taches, fetchTache, toggleTache } = useTacheStore();
-
+  const { taches, fetchTache, toggleTache, deleteTache } = useTacheStore();
+  console.log(idMembre)
   useEffect(() => {
     fetchTache();
   }, [fetchTache]);
@@ -20,7 +20,6 @@ export function TacheCard() {
     return {
       enCours: tachesMembre.filter((tache) => tache.statut === "en_cours")
         .length,
-
       termine: tachesMembre.filter((tache) => tache.statut === "termine")
         .length,
     };
@@ -32,13 +31,17 @@ export function TacheCard() {
 
   function formatText(texte: string): string {
     const texteFormate = texte.replace("_", " ");
-
     return texteFormate.charAt(0).toUpperCase() + texteFormate.slice(1);
   }
 
   if (!idMembre) {
     return <p>Aucun membre connecté</p>;
   }
+
+  const handleDeleteTache = async (id: number) => {
+    await deleteTache(id);
+    await fetchTache();
+  };
 
   return (
     <div className="tacheCard">
@@ -58,6 +61,9 @@ export function TacheCard() {
       ) : (
         tachesMembre.map((tache) => (
           <div className="tacheCard-container" key={tache.id}>
+
+            {/* Button toggle V */}
+
             <button className="button" onClick={() => toggleTache(tache.id)}>
               {tache.statut === "termine" ? (
                 <svg
@@ -70,13 +76,63 @@ export function TacheCard() {
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  className="lucide lucide-check"
                 >
                   <path d="M20 6 9 17l-5-5"></path>
                 </svg>
               ) : (
                 ""
               )}
+            </button>
+
+            {/* Button edit V */}
+
+            <button
+              className="update-button"
+              // onClick={() =>
+              //   handleUpdateOrganisation(membre.organisation_id)
+              // }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
+                <path d="m15 5 4 4"></path>
+              </svg>
+            </button>
+
+            {/* Button suppression V */}
+
+            <button
+              className={tache.createur_id === idMembre ? "delete-button" : "delete-button cache"}
+              onClick={() =>
+                handleDeleteTache(tache.id)
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                <line x1="10" x2="10" y1="11" y2="17"></line>
+                <line x1="14" x2="14" y1="11" y2="17"></line>
+              </svg>
             </button>
             <div className="Tache-description">
               <h2 className="tacheCard tacheCard-titre">{tache.titre}</h2>
