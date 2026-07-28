@@ -44,7 +44,7 @@ export function HomePage() {
               src={Image}
               alt="Image"
               draggable="false"
-              style={{ width: "100%", display: "block" }}
+              style={{ width: "70%", display: "block" }}
             />
             <div className="message">
               <h3>Une application pour les remplacer toutes.</h3>
