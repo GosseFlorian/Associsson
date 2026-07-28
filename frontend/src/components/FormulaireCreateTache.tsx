@@ -21,7 +21,7 @@ type FormulaireTache = {
 
 function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
   const { createTache, fetchTache } = useTacheStore();
-  const { role, idUtilisateur, idMembre } = useLoginStore();
+  const { role, idMembre } = useLoginStore();
     const [dateEcheance, setDateEcheance] = useState(() =>
         new Date().toLocaleDateString("fr")
     );
@@ -40,7 +40,7 @@ function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
       priorite,
       date_echeance : dateEcheance,
       projet_id,
-      createur_id: idUtilisateur,
+      createur_id: idMembre,
       assigne_a: Number(assignation),
     });
     await fetchTache();
