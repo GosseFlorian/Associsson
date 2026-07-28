@@ -1,5 +1,6 @@
 
 
+
 header {
   position: fixed;
   top: 0;
@@ -22,10 +23,7 @@ header.header-hidden {
   flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
-  background-image: url("../img/image.png");
-  background-size: cover;         
-  background-repeat: no-repeat; 
-    
+  background-color: rgba(0, 28, 155, 0.884);
 }
 
 .logo{
@@ -54,21 +52,54 @@ header.header-hidden {
   font-size: 20 px;
 }
 
-.texte h3 {
-   margin-bottom: 20px;
-   font-size: 30px; /* Taille du texte */
-}
-.texte p {
-   margin-bottom: 20px;
-   font-size: 20px; /* Taille du texte */
-}
-
-
-.image img {
-  width: 448px;
-  height: auto;
+.message {
+  position: absolute;
+  top: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff; /* à ajuster selon le contraste avec ton image */
 }
 
+.message h3 {
+  margin-bottom: 20px;
+  font-size: 30px; /* Taille du texte */
+}
+
+.message p {
+  margin-bottom: 20px;
+  font-size: 20px; /* Taille du texte */
+}
+
+.bouton {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btnC,
+.btnI {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btnC {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.btnI {
+  background: #fff;
+  color: #000;
+}
+
+.texte img {
+  width: auto;
+}
 
 .btnI{
   border: 0;
