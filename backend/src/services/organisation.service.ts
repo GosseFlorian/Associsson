@@ -1,4 +1,4 @@
-import { Organisation, OrganisationDetails } from "../types";
+import { Organisation, OrganisationDetails } from "../types/types";
 import {
   getOrganisationIdRepository,
   getOrganisationsRepository,

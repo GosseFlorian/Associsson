@@ -1,5 +1,8 @@
-import { Utilisateur } from "../types";
+import bcrypt from "bcryptjs";
+import { creerToken } from "../lib/jwt";
+import { Utilisateur } from "../types/types";
 import {
+  getUtilisateurByEmailRepository,
   getUtilisateursRepository,
   getUtilisateurIdRepository,
   postUtilisateurRepository,
@@ -11,6 +14,28 @@ import {
 const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+};
+
+export const postConnexionService = async (
+  email: string,
+  motDePasse: string,
+): Promise<{
+  token: string;
+  utilisateur: Omit<Utilisateur, "mot_de_passe">;
+}> => {
+  const utilisateur = await getUtilisateurByEmailRepository(email);
+
+  if (
+    !utilisateur ||
+    !(await bcrypt.compare(motDePasse, utilisateur.mot_de_passe))
+  ) {
+    throw new Error("Identifiants invalides");
+  }
+
+  const token = creerToken({ utilisateurId: utilisateur.id });
+  const { mot_de_passe, ...utilisateurPublic } = utilisateur;
+
+  return { token, utilisateur: utilisateurPublic };
 };
 
 export const getUtilisateursService = async (): Promise<Utilisateur[]> => {
@@ -34,7 +59,12 @@ export const postUtilisateurService = async (
   if (!data.mot_de_passe || data.mot_de_passe.length < 6) {
     throw new Error("Le mot de passe doit contenir au moins 6 caractères.");
   }
-  return await postUtilisateurRepository(data);
+
+  const motDePasseHache = await bcrypt.hash(data.mot_de_passe, 10);
+  return await postUtilisateurRepository({
+    ...data,
+    mot_de_passe: motDePasseHache,
+  });
 };
 
 export const putUtilisateurService = async (

@@ -13,7 +13,7 @@ import {
   putProjetService,
   deleteProjetService,
 } from "../src/services/projet.service";
-import { Projet } from "../src/types";
+import { Projet } from "../src/types/types";
 
 jest.mock("../src/services/projet.service");
 
