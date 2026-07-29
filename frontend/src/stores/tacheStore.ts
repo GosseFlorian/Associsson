@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { apiFetch } from "../lib/api";
 
 interface Tache {
   id: number;
@@ -30,7 +31,7 @@ interface TacheStore {
   fetchTache: () => Promise<void>;
   toggleTache: (id: number) => Promise<void>;
   deleteTache: (id: number) => Promise<void>;
-  createTache: (data: CreateTacheData) => Promise<Tache>;
+  createTache: (data: CreateTacheData) => Promise<void>;
 }
 
 export const useTacheStore = create<TacheStore>((set, get) => ({
@@ -93,23 +94,22 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
       if (!response.ok) {
         throw new Error("Erreur lors de la suppression de la tache");
       }
-        set((state) => ({
-          taches: state.taches.filter((o) => o.id !== id),
-          chargementOrganisation: false,
-        }));
-          } catch (error) {
+      set((state) => ({
+        taches: state.taches.filter((o) => o.id !== id),
+        chargementOrganisation: false,
+      }));
+    } catch (error) {
       set({
-        errorTache:
-          error instanceof Error ? error.message : "Erreur inconnue",
+        errorTache: error instanceof Error ? error.message : "Erreur inconnue",
         chargementTache: false,
-              });    }
-    },
+      });
+    }
+  },
   createTache: async (data: CreateTacheData) => {
-
     set({ chargementTache: true, errorTache: null });
 
     try {
-      const response = await fetch("http://localhost:3000/tache", {
+      const response = await apiFetch("/tache", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,18 +119,13 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
       if (!response.ok) {
         throw new Error("Erreur lors de la création de la tâche");
       }
-      const nouvelleTache = await response.json();
+
+      await get().fetchTache();
+    } catch (error) {
       set({
+        errorTache: error instanceof Error ? error.message : "Erreur inconnue",
         chargementTache: false,
       });
-      return nouvelleTache;
-          } catch (error) {
-      set({
-        errorTache:
-          error instanceof Error ? error.message : "Erreur inconnue",
-        chargementTache: false,
-              });
-      throw error;
     }
   },
 }));
