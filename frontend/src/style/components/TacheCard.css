@@ -1,6 +1,18 @@
 .tacheCard {
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.tache-container{
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.tache-button{
+    display: flex;
+    justify-content: space-around;
 }
 
 .tacheCard-container {
