@@ -5,10 +5,14 @@ INSERT INTO utilisateur (id, nom, email, mot_de_passe, date_inscription) VALUES
 (2, 'Benjamin', 'benjamin@gmail.com', '$2b$10$vsMimTDV.V9lp8qL4TESze2Akml4YkgBv3i4E2Jloou16DykdNPUK', '2026-06-30'), --Mot2passeBenj@min
 (3, 'Antoine', 'antoine@gmail.com', '$2b$10$mQej5OatsBcURhswrAmNRenHbe3ts505QtrZPph7dUs6gELtBm5F.', '2026-06-30'); -- Mot2passe@ntoine
 
+SELECT setval('utilisateur_id_seq', (SELECT MAX(id) FROM utilisateur));
+
 INSERT INTO organisation (id, nom, date_creation, est_actif, proprietaire_id) VALUES
 (1, 'Associsson Gisèle', '2026-06-30', TRUE, 1),
 (2, 'Associsson Grace', '2026-06-30', TRUE, 2),
 (3, 'Associsson Georges', '2026-06-30', TRUE, 3);
+
+SELECT setval('organisation_id_seq', (SELECT MAX(id) FROM organisation));
 
 INSERT INTO membre (id, organisation_id, utilisateur_id, role) VALUES
 (1, 1, 1, 'admin'),
@@ -21,6 +25,7 @@ INSERT INTO membre (id, organisation_id, utilisateur_id, role) VALUES
 (8, 3, 1, 'benevole'),
 (9, 3, 2, 'licencie');
 
+SELECT setval('membre_id_seq', (SELECT MAX(id) FROM membre));
 INSERT INTO projet (id, organisation_id, createur_id, titre, description, date_creation, date_debut, date_fin, adresse, est_termine, nombre_place) VALUES 
 (1, 1, 1, 'La réponse ultime sur la vie', 'très bon film', '1978-01-01', NULL, NULL, 'Galaxie', FALSE, 42),
 (2, 1, 2, 'Projet qui est fini', 'Un projet qui est tout terminé !', '2026-06-30', NULL, NULL, 'Paradie', TRUE, 200),
@@ -32,6 +37,7 @@ INSERT INTO projet (id, organisation_id, createur_id, titre, description, date_c
 (8, 3, 2, 'Projet qui est fini', 'Un projet qui est tout terminé !', '2026-06-30', NULL, NULL, 'Paradie', TRUE, 200),
 (9, 3, 3, 'Projet fouareux', 'on a tout casser ><', '2666-06-06', NULL, NULL, 'Enfer', FALSE, 404);
 
+SELECT setval('projet_id_seq', (SELECT MAX(id) FROM projet));
 INSERT INTO tache (id, createur_id, projet_id, titre, description, statut, priorite, date_echeance, assigne_a) VALUES
 (1, 1, 1, 'Envoyer les emails', 'Envoyer les messages à contact@asso.fr', 'a_assigne', 'moyenne', '2026-07-01', 2),
 (2, 1, 2, 'Mettre à jour le site', 'Modifier le texte et les images', 'en_cours', 'haute', '2026-07-05', 2),
@@ -43,6 +49,7 @@ INSERT INTO tache (id, createur_id, projet_id, titre, description, statut, prior
 (8, 3, 8, 'Mettre à jour le site', 'Modifier le texte et les images', 'en_cours', 'haute', '2026-07-05', 3),
 (9, 3, 9, 'Corriger les bugs API', 'Fix des erreurs signalées', 'termine', 'tres_haute', '2026-07-10', 1);
 
+SELECT setval('tache_id_seq', (SELECT MAX(id) FROM tache));
 INSERT INTO inscription_projet (id, projet_id, membre_id) VALUES
 (1, 1, 1),
 (2, 1, 2),
@@ -62,3 +69,5 @@ INSERT INTO inscription_projet (id, projet_id, membre_id) VALUES
 (16, 8, 1),
 (17, 8, 2),
 (18, 9, 1);
+
+SELECT setval('inscription_projet_id_seq', (SELECT MAX(id) FROM inscription_projet));
