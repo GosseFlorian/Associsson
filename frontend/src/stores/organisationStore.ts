@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { useMembreStore } from "./membreStore";
+import { apiFetch } from "../lib/api";
 
 interface Organisation {
   id: number;
@@ -15,6 +16,7 @@ interface OrganisationStore {
   fetchOrganisation: () => Promise<void>;
   deleteOrganisation: (id: number) => Promise<void>;
   createOrganisation: (nom: string, proprietaire_id: number) => Promise<void>;
+  updateOrganisation: (id: number, nom: string) => Promise<void>;
 }
 
 export const useOrganisationStore = create<OrganisationStore>((set) => ({
@@ -26,7 +28,7 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
     set({ chargementOrganisation: true, errorOrganisation: null });
 
     try {
-      const response = await fetch("http://localhost:3000/organisation");
+      const response = await apiFetch("/organisation");
 
       if (!response.ok) {
         throw new Error("Erreur lors du chargement des organisations");
@@ -50,7 +52,7 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
     set({ chargementOrganisation: true, errorOrganisation: null });
 
     try {
-      const response = await fetch(`http://localhost:3000/organisation/${id}`, {
+      const response = await apiFetch(`/organisation/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -72,7 +74,7 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
     set({ chargementOrganisation: true, errorOrganisation: null });
 
     try {
-      const response = await fetch("http://localhost:3000/organisation", {
+      const response = await apiFetch("/organisation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -101,5 +103,39 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
         chargementOrganisation: false,
       });
     }
-  }
+  },
+
+  updateOrganisation: async (id: number, nom: string) => {
+    set({ chargementOrganisation: true, errorOrganisation: null });
+
+    try {
+      const response = await apiFetch(`/organisation/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nom,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la modification de l'organisation");
+      }
+      const organisation: Organisation = await response.json();
+
+      set((state) => ({
+        organisations: state.organisations.map((o) =>
+          o.id === id ? organisation : o
+        ),
+        chargementOrganisation: false,
+      }));
+    } catch (error) {
+      set({
+        errorOrganisation:
+          error instanceof Error ? error.message : "Erreur inconnue",
+        chargementOrganisation: false,
+      });
+    }
+  },
 }));

@@ -1,7 +1,8 @@
+import type { ReactNode } from 'react';
 import '../style/components/Button.css'
 
 type ButtonComponent = {
-  text: string;
+  text: ReactNode;
   action: () => void;
   active: boolean;
 }

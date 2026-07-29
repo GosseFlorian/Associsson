@@ -6,6 +6,7 @@ import { useMembreStore } from "../stores/membreStore";
 import { Link, useParams } from "react-router-dom";
 import { useOrganisationStore } from "../stores/organisationStore";
 import { FormulaireCreateOrganisation } from "../components/FormulaireCreateOrganisation";
+import { FormulaireModifOrganisation } from "../components/FormulaireModifOrganisation";
 
 export function OrganisationPage() {
   const { idUtilisateurPath } = useParams();
@@ -72,28 +73,8 @@ export function OrganisationPage() {
                 </div>
               ) : (
                 <div className="container-header">
-                  <p className="organisation-nom">{membre.nomOrganisation}</p>
-                  <button
-                    className="update-button"
-                    // onClick={() =>
-                    //   handleUpdateOrganisation(membre.organisation_id)
-                    // }
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-                      <path d="m15 5 4 4"></path>
-                    </svg>
-                  </button>
+                    <p className="organisation-nom">{membre.nomOrganisation}</p>
+                    <FormulaireModifOrganisation organisation_id={membre.organisation_id}/>
                   <button
                     className="delete-button"
                     onClick={() =>
@@ -107,9 +88,9 @@ export function OrganisationPage() {
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path d="M3 6h18"></path>
                       <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
