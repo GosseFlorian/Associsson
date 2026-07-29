@@ -27,7 +27,6 @@ interface CreateTacheData {
 interface UpdateTacheData {
   titre: string;
   description: string;
-  statut: string;
   priorite: string;
   date_echeance: string;
 }

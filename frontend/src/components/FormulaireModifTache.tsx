@@ -55,7 +55,6 @@ function PopupFormulaire({ onClose, tache }: FormulaireTache) {
     );
     const [nomTache, setNomTache] = useState(tache.titre);
     const [descriptionTache, setDescriptionTache] = useState(tache.description);
-    const [statut, setStatut] = useState(tache.statut);
     const [priorite, setPriorite] = useState(tache.priorite);
 
     const handleSubmit = async () => {
@@ -63,7 +62,6 @@ function PopupFormulaire({ onClose, tache }: FormulaireTache) {
       await updateTache(tache.id, {
         titre: nomTache,
         description: descriptionTache,
-        statut,
         priorite,
         date_echeance: dateEcheance,
       });
@@ -93,25 +91,6 @@ function PopupFormulaire({ onClose, tache }: FormulaireTache) {
                 value={descriptionTache}
                 onChange={(e) => setDescriptionTache(e.target.value)}
               />
-            </div>
-
-            <div className="statut-tache">
-              <label htmlFor="statut">Statut :</label>
-              <select
-                id="statut"
-                className={
-                  statut === "en_cours" ? "statut-orange" : "statut-vert"
-                }
-                value={statut}
-                onChange={(e) => setStatut(e.target.value)}
-              >
-                <option value="en_cours" className="option-orange">
-                  en cours
-                </option>
-                <option value="terminé" className="option-vert">
-                  Terminé
-                </option>
-              </select>
             </div>
 
             <div className="priorité-tache">

@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { apiFetch } from "../lib/api";
 
 interface Membre {
   id: number;
@@ -30,7 +31,7 @@ export const useMembreStore = create<MembreStore>((set, get) => ({
     set({ chargementMembre: true, errorMembre: null });
 
     try {
-      const response = await fetch("http://localhost:3000/membre")
+      const response = await apiFetch("/membre")
 
       if (!response.ok) {
         throw new Error("Erreur lors du chargement des membres");
@@ -63,7 +64,7 @@ export const useMembreStore = create<MembreStore>((set, get) => ({
     set({ chargementMembre: true, errorMembre: null });
 
     try {
-      const response = await fetch("http://localhost:3000/membre", {
+      const response = await apiFetch("/membre", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

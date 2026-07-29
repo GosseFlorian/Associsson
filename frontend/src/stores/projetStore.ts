@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { apiFetch } from "../lib/api";
 
 interface Projet {
   id: number;
@@ -31,7 +32,7 @@ export const useProjetStore = create<ProjetStore>((set, get) => ({
     });
 
     try {
-      const response = await fetch("http://localhost:3000/projet");
+      const response = await apiFetch("/projet");
 
       if (!response.ok) {
         throw new Error("Erreur lors du chargement des projets");
