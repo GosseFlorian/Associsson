@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon --exec ts-node src/app.ts"
+    "dev": "nodemon --exec ts-node src/app.ts",
+    "db:migrate:up": "ts-node src/config/migrationUp.ts",
+    "db:migrate:down": "ts-node src/config/migrationDown.ts",
+    "db:seed:up": "ts-node src/config/seedUp.ts",
+    "db:seed:down": "ts-node src/config/seedDown.ts"
   },
   "keywords": [],
   "author": "",
