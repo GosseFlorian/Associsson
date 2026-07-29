@@ -1,11 +1,5 @@
 -- Seeding des tables avec des données fictives
 
-INSERT INTO utilisateur (id, nom, email, mot_de_passe, date_inscription) VALUES
-(1, 'Florian', 'florian@gmail.com', 'Mot2passeFlori@n', '2026-06-30'),
-(2, 'Benjamin', 'benjamin@gmail.com', 'Mot2passeBenj@min', '2026-06-30'),
-(3, 'Antoine', 'antoine@gmail.com', 'Mot2passe@ntoine', '2026-06-30');
-
-
 INSERT INTO organisation (id, nom, date_creation, est_actif, proprietaire_id) VALUES
 (1, 'Associsson Gisèle', '2026-06-30', TRUE, 1),
 (2, 'Associsson Grace', '2026-06-30', TRUE, 2),
