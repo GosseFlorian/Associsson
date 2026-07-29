@@ -24,6 +24,13 @@ interface CreateTacheData {
   createur_id: number;
 }
 
+interface UpdateTacheData {
+  titre: string;
+  description: string;
+  priorite: string;
+  date_echeance: string;
+}
+
 interface TacheStore {
   taches: Tache[];
   chargementTache: boolean;
@@ -32,6 +39,7 @@ interface TacheStore {
   toggleTache: (id: number) => Promise<void>;
   deleteTache: (id: number) => Promise<void>;
   createTache: (data: CreateTacheData) => Promise<void>;
+  updateTache: (id: number, data: UpdateTacheData) => Promise<void>;
 }
 
 export const useTacheStore = create<TacheStore>((set, get) => ({
@@ -43,7 +51,7 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
     set({ chargementTache: true, errorTache: null });
 
     try {
-      const response = await fetch("http://localhost:3000/tache");
+      const response = await apiFetch("/tache");
 
       if (!response.ok) {
         throw new Error("Erreur lors du chargement des tâches");
@@ -68,7 +76,7 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
       if (!tache) return;
       const newValue = tache.statut === "termine" ? "en_cours" : "termine";
 
-      await fetch(`http://localhost:3000/tache/${id}`, {
+      await apiFetch(`/tache/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ statut: newValue }),
@@ -88,7 +96,7 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
     set({ chargementTache: true, errorTache: null });
 
     try {
-      const response = await fetch(`http://localhost:3000/tache/${id}`, {
+      const response = await apiFetch(`/tache/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -105,6 +113,7 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
       });
     }
   },
+
   createTache: async (data: CreateTacheData) => {
     set({ chargementTache: true, errorTache: null });
 
@@ -124,6 +133,39 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
     } catch (error) {
       set({
         errorTache: error instanceof Error ? error.message : "Erreur inconnue",
+        chargementTache: false,
+      });
+    }
+  },
+
+  updateTache: async (id: number, data: UpdateTacheData) => {
+    set({ chargementTache: true, errorTache: null });
+
+    try {
+      const response = await apiFetch(`/tache/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la modification de la tâche");
+      }
+
+      const tacheModifiee: Tache = await response.json();
+
+      set((state) => ({
+        taches: state.taches.map((t) =>
+          t.id === id ? tacheModifiee : t
+        ),
+        chargementTache: false,
+      }));
+    } catch (error) {
+      set({
+        errorTache:
+          error instanceof Error ? error.message : "Erreur inconnue",
         chargementTache: false,
       });
     }
