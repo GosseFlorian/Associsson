@@ -1,11 +1,14 @@
 import { useEffect } from "react";
 import { useProjetStore } from "../stores/projetStore";
 import "../style/components/ProjetCard.css";
+import { Button } from "./Button";
 import { useParams } from "react-router-dom";
-import { FormulaireCreateTache } from "./FormulaireCreateTache";
+import { useState } from "react";
+import { TacheProjetCard } from "./TacheProjetCard";
 
 
 export function ProjetCard() {
+  const [projetOuvert, setProjetOuvert] = useState<number | null>(null);
   const { idOrganisation } = useParams();
 
   const fetchProjet = useProjetStore(
@@ -50,7 +53,18 @@ export function ProjetCard() {
             {projet.est_termine ? "Terminé" : "En cours"}
           </p>
 
-          <FormulaireCreateTache projet_id={projet.id}/>
+          <Button
+            text="voir tache"
+            action={() =>
+              setProjetOuvert(
+                projetOuvert === projet.id ? null : projet.id
+              )
+            }
+            active={false}
+          />
+          {projetOuvert === projet.id && (
+            <TacheProjetCard idProjet={projet.id} />
+          )}
         </div>
       ))}
     </>

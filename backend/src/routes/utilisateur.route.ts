@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  postConnexionController,
   getUtilisateursController,
   getUtilisateurIdController,
   postUtilisateurController,
@@ -10,7 +9,6 @@ import {
 
 const router = Router();
 
-router.post("/connexion", postConnexionController);
 router.get("/", getUtilisateursController);
 router.get("/:id", getUtilisateurIdController);
 router.post("/", postUtilisateurController);

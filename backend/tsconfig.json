@@ -18,8 +18,5 @@
     "exactOptionalPropertyTypes": true,
     "sourceMap": true
   },
-  "include": ["src/**/*", "tests/**/*"],
-  "ts-node": {
-    "files": true
-  }
+  "include": ["src/**/*", "tests/**/*"]
 }

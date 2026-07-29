@@ -1,5 +1,5 @@
 import { pool } from "../config/client";
-import { Tache, TacheDetails } from "../types/types";
+import { Tache, TacheDetails } from "../types";
 
 export const getTachesRepository = async (): Promise<TacheDetails[]> => {
   const result = await pool.query<TacheDetails>(

@@ -1,4 +1,4 @@
-import { Membre, MembreDetails } from "../types/types";
+import { Membre, MembreDetails } from "../types";
 import {
   getMembresRepository,
   getMembreParIdRepository,

@@ -1,15 +1,15 @@
 import { pool } from "../config/client";
-import { Organisation, OrganisationDetails } from "../types/types";
+import { Organisation, OrganisationDetails } from "../types";
 
 export const getOrganisationsRepository = async (): Promise<
   OrganisationDetails[]
 > => {
   const result = await pool.query<OrganisationDetails>(
-    `SELECT
-      o.id,
-      o.nom,
-      o.date_creation,
-      o.est_actif,
+    `SELECT 
+      o.id, 
+      o.nom, 
+      o.date_creation, 
+      o.est_actif, 
       o.proprietaire_id,
       u.nom AS "nomProprietaire"
     FROM organisation o
@@ -23,11 +23,11 @@ export const getOrganisationIdRepository = async (
   id: number,
 ): Promise<OrganisationDetails | null> => {
   const result = await pool.query<OrganisationDetails>(
-    `SELECT
-      o.id,
-      o.nom,
-      o.date_creation,
-      o.est_actif,
+    `SELECT 
+      o.id, 
+      o.nom, 
+      o.date_creation, 
+      o.est_actif, 
       o.proprietaire_id,
       u.nom AS "nomProprietaire"
     FROM organisation o
@@ -41,10 +41,10 @@ export const getOrganisationIdRepository = async (
 export const postOrganisationRepository = async (
   data: Organisation,
 ): Promise<Organisation> => {
-  const query = `INSERT INTO organisation (nom, proprietaire_id)
-    VALUES ($1, $2)
+  const query = `INSERT INTO organisation (nom, est_actif, proprietaire_id)
+    VALUES ($1, $2, $3)
     RETURNING id, nom, est_actif, proprietaire_id`;
-  const values = [data.nom, data.proprietaire_id];
+  const values = [data.nom, data.est_actif, data.proprietaire_id];
   const result = await pool.query<Organisation>(query, values);
   if (!result.rows[0]) {
     throw new Error("Echec de la création de l'organisation");

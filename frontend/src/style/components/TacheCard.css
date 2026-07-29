@@ -1,107 +1,102 @@
-.tacheCard {
-  display: flex;
-  flex-direction: column;
+.tacheCard{
+    display: flex;
+    flex-direction: column;
 }
 
-.tacheCard-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid var(--border);
-  width: 350px;
-  padding: 10px;
-  border-radius: var(--radius);
-  background-color: var(--card);
-}
-
-.Tache-description {
-  display: flex;
-  flex-direction: column;
-}
-
-.tacheCard {
-  margin: 10px;
-}
-
-.tache-info {
-  display: flex;
-}
-
-.bg {
-  padding: 5px 10px;
-  border-radius: var(--radius);
-}
-
-.faible {
-  background-color: var(--succes);
-}
-
-.moyenne {
-  background-color: var(--warning);
-}
-
-.haute {
-  background-color: var(--danger);
-  color: white;
-}
-
-.tres_haute {
-  background-color: var(--urgence);
-  color: white;
-}
-
-.a_faire {
-  background-color: var(--danger);
-  color: white;
-}
-
-.en_cours {
-  background-color: var(--warning);
-}
-
-.termine {
-  background-color: var(--success);
-}
-
-.tache-stats {
-  display: flex;
-  justify-content: space-around;
-  width: 700px;
-  margin-bottom: 100px;
-  div {
-    background-color: var(--card);
+.tacheCard-container{
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
     border: 1px solid var(--border);
-    padding: 20px;
-    height: 120px;
-    width: 200px;
+    width: 350px;
+    padding: 10px;
     border-radius: var(--radius);
-    font-size: 20px;
-  }
+    background-color: var(--card);
 }
 
-.tache-a_faire {
-  padding: 7px 10px;
-  border-radius: var(--radius);
-  background-color: color-mix(in srgb, var(--danger) 70%, white);
-  color: color-mix(in srgb, var(--danger) 30%, black);
-}
-.tache-en_cours {
-  padding: 7px 10px;
-  border-radius: var(--radius);
-  background-color: color-mix(in srgb, var(--warning) 70%, white);
-  color: color-mix(in srgb, var(--warning) 30%, black);
-}
-.tache-termine {
-  padding: 7px 10px;
-  border-radius: var(--radius);
-  background-color: color-mix(in srgb, var(--success) 70%, white);
-  color: color-mix(in srgb, var(--success) 30%, black);
+.tacheCard{
+    margin: 10px;
 }
 
-.no-tache {
-  text-align: center;
+.tache-info{
+    display: flex;
+}
+
+.bg{
+    padding: 5px 10px;
+    border-radius: var(--radius);
+}
+
+.faible{
+    background-color: var(--succes);
+}
+
+.moyenne{
+    background-color: var(--warning);
+}
+
+.haute{
+    background-color: var(--danger);
+    color: white;
+}
+
+.tres_haute{
+    background-color: var(--urgence);
+    color: white;
+}
+
+.a_faire{
+    background-color: var(--danger);
+    color: white;
+}
+
+.en_cours{
+    background-color: var(--warning);
+}
+
+.termine{
+    background-color: var(--success);
+}
+
+.tache-stats{
+    display: flex;
+    justify-content: space-around;
+    width: 700px;
+    margin-bottom: 100px;
+    div{
+        background-color: var(--card);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        border: 1px solid var(--border);
+        padding: 20px;
+        height: 120px;
+        width: 200px;
+        border-radius: var(--radius);
+        font-size: 20px;
+    }
+}
+
+.tache-a_faire{
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    background-color: color-mix(in srgb, var(--danger) 70%, white);
+    color: color-mix(in srgb, var(--danger) 30%, black);
+}
+.tache-en_cours{
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    background-color: color-mix(in srgb, var(--warning) 70%, white);
+    color: color-mix(in srgb, var(--warning) 30%, black);
+}
+.tache-termine{
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    background-color: color-mix(in srgb, var(--success) 70%, white);
+    color: color-mix(in srgb, var(--success) 30%, black);
+}
+
+.no-tache{
+    text-align: center;
 }

@@ -1,58 +1,36 @@
 import { useState } from "react";
 import '../style/components/FormulaireCreateTache.css'
-import { useLoginStore } from "../stores/loginStore";
-import { Button } from "./Button";
-import { useTacheStore } from "../stores/tacheStore";
 
-export function FormulaireCreateTache({ projet_id }) {
+export function FormulaireCreateTache() {
   const [popupOuvert, setPopupOuvert] = useState(false)
 
   return (
     <>
-      <Button text='Ajouter une tache' action={() => setPopupOuvert(true)} active={ false} />
-      {popupOuvert && <PopupFormulaire onClose={() => setPopupOuvert(false)} projet_id={ projet_id} />}
+      <button type="button" onClick={() => setPopupOuvert(true)}>
+        Ouvrir le formulaire
+      </button>
+      {popupOuvert && <PopupFormulaire onClose={() => setPopupOuvert(false)} />}
     </>
   );
 }
-type FormulaireTache = {
-  onClose: () => void,
-  projet_id: number
-}
 
-function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
-  const { createTache, fetchTache } = useTacheStore();
-  const { role, idMembre } = useLoginStore();
+function PopupFormulaire({ onClose }: { onClose: () => void }) {
     const [dateEcheance, setDateEcheance] = useState(() =>
         new Date().toLocaleDateString("fr")
     );
-  const [nomTache, setNomTache] = useState ("")
-  const [descriptionTache, setDescriptionTache] = useState("")
-  const [statut, setStatut] = useState("en_cours");
-  const [priorite, setPriorite] = useState("faible");
-  const [assignation, setAssignation] = useState(idMembre);
-
-  const handleSubmit = async () => {
-    event.preventDefault();
-    await createTache({
-      titre: nomTache,
-      description: descriptionTache,
-      statut,
-      priorite,
-      date_echeance : dateEcheance,
-      projet_id,
-      createur_id: idMembre,
-      assigne_a: Number(assignation),
-    });
-    await fetchTache();
-    onClose();
-  }
+    const [nomTache, setNomTache] = useState ("")
+    const [descriptionTache, setDescriptionTache] = useState("")
+    const [statut, setStatut] = useState("a_faire");
+    const [priorite, setPriorite] = useState("tres_haute");
+    const [assignation, setAssignation] = useState ("");
 
     return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
         <h1 className="titre-formulaire">Formulaire tâche</h1>
 
-        <form onSubmit={handleSubmit} className="formulaire">
+        <form className="formulaire">
+
             <div className="nomdetache">
                 <label htmlFor="nomTache">Nom de la tâche :</label>
                 <input
@@ -77,13 +55,16 @@ function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
                 <select
                     id="statut"
                     className={
-                        statut === 'en_cours'
+                        statut === 'a_faire'
+                            ? 'statut-rouge'
+                            : statut === 'en_cours'
                             ? 'statut-orange'
                             : 'statut-vert'
                     }
                     value={statut}
                     onChange={(e) => setStatut(e.target.value)}
                 >
+                    <option value="a_faire" className="option-rouge">a faire</option>
                     <option value="en_cours" className="option-orange">en cours</option>
                     <option value="terminé" className="option-vert">Terminé</option>
                 </select>
@@ -112,6 +93,7 @@ function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
                 </select>
             </div>
 
+
             <div className="date">
                 <label htmlFor="dateEcheance">Date d'échéance :</label>
                 <input
@@ -122,15 +104,13 @@ function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
                 />
             </div>
 
-            <div className={role === "admin"
-                            ? "assignation"
-                            : "assignation cache"}>
+            <div className= "assignation">
                 <label htmlFor="assignation">Assigné à :</label>
                 <input
                 type="text"
                 id="assignation"
                 value={assignation}
-                onChange={(e) => setAssignation(Number(e.target.value))}
+                onChange={(e) => setAssignation(e.target.value)}
                 />
             </div>
              <div className="btnValidation">

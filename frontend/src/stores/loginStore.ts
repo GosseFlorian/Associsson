@@ -5,33 +5,30 @@ interface LoginStore {
   idUtilisateur: number | null;
   idMembre: number | null;
   role: string | null;
-  token: string | null;
 
   setIdUtilisateur: (id: number | null) => void;
   setIdMembre: (id: number | null) => void;
   setRole: (role: string | null) => void;
-  setToken: (token: string | null) => void;
-  deconnexion: () => void;
 }
 
 export const useLoginStore = create<LoginStore>()(
   persist(
     (set) => ({
-      idUtilisateur: null,
+      idUtilisateur: 1,
       idMembre: null,
       role: null,
-      token: null,
 
-      setIdUtilisateur: (id) => set({ idUtilisateur: id }),
-      setIdMembre: (id) => set({ idMembre: id }),
-      setRole: (role) => set({ role }),
-      setToken: (token) => set({ token }),
+      setIdUtilisateur: (id) =>
+        set({ idUtilisateur: id }),
 
-      deconnexion: () =>
-        set({ idUtilisateur: null, idMembre: null, role: null, token: null }),
+      setIdMembre: (id) =>
+        set({ idMembre: id }),
+
+      setRole: (role) =>
+        set({ role }),
     }),
     {
       name: "login-storage",
-    },
-  ),
+    }
+  )
 );

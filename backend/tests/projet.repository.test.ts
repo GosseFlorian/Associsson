@@ -6,7 +6,7 @@ import {
   putProjetRepository,
   deleteProjetRepository,
 } from "../src/repositories/projet.repository";
-import { Projet } from "../src/types/types";
+import { Projet } from "../src/types";
 
 // On mock le module config/client entier : pool.query devient une fausse
 // fonction. Le repository ne se connecte jamais à une vraie base de données.

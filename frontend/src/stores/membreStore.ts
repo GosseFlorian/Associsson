@@ -18,7 +18,6 @@ interface MembreStore {
     idUtilisateur: number,
     idOrganisation: number
   ) => Membre | undefined;
-  createMembre: (utilisateur_id: number, organisation_id: number, role: string) => Promise<void>;
 };
 
 export const useMembreStore = create<MembreStore>((set, get) => ({
@@ -57,37 +56,5 @@ export const useMembreStore = create<MembreStore>((set, get) => ({
         membre.utilisateur_id === idUtilisateur &&
         membre.organisation_id === idOrganisation
     );
-  },
-
-  createMembre: async (utilisateur_id: number, organisation_id: number, role: string) => {
-    set({ chargementMembre: true, errorMembre: null });
-
-    try {
-      const response = await fetch("http://localhost:3000/membre", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          utilisateur_id,
-          organisation_id,
-          role,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Erreur lors de la création du membre");
-      }
-      set({
-        chargementMembre: false,
-      });
-    } catch (error) {
-      set({
-        errorMembre:
-          error instanceof Error ? error.message : "Erreur inconnue",
-        chargementMembre: false,
-      });
-
-      throw error;
-    }
   },
 }));

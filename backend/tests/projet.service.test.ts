@@ -12,7 +12,7 @@ import {
   putProjetRepository,
   deleteProjetRepository,
 } from "../src/repositories/projet.repository";
-import { Projet } from "../src/types/types";
+import { Projet } from "../src/types";
 
 // Le service n'est qu'une fine couche au-dessus du repository :
 // on mock donc entièrement le repository pour tester le service en isolation.

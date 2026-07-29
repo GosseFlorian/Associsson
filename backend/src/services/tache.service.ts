@@ -5,7 +5,7 @@ import {
   putTacheRepository,
   deleteTacheRepository,
 } from "../repositories/tache.repository";
-import { Tache, TacheDetails } from "../types/types";
+import { Tache, TacheDetails } from "../types";
 
 export const getTachesService = async (): Promise<TacheDetails[]> => {
   return await getTachesRepository();
