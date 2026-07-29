@@ -9,6 +9,10 @@
     background-color: var(--card);
 }
 
+h2.projetCard{
+    text-align: center;
+}
+
 .projetCard{
     margin: 10px;
 }

@@ -26,9 +26,12 @@
 }
 .container-header {
   display: flex;
+  justify-content: space-between;
   width: 400px;
-  justify-content: start;
-  background: lightblue;
+  background: var(--primary-pale);
+  div{
+      display: flex;
+  }
 }
 
 .organisation-nom {

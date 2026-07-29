@@ -1,6 +1,5 @@
 import { useState } from "react";
-import "../style/components/FormulaireCreateOrganisation.css";
-import { Button } from "./Button";
+import "../style/components/FormulaireModif.css";
 import { useOrganisationStore } from "../stores/organisationStore";
 import { useMembreStore } from "../stores/membreStore";
 
@@ -9,21 +8,29 @@ export function FormulaireModifOrganisation({ organisation_id }: {organisation_i
 
   return (
     <>
-      <Button text={<svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="13"
-        height="13"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-        <path d="m15 5 4 4"></path>
-      </svg>} action={() => setPopupOuvert(true)} active={ false} />
-      {popupOuvert && <PopupFormulaire onClose={() => setPopupOuvert(false)} organisation_id={organisation_id}/>}
+      <button className="edit-button" onClick={() => setPopupOuvert(true)}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
+          <path d="m15 5 4 4"></path>
+        </svg>
+      </button>
+
+      {popupOuvert && (
+        <PopupFormulaire
+          onClose={() => setPopupOuvert(false)}
+          organisation_id={organisation_id}
+        />
+      )}
     </>
   );
 }

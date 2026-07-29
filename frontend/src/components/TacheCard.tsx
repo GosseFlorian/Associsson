@@ -55,13 +55,13 @@ export function TacheCard() {
           <p>{statistiques.termine}</p>
         </div>
       </div>
-
+      <div className="tache-container">
       {tachesMembre.length === 0 ? (
         <p className="no-tache">Aucune tâche assignée</p>
       ) : (
         tachesMembre.map((tache) => (
           <div className="tacheCard-container" key={tache.id}>
-
+            <div className="tache-button">
             {/* Button toggle V */}
 
             <button className="button" onClick={() => toggleTache(tache.id)}>
@@ -112,6 +112,7 @@ export function TacheCard() {
                 <line x1="14" x2="14" y1="11" y2="17"></line>
               </svg>
             </button>
+            </div>
             <div className="Tache-description">
               <h2 className="tacheCard tacheCard-titre">{tache.titre}</h2>
 
@@ -132,6 +133,7 @@ export function TacheCard() {
           </div>
         ))
       )}
+      </div>
     </div>
   );
 }

@@ -1,0 +1,11 @@
+.edit-button{
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: var(--primary-pale);
+}
+
+.delete-button{
+    display: flex;
+    align-items: center;
+}
