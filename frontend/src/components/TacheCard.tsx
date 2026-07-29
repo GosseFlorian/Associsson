@@ -2,6 +2,7 @@ import "../style/components/TacheCard.css";
 import { useEffect, useMemo } from "react";
 import { useTacheStore } from "../stores/tacheStore";
 import { useLoginStore } from "../stores/loginStore";
+import { FormulaireModifTache } from "./FormulaireModifTache";
 
 export function TacheCard() {
   const idMembre = useLoginStore((state) => state.idMembre);
@@ -84,29 +85,7 @@ export function TacheCard() {
             </button>
 
             {/* Button edit V */}
-
-            <button
-              className={tache.createur_id === idMembre ? "delete-button" : "delete-button cache"}
-              // onClick={() =>
-              //   handleUpdateOrganisation(membre.organisation_id)
-              // }
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-                <path d="m15 5 4 4"></path>
-              </svg>
-            </button>
-
+            <FormulaireModifTache tache={tache}/>
             {/* Button suppression V */}
 
             <button

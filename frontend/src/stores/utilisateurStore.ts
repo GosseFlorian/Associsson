@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { apiFetch } from "../lib/api";
 
 interface Utilisateur {
   id: number;
@@ -26,7 +27,7 @@ export const useUtilisateurStore = create<UtilisateurStore>((set) => ({
     set({ chargementUtilisateur: true, errorUtilisateur: null });
 
     try {
-      const response = await fetch("http://localhost:3000/utilisateur");
+      const response = await apiFetch("/utilisateur");
 
       if (!response.ok) {
         throw new Error("Erreur lors du chargement des utilisateurs");
@@ -49,8 +50,8 @@ export const useUtilisateurStore = create<UtilisateurStore>((set) => ({
      set({ chargementUtilisateur: true, errorUtilisateur: null });
 
      try {
-       const response = await fetch(
-         `http://localhost:3000/utilisateur/${id}`
+       const response = await apiFetch(
+         `/utilisateur/${id}`
        );
 
        if (!response.ok) {
