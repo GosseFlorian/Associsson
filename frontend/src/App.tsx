@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { OrganisationPage } from "./pages/OrganisationsPage";
 import { WorkSpacePage } from "./pages/WorkSpacePage";
 import { Layout } from "./pages/Layout";
@@ -12,7 +12,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/*" element={<h2>Page non trouvée 404 🔍</h2>} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
 
@@ -26,6 +26,7 @@ function App() {
             <Route path="profilPage" element={<ProfilPage />} />
           </Route>
         </Route>
+        <Route path="/*" element={<h2>Page non trouvée 404 🔍</h2>} />
       </Routes>
     </>
   );
