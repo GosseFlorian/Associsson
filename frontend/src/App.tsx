@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { OrganisationPage } from "./pages/OrganisationsPage";
 import { WorkSpacePage } from "./pages/WorkSpacePage";
 import { Layout } from "./pages/Layout";

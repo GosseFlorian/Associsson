@@ -46,7 +46,7 @@ export function ProjetCard() {
           <p className="projetCard">{projet.description}</p>
           <p className="projetCard">Date de début : {formatDate(projet.date_debut)}</p>
           <p className="projetCard">Adresse : {projet.adresse}</p>
-          <p className={projet.est_termine ? "termine projetCard bg" : "en-cours projetCard bg"}>
+          <p className={projet.est_termine ? "termine projetCard bg" : "en_cours projetCard bg"}>
             {projet.est_termine ? "Terminé" : "En cours"}
           </p>
 

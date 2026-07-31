@@ -7,13 +7,37 @@ header{
     position: relative;
     color: var(--text-principal);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    div{
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        button{
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            border-radius: var(--radius);
+            border: none;
+            background-color: var(--danger);
+            color: white;
+            padding: 0 15px;
+            cursor: pointer;
+            font-size: 15px;
+            min-height: 37.2px;
+        }
+    }
 }
 
 .logo-home{
     color: var(--text-principal);
     text-decoration: none;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 40px;
+    font-size: 30px;
+}
+
+button.logo-home{
+    border: none;
+    background-color: var(--primary-pale);
+    cursor: pointer;
 }
 
 .orga-p{
