@@ -35,7 +35,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
           JWT_SECRET: ${{ secrets.JWT_SECRET_TEST }}
-        run: npm run db:migrate-up && npm run db:seed-up
+        run: npm run db:migrate:up && npm run db:seed:up
       - name: Installer les dépendances
         run: npm ci
 
