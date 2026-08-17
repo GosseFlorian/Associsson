@@ -35,7 +35,7 @@ jobs:
         run: npm ci
       - name: Tests
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+          DATABASE_URL: postgresql://postgres:test@localhost:5432/lovelace_test
           JWT_SECRET: ${{ secrets.JWT_SECRET_TEST }}
         run: npm run db:migrate:up && npm run db:seed:up
 
