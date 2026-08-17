@@ -1,5 +1,5 @@
-import { create } from "zustand"
-import { apiFetch } from "../lib/api";
+import { create } from 'zustand';
+import { apiFetch } from '../lib/api';
 
 interface Membre {
   id: number;
@@ -8,7 +8,7 @@ interface Membre {
   nomUtilisateur: string;
   nomOrganisation: string;
   role: string;
-};
+}
 
 interface MembreStore {
   membres: Membre[];
@@ -19,8 +19,12 @@ interface MembreStore {
     idUtilisateur: number,
     idOrganisation: number
   ) => Membre | undefined;
-  createMembre: (utilisateur_id: number, organisation_id: number, role: string) => Promise<void>;
-};
+  createMembre: (
+    utilisateur_id: number,
+    organisation_id: number,
+    role: string
+  ) => Promise<void>;
+}
 
 export const useMembreStore = create<MembreStore>((set, get) => ({
   membres: [],
@@ -31,10 +35,10 @@ export const useMembreStore = create<MembreStore>((set, get) => ({
     set({ chargementMembre: true, errorMembre: null });
 
     try {
-      const response = await apiFetch("/membre")
+      const response = await apiFetch('/membre');
 
       if (!response.ok) {
-        throw new Error("Erreur lors du chargement des membres");
+        throw new Error('Erreur lors du chargement des membres');
       }
       const data: Membre[] = await response.json();
 
@@ -44,7 +48,7 @@ export const useMembreStore = create<MembreStore>((set, get) => ({
       });
     } catch (error) {
       set({
-        errorMembre: error instanceof Error ? error.message : "Erreur inconnue",
+        errorMembre: error instanceof Error ? error.message : 'Erreur inconnue',
         chargementMembre: false,
       });
     }
@@ -60,14 +64,18 @@ export const useMembreStore = create<MembreStore>((set, get) => ({
     );
   },
 
-  createMembre: async (utilisateur_id: number, organisation_id: number, role: string) => {
+  createMembre: async (
+    utilisateur_id: number,
+    organisation_id: number,
+    role: string
+  ) => {
     set({ chargementMembre: true, errorMembre: null });
 
     try {
-      const response = await apiFetch("/membre", {
-        method: "POST",
+      const response = await apiFetch('/membre', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           utilisateur_id,
@@ -76,15 +84,14 @@ export const useMembreStore = create<MembreStore>((set, get) => ({
         }),
       });
       if (!response.ok) {
-        throw new Error("Erreur lors de la création du membre");
+        throw new Error('Erreur lors de la création du membre');
       }
       set({
         chargementMembre: false,
       });
     } catch (error) {
       set({
-        errorMembre:
-          error instanceof Error ? error.message : "Erreur inconnue",
+        errorMembre: error instanceof Error ? error.message : 'Erreur inconnue',
         chargementMembre: false,
       });
 

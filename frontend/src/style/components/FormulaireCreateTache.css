@@ -28,27 +28,35 @@ label {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-.nomdetache{
+.nomdetache {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px ;
+  margin-bottom: 20px;
 }
 
 .description-tache {
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* espace entre le label et le textarea */
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* espace entre le label et le textarea */
+  margin-bottom: 20px;
 }
 
-.option-vert{ color: #2e7d32;}
-.option-orange{color: orange;}
-.option-orangered{color: orangered;}
-.option-rouge{color: red;}
+.option-vert {
+  color: #2e7d32;
+}
+.option-orange {
+  color: orange;
+}
+.option-orangered {
+  color: orangered;
+}
+.option-rouge {
+  color: red;
+}
 
-.statut-tache{
+.statut-tache {
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   justify-content: space-between;
   margin-bottom: 20px;
 }
@@ -68,9 +76,9 @@ label {
   border: 1px solid #2e7d32;
 }
 
-.priorité-tache{
+.priorité-tache {
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   justify-content: space-between;
   margin-bottom: 20px;
 }
@@ -100,26 +108,26 @@ label {
   margin-bottom: 20px;
 }
 
-.assignation{
+.assignation {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 20px;
 }
 
-.btnValidation{
+.btnValidation {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-.btnfermer{
+.btnfermer {
   display: flex;
   flex-direction: row;
   justify-content: center;
   margin: 20px;
 }
 
-.cache{
-    display: none;
+.cache {
+  display: none;
 }

@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { useMembreStore } from "./membreStore";
-import { apiFetch } from "../lib/api";
+import { create } from 'zustand';
+import { useMembreStore } from './membreStore';
+import { apiFetch } from '../lib/api';
 
 interface Organisation {
   id: number;
@@ -28,10 +28,10 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
     set({ chargementOrganisation: true, errorOrganisation: null });
 
     try {
-      const response = await apiFetch("/organisation");
+      const response = await apiFetch('/organisation');
 
       if (!response.ok) {
-        throw new Error("Erreur lors du chargement des organisations");
+        throw new Error('Erreur lors du chargement des organisations');
       }
       const data: Organisation[] = await response.json();
 
@@ -42,7 +42,7 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
     } catch (error) {
       set({
         errorOrganisation:
-          error instanceof Error ? error.message : "Erreur inconnue",
+          error instanceof Error ? error.message : 'Erreur inconnue',
         chargementOrganisation: false,
       });
     }
@@ -53,31 +53,32 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
 
     try {
       const response = await apiFetch(`/organisation/${id}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       if (!response.ok) {
         throw new Error("Erreur lors de la suppression de l'organisations");
       }
-        set((state) => ({
-          organisations: state.organisations.filter((o) => o.id !== id),
-          chargementOrganisation: false,
-        }));
+      set((state) => ({
+        organisations: state.organisations.filter((o) => o.id !== id),
+        chargementOrganisation: false,
+      }));
     } catch (error) {
       set({
         errorOrganisation:
-          error instanceof Error ? error.message : "Erreur inconnue",
+          error instanceof Error ? error.message : 'Erreur inconnue',
         chargementOrganisation: false,
-      });    }
+      });
+    }
   },
 
   createOrganisation: async (nom: string, proprietaire_id: number) => {
     set({ chargementOrganisation: true, errorOrganisation: null });
 
     try {
-      const response = await apiFetch("/organisation", {
-        method: "POST",
+      const response = await apiFetch('/organisation', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           nom,
@@ -91,15 +92,13 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
         chargementOrganisation: false,
       });
       const organisation = await response.json();
-      await useMembreStore.getState().createMembre(
-            proprietaire_id,
-            organisation.id,
-            "admin"
-          );
+      await useMembreStore
+        .getState()
+        .createMembre(proprietaire_id, organisation.id, 'admin');
     } catch (error) {
       set({
         errorOrganisation:
-          error instanceof Error ? error.message : "Erreur inconnue",
+          error instanceof Error ? error.message : 'Erreur inconnue',
         chargementOrganisation: false,
       });
     }
@@ -110,9 +109,9 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
 
     try {
       const response = await apiFetch(`/organisation/${id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           nom,
@@ -133,7 +132,7 @@ export const useOrganisationStore = create<OrganisationStore>((set) => ({
     } catch (error) {
       set({
         errorOrganisation:
-          error instanceof Error ? error.message : "Erreur inconnue",
+          error instanceof Error ? error.message : 'Erreur inconnue',
         chargementOrganisation: false,
       });
     }

@@ -4,15 +4,15 @@
   align-items: center;
 }
 
-.tache-container{
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
+.tache-container {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
 }
 
-.tache-button{
-    display: flex;
-    justify-content: space-around;
+.tache-button {
+  display: flex;
+  justify-content: space-around;
 }
 
 .tacheCard-container {
@@ -118,6 +118,6 @@
   text-align: center;
 }
 
-.cache{
-    display: none;
+.cache {
+  display: none;
 }

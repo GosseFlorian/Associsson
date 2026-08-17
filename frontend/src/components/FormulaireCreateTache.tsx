@@ -1,8 +1,8 @@
-import { useState } from "react";
-import "../style/components/FormulaireCreateTache.css";
-import { useLoginStore } from "../stores/loginStore";
-import { Button } from "./Button";
-import { useTacheStore } from "../stores/tacheStore";
+import { useState } from 'react';
+import '../style/components/FormulaireCreateTache.css';
+import { useLoginStore } from '../stores/loginStore';
+import { Button } from './Button';
+import { useTacheStore } from '../stores/tacheStore';
 
 export function FormulaireCreateTache({ projet_id }) {
   const [popupOuvert, setPopupOuvert] = useState(false);
@@ -32,12 +32,12 @@ function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
   const { createTache } = useTacheStore();
   const { role, idMembre } = useLoginStore();
   const [dateEcheance, setDateEcheance] = useState(() =>
-    new Date().toLocaleDateString("fr"),
+    new Date().toLocaleDateString('fr')
   );
-  const [nomTache, setNomTache] = useState("");
-  const [descriptionTache, setDescriptionTache] = useState("");
-  const [statut, setStatut] = useState("en_cours");
-  const [priorite, setPriorite] = useState("faible");
+  const [nomTache, setNomTache] = useState('');
+  const [descriptionTache, setDescriptionTache] = useState('');
+  const [statut, setStatut] = useState('en_cours');
+  const [priorite, setPriorite] = useState('faible');
   const [assignation, setAssignation] = useState(idMembre);
 
   const handleSubmit = async () => {
@@ -85,7 +85,7 @@ function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
             <select
               id="statut"
               className={
-                statut === "en_cours" ? "statut-orange" : "statut-vert"
+                statut === 'en_cours' ? 'statut-orange' : 'statut-vert'
               }
               value={statut}
               onChange={(e) => setStatut(e.target.value)}
@@ -104,13 +104,13 @@ function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
             <select
               id="priorite"
               className={
-                priorite === "tres_haute"
-                  ? "priorite-rouge"
-                  : priorite === "haute"
-                    ? "priorite-orangered"
-                    : priorite === "moyenne"
-                      ? "priorite-orange"
-                      : "priorite-vert"
+                priorite === 'tres_haute'
+                  ? 'priorite-rouge'
+                  : priorite === 'haute'
+                    ? 'priorite-orangered'
+                    : priorite === 'moyenne'
+                      ? 'priorite-orange'
+                      : 'priorite-vert'
               }
               value={priorite}
               onChange={(e) => setPriorite(e.target.value)}
@@ -141,7 +141,7 @@ function PopupFormulaire({ onClose, projet_id }: FormulaireTache) {
           </div>
 
           <div
-            className={role === "admin" ? "assignation" : "assignation cache"}
+            className={role === 'admin' ? 'assignation' : 'assignation cache'}
           >
             <label htmlFor="assignation">Assigné à :</label>
             <input

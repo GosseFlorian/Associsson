@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { apiFetch } from "../lib/api";
+import { create } from 'zustand';
+import { apiFetch } from '../lib/api';
 
 interface Tache {
   id: number;
@@ -51,10 +51,10 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
     set({ chargementTache: true, errorTache: null });
 
     try {
-      const response = await apiFetch("/tache");
+      const response = await apiFetch('/tache');
 
       if (!response.ok) {
-        throw new Error("Erreur lors du chargement des tâches");
+        throw new Error('Erreur lors du chargement des tâches');
       }
       const data: Tache[] = await response.json();
 
@@ -64,7 +64,7 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
       });
     } catch (error) {
       set({
-        errorTache: error instanceof Error ? error.message : "Erreur inconnue", //instanceof = verifie si error bien creer a partir de Error
+        errorTache: error instanceof Error ? error.message : 'Erreur inconnue', //instanceof = verifie si error bien creer a partir de Error
         chargementTache: false,
       });
     }
@@ -74,21 +74,21 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
     try {
       const tache = get().taches.find((t) => t.id === id);
       if (!tache) return;
-      const newValue = tache.statut === "termine" ? "en_cours" : "termine";
+      const newValue = tache.statut === 'termine' ? 'en_cours' : 'termine';
 
       await apiFetch(`/tache/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ statut: newValue }),
       });
 
       set((state) => ({
         taches: state.taches.map((t) =>
-          t.id === id ? { ...t, statut: newValue } : t,
+          t.id === id ? { ...t, statut: newValue } : t
         ),
       }));
     } catch (err) {
-      console.error("Erreur toggle tache:", err);
+      console.error('Erreur toggle tache:', err);
     }
   },
 
@@ -97,10 +97,10 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
 
     try {
       const response = await apiFetch(`/tache/${id}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       if (!response.ok) {
-        throw new Error("Erreur lors de la suppression de la tache");
+        throw new Error('Erreur lors de la suppression de la tache');
       }
       set((state) => ({
         taches: state.taches.filter((o) => o.id !== id),
@@ -108,7 +108,7 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
       }));
     } catch (error) {
       set({
-        errorTache: error instanceof Error ? error.message : "Erreur inconnue",
+        errorTache: error instanceof Error ? error.message : 'Erreur inconnue',
         chargementTache: false,
       });
     }
@@ -118,21 +118,21 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
     set({ chargementTache: true, errorTache: null });
 
     try {
-      const response = await apiFetch("/tache", {
-        method: "POST",
+      const response = await apiFetch('/tache', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        throw new Error("Erreur lors de la création de la tâche");
+        throw new Error('Erreur lors de la création de la tâche');
       }
 
       await get().fetchTache();
     } catch (error) {
       set({
-        errorTache: error instanceof Error ? error.message : "Erreur inconnue",
+        errorTache: error instanceof Error ? error.message : 'Erreur inconnue',
         chargementTache: false,
       });
     }
@@ -143,29 +143,26 @@ export const useTacheStore = create<TacheStore>((set, get) => ({
 
     try {
       const response = await apiFetch(`/tache/${id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors de la modification de la tâche");
+        throw new Error('Erreur lors de la modification de la tâche');
       }
 
       const tacheModifiee: Tache = await response.json();
 
       set((state) => ({
-        taches: state.taches.map((t) =>
-          t.id === id ? tacheModifiee : t
-        ),
+        taches: state.taches.map((t) => (t.id === id ? tacheModifiee : t)),
         chargementTache: false,
       }));
     } catch (error) {
       set({
-        errorTache:
-          error instanceof Error ? error.message : "Erreur inconnue",
+        errorTache: error instanceof Error ? error.message : 'Erreur inconnue',
         chargementTache: false,
       });
     }

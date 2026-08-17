@@ -1,18 +1,11 @@
-import "../style/pages/LicenciePage.css"
-import { useLoginStore } from "../stores/loginStore";
-
+import '../style/pages/LicenciePage.css';
+import { useLoginStore } from '../stores/loginStore';
 
 export function LicenciePage() {
-  const role = useLoginStore(
-    (state) => state.role
-  );
+  const role = useLoginStore((state) => state.role);
 
-  if (role !== "licencie") {
-    return (
-      <p>Vous n'avez pas le role requis</p>
-    )
+  if (role !== 'licencie') {
+    return <p>Vous n'avez pas le role requis</p>;
   }
-  return (
-    <p>LicenciePage</p>
-  )
+  return <p>LicenciePage</p>;
 }

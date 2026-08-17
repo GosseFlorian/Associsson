@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLoginStore } from "../stores/loginStore";
-import "../style/pages/LoginPage.css";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useLoginStore } from '../stores/loginStore';
+import '../style/pages/LoginPage.css';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [erreur, setErreur] = useState<string | null>(null);
 
   const navigate = useNavigate();
@@ -16,17 +16,17 @@ const LoginPage = () => {
     setErreur(null);
 
     const response = await fetch(
-      "http://localhost:3000/utilisateur/connexion",
+      'http://localhost:3000/utilisateur/connexion',
       {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, mot_de_passe: password }),
-      },
+      }
     );
 
     if (!response.ok) {
       const data = await response.json();
-      setErreur(data.message ?? "Erreur de connexion");
+      setErreur(data.message ?? 'Erreur de connexion');
       return;
     }
 
