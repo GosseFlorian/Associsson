@@ -1,11 +1,11 @@
-import { Organisation, OrganisationDetails } from "../types/types";
+import { Organisation, OrganisationDetails } from '../types/types';
 import {
   getOrganisationIdRepository,
   getOrganisationsRepository,
   postOrganisationRepository,
   putOrganisationRepository,
   deleteOrganisationRepository,
-} from "../repositories/organisation.repository";
+} from '../repositories/organisation.repository';
 
 export const getOrganisationsService = async (): Promise<
   OrganisationDetails[]
@@ -14,16 +14,16 @@ export const getOrganisationsService = async (): Promise<
 };
 
 export const getOrganisationIdService = async (
-  id: number,
+  id: number
 ): Promise<OrganisationDetails | null> => {
   return await getOrganisationIdRepository(id);
 };
 
 export const postOrganisationService = async (
-  data: Organisation,
+  data: Organisation
 ): Promise<Organisation> => {
   // Validation du nom
-  if (!data.nom || data.nom.trim() === "") {
+  if (!data.nom || data.nom.trim() === '') {
     throw new Error("Le nom de l'organisation est obligatoire");
   }
   return await postOrganisationRepository(data);
@@ -31,13 +31,13 @@ export const postOrganisationService = async (
 
 export const putOrganisationService = async (
   id: number,
-  data: Partial<Organisation>,
+  data: Partial<Organisation>
 ): Promise<Organisation | null> => {
   return await putOrganisationRepository(id, data);
 };
 
 export const deleteOrganisationService = async (
-  id: number,
+  id: number
 ): Promise<Organisation | null> => {
   return await deleteOrganisationRepository(id);
 };

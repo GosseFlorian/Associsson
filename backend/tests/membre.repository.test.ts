@@ -1,15 +1,15 @@
-import { pool } from "../src/config/client";
+import { pool } from '../src/config/client';
 import {
   getMembresRepository,
   getMembreParIdRepository,
   putMembreRepository,
   postMembreRepository,
   deleteMembreRepository,
-} from "../src/repositories/membre.repository";
+} from '../src/repositories/membre.repository';
 
 // On mock le module config/client entier : pool.query devient une fausse
 // fonction. Le repository ne se connecte jamais à une vraie base de données.
-jest.mock("../src/config/client", () => ({
+jest.mock('../src/config/client', () => ({
   pool: {
     query: jest.fn(),
   },
@@ -21,14 +21,14 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("getMembresRepository", () => {
-  it("succès : renvoie result.rows", async () => {
+describe('getMembresRepository', () => {
+  it('succès : renvoie result.rows', async () => {
     // Ce test vérifie que le repository renvoie bien les lignes (rows)
     // du résultat SQL, sans les transformer.
 
     // Arrange
     const lignes = [
-      { nomUtilisateur: "Jean", nomOrganisation: "ACME", role: "membre" },
+      { nomUtilisateur: 'Jean', nomOrganisation: 'ACME', role: 'membre' },
     ];
     (pool.query as jest.Mock).mockResolvedValue({ rows: lignes });
 
@@ -44,23 +44,23 @@ describe("getMembresRepository", () => {
     // l'erreur remonte bien jusqu'à l'appelant du repository.
 
     // Arrange
-    (pool.query as jest.Mock).mockRejectedValue(new Error("connexion refusée"));
+    (pool.query as jest.Mock).mockRejectedValue(new Error('connexion refusée'));
 
     // Act
     const fn = () => getMembresRepository();
 
     // Assert
-    await expect(fn()).rejects.toThrow("connexion refusée");
+    await expect(fn()).rejects.toThrow('connexion refusée');
   });
 });
 
-describe("getMembreParIdRepository", () => {
-  it("succès : renvoie la ligne trouvée avec le bon id en paramètre", async () => {
+describe('getMembreParIdRepository', () => {
+  it('succès : renvoie la ligne trouvée avec le bon id en paramètre', async () => {
     // Ce test vérifie que l'id est bien transmis en paramètre SQL ($1)
     // et que la première ligne du résultat est renvoyée.
 
     // Arrange
-    const ligne = { nomUtilisateur: "Jean", role: "membre" };
+    const ligne = { nomUtilisateur: 'Jean', role: 'membre' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligne] });
 
     // Act
@@ -71,7 +71,7 @@ describe("getMembreParIdRepository", () => {
     expect(resultat).toBe(ligne);
   });
 
-  it("erreur : renvoie null si aucune ligne trouvée", async () => {
+  it('erreur : renvoie null si aucune ligne trouvée', async () => {
     // Ce test vérifie que si la requête ne renvoie aucune ligne (id
     // inexistant), le repository renvoie null plutôt qu'une erreur.
     // Correspond au comportement réel : `return result.rows[0] || null;`
@@ -87,13 +87,13 @@ describe("getMembreParIdRepository", () => {
   });
 });
 
-describe("postMembreRepository", () => {
-  it("succès : renvoie la ligne créée", async () => {
+describe('postMembreRepository', () => {
+  it('succès : renvoie la ligne créée', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne créée
     // par la requête INSERT ... RETURNING *.
 
     // Arrange
-    const ligneCreee = { id: 2, role: "licencie" };
+    const ligneCreee = { id: 2, role: 'licencie' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneCreee] });
 
     // Act
@@ -116,7 +116,7 @@ describe("postMembreRepository", () => {
       id: 3,
       utilisateur_id: 1,
       organisation_id: 2,
-      role: "licencie",
+      role: 'licencie',
     };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneCreee] });
 
@@ -130,7 +130,7 @@ describe("postMembreRepository", () => {
     expect(pool.query).toHaveBeenCalledWith(expect.any(String), [
       1,
       2,
-      "licencie",
+      'licencie',
     ]);
   });
 
@@ -146,21 +146,21 @@ describe("postMembreRepository", () => {
     const fn = () => postMembreRepository({} as any);
 
     // Assert
-    await expect(fn()).rejects.toThrow("Échec de la création du membre");
+    await expect(fn()).rejects.toThrow('Échec de la création du membre');
   });
 });
 
-describe("putMembreRepository", () => {
-  it("succès : renvoie la ligne mise à jour", async () => {
+describe('putMembreRepository', () => {
+  it('succès : renvoie la ligne mise à jour', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne modifiée
     // par la requête UPDATE ... RETURNING *.
 
     // Arrange
-    const ligneModifiee = { id: 1, role: "admin" };
+    const ligneModifiee = { id: 1, role: 'admin' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneModifiee] });
 
     // Act
-    const resultat = await putMembreRepository(1, { role: "admin" });
+    const resultat = await putMembreRepository(1, { role: 'admin' });
 
     // Assert
     expect(resultat).toBe(ligneModifiee);
@@ -175,15 +175,15 @@ describe("putMembreRepository", () => {
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
     // Act
-    const resultat = await putMembreRepository(999, { role: "admin" });
+    const resultat = await putMembreRepository(999, { role: 'admin' });
 
     // Assert
     expect(resultat).toBeNull();
   });
 });
 
-describe("deleteMembreRepository", () => {
-  it("succès : renvoie la ligne supprimée", async () => {
+describe('deleteMembreRepository', () => {
+  it('succès : renvoie la ligne supprimée', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne supprimée
     // par la requête DELETE ... RETURNING *.
 

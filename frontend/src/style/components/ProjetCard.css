@@ -1,18 +1,18 @@
-.projetCard-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid var(--border);
-    width: 350px;
-    padding: 10px;
-    border-radius: var(--radius);
-    background-color: var(--card);
+.projetCard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--border);
+  width: 350px;
+  padding: 10px;
+  border-radius: var(--radius);
+  background-color: var(--card);
 }
 
-h2.projetCard{
-    text-align: center;
+h2.projetCard {
+  text-align: center;
 }
 
-.projetCard{
-    margin: 10px;
+.projetCard {
+  margin: 10px;
 }

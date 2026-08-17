@@ -1,20 +1,20 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../style/pages/RegisterPage.css";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../style/pages/RegisterPage.css';
 
 const RegisterPage = () => {
-  const [nom, setNom] = useState("");
-  const [email, setEmail] = useState("");
-  const [motDePasse, setMotDePasse] = useState("");
+  const [nom, setNom] = useState('');
+  const [email, setEmail] = useState('');
+  const [motDePasse, setMotDePasse] = useState('');
   const [erreur, setErreur] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const Register = async () => {
     setErreur(null);
 
-    const response = await fetch("http://localhost:3000/utilisateur", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = await fetch('http://localhost:3000/utilisateur', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nom, email, mot_de_passe: motDePasse }),
     });
 
@@ -24,7 +24,7 @@ const RegisterPage = () => {
       return;
     }
 
-    navigate("/login");
+    navigate('/login');
   };
 
   return (

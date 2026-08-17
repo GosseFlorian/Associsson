@@ -1,12 +1,12 @@
-import "./App.css";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { OrganisationPage } from "./pages/OrganisationsPage";
-import { WorkSpacePage } from "./pages/WorkSpacePage";
-import { Layout } from "./pages/Layout";
-import { ProfilPage } from "./pages/ProfilPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import { RequireAuth } from "./components/RequireAuth";
+import './App.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { OrganisationPage } from './pages/OrganisationsPage';
+import { WorkSpacePage } from './pages/WorkSpacePage';
+import { Layout } from './pages/Layout';
+import { ProfilPage } from './pages/ProfilPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import { RequireAuth } from './components/RequireAuth';
 
 function App() {
   return (

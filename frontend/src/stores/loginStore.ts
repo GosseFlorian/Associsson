@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface LoginStore {
   idUtilisateur: number | null;
@@ -31,7 +31,7 @@ export const useLoginStore = create<LoginStore>()(
         set({ idUtilisateur: null, idMembre: null, role: null, token: null }),
     }),
     {
-      name: "login-storage",
-    },
-  ),
+      name: 'login-storage',
+    }
+  )
 );

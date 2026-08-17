@@ -1,6 +1,6 @@
-import eslintConfigPrettier from 'eslint-config-prettier';
+const eslintConfigPrettier = require('eslint-config-prettier');
 
-export default [
+module.exports = [
   {
     rules: {
       'no-unused-vars': 'error',

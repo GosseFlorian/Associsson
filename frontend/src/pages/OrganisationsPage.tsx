@@ -1,12 +1,12 @@
-import "../style/pages/OrganisationPage.css";
-import { useEffect } from "react";
-import { useLoginStore } from "../stores/loginStore";
-import { useUtilisateurStore } from "../stores/utilisateurStore";
-import { useMembreStore } from "../stores/membreStore";
-import { Link, useParams } from "react-router-dom";
-import { useOrganisationStore } from "../stores/organisationStore";
-import { FormulaireCreateOrganisation } from "../components/FormulaireCreateOrganisation";
-import { FormulaireModifOrganisation } from "../components/FormulaireModifOrganisation";
+import '../style/pages/OrganisationPage.css';
+import { useEffect } from 'react';
+import { useLoginStore } from '../stores/loginStore';
+import { useUtilisateurStore } from '../stores/utilisateurStore';
+import { useMembreStore } from '../stores/membreStore';
+import { Link, useParams } from 'react-router-dom';
+import { useOrganisationStore } from '../stores/organisationStore';
+import { FormulaireCreateOrganisation } from '../components/FormulaireCreateOrganisation';
+import { FormulaireModifOrganisation } from '../components/FormulaireModifOrganisation';
 
 export function OrganisationPage() {
   const { idUtilisateurPath } = useParams();
@@ -49,7 +49,7 @@ export function OrganisationPage() {
   };
 
   const OrganisationMembre = membres.filter(
-    (membre) => membre.nomUtilisateur === utilisateur.nom,
+    (membre) => membre.nomUtilisateur === utilisateur.nom
   );
 
   return (
@@ -67,15 +67,17 @@ export function OrganisationPage() {
               className="organisation-container"
               key={membre.organisation_id}
             >
-              {membre.role !== "admin" ? (
+              {membre.role !== 'admin' ? (
                 <div className="container-header">
                   <p className="organisation-nom">{membre.nomOrganisation}</p>
                 </div>
               ) : (
                 <div className="container-header">
-                    <p className="organisation-nom">{membre.nomOrganisation}</p>
-                    <div>
-                      <FormulaireModifOrganisation organisation_id={membre.organisation_id}/>
+                  <p className="organisation-nom">{membre.nomOrganisation}</p>
+                  <div>
+                    <FormulaireModifOrganisation
+                      organisation_id={membre.organisation_id}
+                    />
                     <button
                       className="delete-button"
                       onClick={() =>
@@ -99,8 +101,8 @@ export function OrganisationPage() {
                         <line x1="10" x2="10" y1="11" y2="17"></line>
                         <line x1="14" x2="14" y1="11" y2="17"></line>
                       </svg>
-                      </button>
-                    </div>
+                    </button>
+                  </div>
                 </div>
               )}
               <p className="organisation-role">role : {membre.role}</p>

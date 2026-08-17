@@ -1,5 +1,5 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useLoginStore } from "../stores/loginStore";
+import { Navigate, Outlet } from 'react-router-dom';
+import { useLoginStore } from '../stores/loginStore';
 
 export function RequireAuth() {
   const token = useLoginStore((state) => state.token);

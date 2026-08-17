@@ -9,7 +9,9 @@
     "db:migrate:up": "ts-node src/config/migrationUp.ts",
     "db:migrate:down": "ts-node src/config/migrationDown.ts",
     "db:seed:up": "ts-node src/config/seedUp.ts",
-    "db:seed:down": "ts-node src/config/seedDown.ts"
+    "db:seed:down": "ts-node src/config/seedDown.ts",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -32,6 +34,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.0.0",
     "@types/pg": "^8.20.0",
+    "eslint": "^10.8.1",
     "jest": "^30.4.2",
     "nodemon": "^3.1.14",
     "ts-jest": "^29.4.11",

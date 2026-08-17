@@ -28,18 +28,17 @@ label {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-
-.nomProjet{
+.nomProjet {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px ;
+  margin-bottom: 20px;
 }
 
-.description{
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* espace entre le label et le textarea */
-    margin-bottom: 20px;
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* espace entre le label et le textarea */
+  margin-bottom: 20px;
 }
 
 .dateDebut {
@@ -55,30 +54,29 @@ label {
   margin-bottom: 20px;
 }
 
-.adresse{
+.adresse {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 20px;
 }
 
-.estTerminer{
+.estTerminer {
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   gap: 8px;
   margin-bottom: 20px;
 }
 
-.btnValidation{
+.btnValidation {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-.btnfermer{
+.btnfermer {
   display: flex;
   flex-direction: row;
   justify-content: center;
   margin: 20px;
 }
-

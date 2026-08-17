@@ -1,28 +1,33 @@
-import { pool } from "../src/config/client";
+import { pool } from '../src/config/client';
 import {
   getTachesRepository,
   getTacheByIdRepository,
   postTacheRepository,
   putTacheRepository,
   deleteTacheRepository,
-} from "../src/repositories/tache.repository";
+} from '../src/repositories/tache.repository';
 
 // On mock le module config/client entier : pool.query devient une fausse
 // fonction. Le repository ne se connecte jamais à une vraie base de données.
-jest.mock("../src/config/client", () => ({
+jest.mock('../src/config/client', () => ({
   pool: {
     query: jest.fn(),
   },
 }));
 
-describe("getTachesRepository", () => {
-  it("succès : renvoie result.rows", async () => {
+describe('getTachesRepository', () => {
+  it('succès : renvoie result.rows', async () => {
     // Ce test vérifie que le repository renvoie bien les lignes (rows)
     // du résultat SQL, sans les transformer.
 
     // Arrange
     const lignes = [
-      { id: 1, titre: "Préparer réunion", statut: "a_faire", nomProjet: "Projet A" },
+      {
+        id: 1,
+        titre: 'Préparer réunion',
+        statut: 'a_faire',
+        nomProjet: 'Projet A',
+      },
     ];
     (pool.query as jest.Mock).mockResolvedValue({ rows: lignes });
 
@@ -38,23 +43,23 @@ describe("getTachesRepository", () => {
     // l'erreur remonte bien jusqu'à l'appelant du repository.
 
     // Arrange
-    (pool.query as jest.Mock).mockRejectedValue(new Error("connexion refusée"));
+    (pool.query as jest.Mock).mockRejectedValue(new Error('connexion refusée'));
 
     // Act
     const fn = () => getTachesRepository();
 
     // Assert
-    await expect(fn()).rejects.toThrow("connexion refusée");
+    await expect(fn()).rejects.toThrow('connexion refusée');
   });
 });
 
-describe("getTacheByIdRepository", () => {
-  it("succès : renvoie la ligne trouvée avec le bon id en paramètre", async () => {
+describe('getTacheByIdRepository', () => {
+  it('succès : renvoie la ligne trouvée avec le bon id en paramètre', async () => {
     // Ce test vérifie que l'id est bien transmis en paramètre SQL ($1)
     // et que la première ligne du résultat est renvoyée.
 
     // Arrange
-    const ligne = { id: 5, titre: "Tâche 5", statut: "en_cours" };
+    const ligne = { id: 5, titre: 'Tâche 5', statut: 'en_cours' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligne] });
 
     // Act
@@ -65,7 +70,7 @@ describe("getTacheByIdRepository", () => {
     expect(resultat).toBe(ligne);
   });
 
-  it("erreur : renvoie null si aucune ligne trouvée", async () => {
+  it('erreur : renvoie null si aucune ligne trouvée', async () => {
     // Ce test vérifie que si la requête ne renvoie aucune ligne (id
     // inexistant), le repository renvoie null plutôt qu'une erreur.
 
@@ -80,20 +85,20 @@ describe("getTacheByIdRepository", () => {
   });
 });
 
-describe("postTacheRepository", () => {
-  it("succès : renvoie la ligne créée", async () => {
+describe('postTacheRepository', () => {
+  it('succès : renvoie la ligne créée', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne créée
     // par la requête INSERT ... RETURNING *.
 
     // Arrange
-    const ligneCreee = { id: 2, titre: "Nouvelle tâche", statut: "a_faire" };
+    const ligneCreee = { id: 2, titre: 'Nouvelle tâche', statut: 'a_faire' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneCreee] });
 
     // Act
     const resultat = await postTacheRepository({
-      titre: "Nouvelle tâche",
-      statut: "a_faire",
-      priorite: "moyenne",
+      titre: 'Nouvelle tâche',
+      statut: 'a_faire',
+      priorite: 'moyenne',
       projet_id: 1,
     } as any);
 
@@ -113,21 +118,21 @@ describe("postTacheRepository", () => {
     const fn = () => postTacheRepository({} as any);
 
     // Assert
-    await expect(fn()).rejects.toThrow("Échec de la création de la tâche");
+    await expect(fn()).rejects.toThrow('Échec de la création de la tâche');
   });
 });
 
-describe("putTacheRepository", () => {
-  it("succès : renvoie la ligne mise à jour", async () => {
+describe('putTacheRepository', () => {
+  it('succès : renvoie la ligne mise à jour', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne modifiée
     // par la requête UPDATE ... RETURNING *.
 
     // Arrange
-    const ligneModifiee = { id: 1, titre: "Tâche modifiée", statut: "termine" };
+    const ligneModifiee = { id: 1, titre: 'Tâche modifiée', statut: 'termine' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneModifiee] });
 
     // Act
-    const resultat = await putTacheRepository(1, { statut: "termine" });
+    const resultat = await putTacheRepository(1, { statut: 'termine' });
 
     // Assert
     expect(resultat).toBe(ligneModifiee);
@@ -142,20 +147,20 @@ describe("putTacheRepository", () => {
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
     // Act
-    const resultat = await putTacheRepository(999, { statut: "termine" });
+    const resultat = await putTacheRepository(999, { statut: 'termine' });
 
     // Assert
     expect(resultat).toBeNull();
   });
 });
 
-describe("deleteTacheRepository", () => {
-  it("succès : renvoie la ligne supprimée", async () => {
+describe('deleteTacheRepository', () => {
+  it('succès : renvoie la ligne supprimée', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne supprimée
     // par la requête DELETE ... RETURNING *.
 
     // Arrange
-    const ligneSupprimee = { id: 4, titre: "Tâche à supprimer" };
+    const ligneSupprimee = { id: 4, titre: 'Tâche à supprimer' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneSupprimee] });
 
     // Act

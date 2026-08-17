@@ -1,5 +1,5 @@
-import { pool } from "../config/client";
-import { Organisation, OrganisationDetails } from "../types/types";
+import { pool } from '../config/client';
+import { Organisation, OrganisationDetails } from '../types/types';
 
 export const getOrganisationsRepository = async (): Promise<
   OrganisationDetails[]
@@ -14,13 +14,13 @@ export const getOrganisationsRepository = async (): Promise<
       u.nom AS "nomProprietaire"
     FROM organisation o
     JOIN utilisateur u ON o.proprietaire_id = u.id
-    ORDER BY o.id`,
+    ORDER BY o.id`
   );
   return result.rows;
 };
 
 export const getOrganisationIdRepository = async (
-  id: number,
+  id: number
 ): Promise<OrganisationDetails | null> => {
   const result = await pool.query<OrganisationDetails>(
     `SELECT
@@ -33,13 +33,13 @@ export const getOrganisationIdRepository = async (
     FROM organisation o
     JOIN utilisateur u ON o.proprietaire_id = u.id
     WHERE o.id = $1`,
-    [id],
+    [id]
   );
   return result.rows[0] || null;
 };
 
 export const postOrganisationRepository = async (
-  data: Organisation,
+  data: Organisation
 ): Promise<Organisation> => {
   const query = `INSERT INTO organisation (nom, proprietaire_id)
     VALUES ($1, $2)
@@ -54,7 +54,7 @@ export const postOrganisationRepository = async (
 
 export const putOrganisationRepository = async (
   id: number,
-  data: Partial<Organisation>,
+  data: Partial<Organisation>
 ): Promise<Organisation | null> => {
   const query = `
     UPDATE organisation
@@ -70,7 +70,7 @@ export const putOrganisationRepository = async (
 };
 
 export const deleteOrganisationRepository = async (
-  id: number,
+  id: number
 ): Promise<Organisation | null> => {
   const query = `DELETE FROM organisation
   WHERE id = $1

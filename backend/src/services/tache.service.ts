@@ -4,30 +4,30 @@ import {
   postTacheRepository,
   putTacheRepository,
   deleteTacheRepository,
-} from "../repositories/tache.repository";
-import { Tache, TacheDetails } from "../types/types";
+} from '../repositories/tache.repository';
+import { Tache, TacheDetails } from '../types/types';
 
 export const getTachesService = async (): Promise<TacheDetails[]> => {
   return await getTachesRepository();
 };
 
 export const getTacheIdService = async (
-  id: number,
+  id: number
 ): Promise<TacheDetails | null> => {
   return await getTacheByIdRepository(id);
 };
 
 export const postTacheService = async (data: Tache): Promise<Tache> => {
   // Validation du titre
-  if (!data.titre || data.titre.trim() === "") {
-    throw new Error("Le titre de la tâche est obligatoire");
+  if (!data.titre || data.titre.trim() === '') {
+    throw new Error('Le titre de la tâche est obligatoire');
   }
   return await postTacheRepository(data);
 };
 
 export const putTacheService = async (
   id: number,
-  data: Partial<Tache>,
+  data: Partial<Tache>
 ): Promise<Tache | null> => {
   return await putTacheRepository(id, data);
 };

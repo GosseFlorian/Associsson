@@ -1,5 +1,5 @@
-import { pool } from "../config/client";
-import { Tache, TacheDetails } from "../types/types";
+import { pool } from '../config/client';
+import { Tache, TacheDetails } from '../types/types';
 
 export const getTachesRepository = async (): Promise<TacheDetails[]> => {
   const result = await pool.query<TacheDetails>(
@@ -27,13 +27,13 @@ export const getTachesRepository = async (): Promise<TacheDetails[]> => {
       ON t.assigne_a = ma.id
     LEFT JOIN utilisateur ua
       ON ma.utilisateur_id = ua.id
-    ORDER BY t.id;`,
+    ORDER BY t.id;`
   );
   return result.rows;
 };
 
 export const getTacheByIdRepository = async (
-  id: number,
+  id: number
 ): Promise<TacheDetails | null> => {
   const result = await pool.query<TacheDetails>(
     `SELECT
@@ -54,7 +54,7 @@ export const getTacheByIdRepository = async (
     LEFT JOIN membre m ON t.assigne_a = m.id
     LEFT JOIN utilisateur u ON m.utilisateur_id = u.id
     WHERE t.id = $1`,
-    [id],
+    [id]
   );
   return result.rows[0] || null;
 };
@@ -77,14 +77,14 @@ export const postTacheRepository = async (data: Tache): Promise<Tache> => {
   ];
   const result = await pool.query<Tache>(query, values);
   if (!result.rows[0]) {
-    throw new Error("Échec de la création de la tâche");
+    throw new Error('Échec de la création de la tâche');
   }
   return result.rows[0];
 };
 
 export const putTacheRepository = async (
   id: number,
-  data: Partial<Tache>,
+  data: Partial<Tache>
 ): Promise<Tache | null> => {
   const query = `
     UPDATE tache
@@ -115,7 +115,7 @@ export const putTacheRepository = async (
 };
 
 export const deleteTacheRepository = async (
-  id: number,
+  id: number
 ): Promise<Tache | null> => {
   const query = `DELETE FROM tache
     WHERE id = $1

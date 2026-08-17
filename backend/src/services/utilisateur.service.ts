@@ -1,6 +1,6 @@
-import bcrypt from "bcryptjs";
-import { creerToken } from "../lib/jwt";
-import { Utilisateur } from "../types/types";
+import bcrypt from 'bcryptjs';
+import { creerToken } from '../lib/jwt';
+import { Utilisateur } from '../types/types';
 import {
   getUtilisateurByEmailRepository,
   getUtilisateursRepository,
@@ -8,7 +8,7 @@ import {
   postUtilisateurRepository,
   putUtilisateurRepository,
   deleteUtilisateurRepository,
-} from "../repositories/utilisateur.repository";
+} from '../repositories/utilisateur.repository';
 
 // Fonction utilitaire de validation de l'adresse email
 const isValidEmail = (email: string): boolean => {
@@ -18,10 +18,10 @@ const isValidEmail = (email: string): boolean => {
 
 export const postConnexionService = async (
   email: string,
-  motDePasse: string,
+  motDePasse: string
 ): Promise<{
   token: string;
-  utilisateur: Omit<Utilisateur, "mot_de_passe">;
+  utilisateur: Omit<Utilisateur, 'mot_de_passe'>;
 }> => {
   const utilisateur = await getUtilisateurByEmailRepository(email);
 
@@ -29,7 +29,7 @@ export const postConnexionService = async (
     !utilisateur ||
     !(await bcrypt.compare(motDePasse, utilisateur.mot_de_passe))
   ) {
-    throw new Error("Identifiants invalides");
+    throw new Error('Identifiants invalides');
   }
 
   const token = creerToken({ utilisateurId: utilisateur.id });
@@ -43,13 +43,13 @@ export const getUtilisateursService = async (): Promise<Utilisateur[]> => {
 };
 
 export const getUtilisateurIdService = async (
-  id: number,
+  id: number
 ): Promise<Utilisateur | null> => {
   return await getUtilisateurIdRepository(id);
 };
 
 export const postUtilisateurService = async (
-  data: Utilisateur,
+  data: Utilisateur
 ): Promise<Utilisateur> => {
   // Validation de l'adresse mail
   if (!isValidEmail(data.email)) {
@@ -57,7 +57,7 @@ export const postUtilisateurService = async (
   }
   // Validation de la complexité minimale du mot de passe
   if (!data.mot_de_passe || data.mot_de_passe.length < 6) {
-    throw new Error("Le mot de passe doit contenir au moins 6 caractères.");
+    throw new Error('Le mot de passe doit contenir au moins 6 caractères.');
   }
 
   const motDePasseHache = await bcrypt.hash(data.mot_de_passe, 10);
@@ -69,7 +69,7 @@ export const postUtilisateurService = async (
 
 export const putUtilisateurService = async (
   id: number,
-  data: Partial<Utilisateur>,
+  data: Partial<Utilisateur>
 ): Promise<Utilisateur | null> => {
   // Si l'email est modifié, on le valide
   if (data.email !== undefined && !isValidEmail(data.email)) {
@@ -77,13 +77,13 @@ export const putUtilisateurService = async (
   }
   // Si le mot de passe est modifié, on le valide
   if (data.mot_de_passe !== undefined && data.mot_de_passe.length < 6) {
-    throw new Error("Le mot de passe doit contenir au moins 6 caractères.");
+    throw new Error('Le mot de passe doit contenir au moins 6 caractères.');
   }
   return await putUtilisateurRepository(id, data);
 };
 
 export const deleteUtilisateurService = async (
-  id: number,
+  id: number
 ): Promise<Utilisateur | null> => {
   return await deleteUtilisateurRepository(id);
 };

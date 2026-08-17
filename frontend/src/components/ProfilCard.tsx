@@ -1,20 +1,16 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useMembreStore } from "../stores/membreStore";
-import "../style/components/ProfilCard.css";
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useMembreStore } from '../stores/membreStore';
+import '../style/components/ProfilCard.css';
 
 export function ProfilCard() {
   const { idOrganisation, idUtilisateurPath } = useParams();
 
   const idUtilisateur = Number(idUtilisateurPath);
 
-  const membres = useMembreStore(
-    (state) => state.membres
-  );
+  const membres = useMembreStore((state) => state.membres);
 
-  const fetchMembre = useMembreStore(
-    (state) => state.fetchMembre
-  );
+  const fetchMembre = useMembreStore((state) => state.fetchMembre);
 
   useEffect(() => {
     if (membres.length === 0) {
@@ -37,7 +33,7 @@ export function ProfilCard() {
   }
 
   function getInitiales(nom: string): string {
-    const morceaux = nom.trim().split(" ");
+    const morceaux = nom.trim().split(' ');
 
     if (morceaux.length === 1) {
       return morceaux[0].slice(0, 2).toUpperCase();
@@ -45,7 +41,7 @@ export function ProfilCard() {
 
     return morceaux
       .map((mot) => mot[0])
-      .join("")
+      .join('')
       .toUpperCase();
   }
 

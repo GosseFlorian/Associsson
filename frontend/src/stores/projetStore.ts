@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { apiFetch } from "../lib/api";
+import { create } from 'zustand';
+import { apiFetch } from '../lib/api';
 
 interface Projet {
   id: number;
@@ -32,10 +32,10 @@ export const useProjetStore = create<ProjetStore>((set, get) => ({
     });
 
     try {
-      const response = await apiFetch("/projet");
+      const response = await apiFetch('/projet');
 
       if (!response.ok) {
-        throw new Error("Erreur lors du chargement des projets");
+        throw new Error('Erreur lors du chargement des projets');
       }
 
       const data: Projet[] = await response.json();
@@ -44,17 +44,13 @@ export const useProjetStore = create<ProjetStore>((set, get) => ({
         projets: data,
         chargementProjet: false,
       });
-
     } catch (error) {
       set({
-        errorProjet: error instanceof Error
-          ? error.message
-          : "Erreur inconnue",
+        errorProjet: error instanceof Error ? error.message : 'Erreur inconnue',
         chargementProjet: false,
       });
     }
   },
-
 
   fetchProjetByOrganisationId: (idOrganisation) => {
     const projets = get().projets;

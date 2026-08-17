@@ -1,8 +1,8 @@
-import { useState } from "react";
-import "../style/components/FormulaireModif.css";
-import { useTacheStore } from "../stores/tacheStore";
+import { useState } from 'react';
+import '../style/components/FormulaireModif.css';
+import { useTacheStore } from '../stores/tacheStore';
 
-export function FormulaireModifTache({tache}) {
+export function FormulaireModifTache({ tache }) {
   const [popupOuvert, setPopupOuvert] = useState(false);
 
   return (
@@ -25,10 +25,7 @@ export function FormulaireModifTache({tache}) {
       </button>
 
       {popupOuvert && (
-        <PopupFormulaire
-          onClose={() => setPopupOuvert(false)}
-          tache={tache}
-        />
+        <PopupFormulaire onClose={() => setPopupOuvert(false)} tache={tache} />
       )}
     </>
   );
@@ -36,20 +33,20 @@ export function FormulaireModifTache({tache}) {
 type FormulaireTache = {
   onClose: () => void;
   tache: {
-      id: number;
-      titre: string;
-      description: string;
-      statut: string;
-      priorite: string;
-      date_echeance: string;
-    };
+    id: number;
+    titre: string;
+    description: string;
+    statut: string;
+    priorite: string;
+    date_echeance: string;
+  };
 };
 
 function PopupFormulaire({ onClose, tache }: FormulaireTache) {
   {
     const { updateTache } = useTacheStore();
     const [dateEcheance, setDateEcheance] = useState(() =>
-      new Date().toLocaleDateString("fr"),
+      new Date().toLocaleDateString('fr')
     );
     const [nomTache, setNomTache] = useState(tache.titre);
     const [descriptionTache, setDescriptionTache] = useState(tache.description);
@@ -83,7 +80,9 @@ function PopupFormulaire({ onClose, tache }: FormulaireTache) {
             </div>
 
             <div className="description-tache">
-              <label htmlFor="descriptionTache">Description de la tâche :</label>
+              <label htmlFor="descriptionTache">
+                Description de la tâche :
+              </label>
               <textarea
                 id="descriptionTache"
                 value={descriptionTache}
@@ -96,13 +95,13 @@ function PopupFormulaire({ onClose, tache }: FormulaireTache) {
               <select
                 id="priorite"
                 className={
-                  priorite === "tres_haute"
-                    ? "priorite-rouge"
-                    : priorite === "haute"
-                      ? "priorite-orangered"
-                      : priorite === "moyenne"
-                        ? "priorite-orange"
-                        : "priorite-vert"
+                  priorite === 'tres_haute'
+                    ? 'priorite-rouge'
+                    : priorite === 'haute'
+                      ? 'priorite-orangered'
+                      : priorite === 'moyenne'
+                        ? 'priorite-orange'
+                        : 'priorite-vert'
                 }
                 value={priorite}
                 onChange={(e) => setPriorite(e.target.value)}

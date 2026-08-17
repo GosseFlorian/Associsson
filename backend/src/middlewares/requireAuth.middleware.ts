@@ -1,15 +1,15 @@
-import { Request, Response, NextFunction } from "express";
-import { verifierToken } from "../lib/jwt";
+import { Request, Response, NextFunction } from 'express';
+import { verifierToken } from '../lib/jwt';
 
 export function requireAuth(
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void {
   const entete = req.headers.authorization;
 
-  if (!entete?.startsWith("Bearer ")) {
-    res.status(401).json({ message: "Token manquant" });
+  if (!entete?.startsWith('Bearer ')) {
+    res.status(401).json({ message: 'Token manquant' });
     return;
   }
 
@@ -19,7 +19,7 @@ export function requireAuth(
     req.utilisateur = verifierToken(token);
     next();
   } catch {
-    res.status(401).json({ message: "Token invalide ou expiré" });
+    res.status(401).json({ message: 'Token invalide ou expiré' });
     return;
   }
 }

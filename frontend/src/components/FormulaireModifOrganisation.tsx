@@ -1,9 +1,13 @@
-import { useState } from "react";
-import "../style/components/FormulaireModif.css";
-import { useOrganisationStore } from "../stores/organisationStore";
-import { useMembreStore } from "../stores/membreStore";
+import { useState } from 'react';
+import '../style/components/FormulaireModif.css';
+import { useOrganisationStore } from '../stores/organisationStore';
+import { useMembreStore } from '../stores/membreStore';
 
-export function FormulaireModifOrganisation({ organisation_id }: {organisation_id: number}) {
+export function FormulaireModifOrganisation({
+  organisation_id,
+}: {
+  organisation_id: number;
+}) {
   const [popupOuvert, setPopupOuvert] = useState(false);
 
   return (
@@ -35,10 +39,16 @@ export function FormulaireModifOrganisation({ organisation_id }: {organisation_i
   );
 }
 
-function PopupFormulaire({organisation_id, onClose }: { onClose: () => void, organisation_id: number}) {
+function PopupFormulaire({
+  organisation_id,
+  onClose,
+}: {
+  onClose: () => void;
+  organisation_id: number;
+}) {
   const { updateOrganisation } = useOrganisationStore();
   const { fetchMembre } = useMembreStore();
-  const [nomOrganisation, setNomOrganisation] = useState("");
+  const [nomOrganisation, setNomOrganisation] = useState('');
 
   const handleSubmit = async () => {
     event.preventDefault();
@@ -50,15 +60,11 @@ function PopupFormulaire({organisation_id, onClose }: { onClose: () => void, org
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-contenu" onClick={(e) => e.stopPropagation()}>
-        <h1 className="titre-formulaire">
-          Modifier l'organisation
-        </h1>
+        <h1 className="titre-formulaire">Modifier l'organisation</h1>
 
         <form onSubmit={handleSubmit}>
           <div className="nomOrganisation">
-            <label htmlFor="nomOrganisation">
-              Nom de l'organisation :
-            </label>
+            <label htmlFor="nomOrganisation">Nom de l'organisation :</label>
 
             <input
               id="nomOrganisation"

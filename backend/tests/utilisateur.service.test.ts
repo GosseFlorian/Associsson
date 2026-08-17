@@ -1,22 +1,22 @@
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 import {
   getUtilisateursService,
   getUtilisateurIdService,
   postUtilisateurService,
   putUtilisateurService,
   deleteUtilisateurService,
-} from "../src/services/utilisateur.service";
+} from '../src/services/utilisateur.service';
 import {
   getUtilisateursRepository,
   getUtilisateurIdRepository,
   postUtilisateurRepository,
   putUtilisateurRepository,
   deleteUtilisateurRepository,
-} from "../src/repositories/utilisateur.repository";
+} from '../src/repositories/utilisateur.repository';
 
 // On mock le repository : le service ne doit pas toucher la vraie base de
 // données pour être testé, on contrôle nous-mêmes ce que le repository renvoie.
-jest.mock("../src/repositories/utilisateur.repository");
+jest.mock('../src/repositories/utilisateur.repository');
 
 // Avant chaque test, vide l'historique de tous les mocks pour garantir
 // que chaque test démarre avec un état propre.
@@ -24,13 +24,13 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("getUtilisateursService", () => {
-  it("succès : renvoie la liste renvoyée par le repository", async () => {
+describe('getUtilisateursService', () => {
+  it('succès : renvoie la liste renvoyée par le repository', async () => {
     // Ce test vérifie que le service transmet simplement (sans la modifier)
     // la liste que lui renvoie le repository.
 
     // Arrange
-    const utilisateurs = [{ id: 1, nom: "Jean", email: "jean@test.fr" }];
+    const utilisateurs = [{ id: 1, nom: 'Jean', email: 'jean@test.fr' }];
     (getUtilisateursRepository as jest.Mock).mockResolvedValue(utilisateurs);
 
     // Act
@@ -46,24 +46,24 @@ describe("getUtilisateursService", () => {
 
     // Arrange
     (getUtilisateursRepository as jest.Mock).mockRejectedValue(
-      new Error("DB down"),
+      new Error('DB down')
     );
 
     // Act
     const fn = () => getUtilisateursService();
 
     // Assert
-    await expect(fn()).rejects.toThrow("DB down");
+    await expect(fn()).rejects.toThrow('DB down');
   });
 });
 
-describe("getUtilisateurIdService", () => {
+describe('getUtilisateurIdService', () => {
   it("succès : renvoie l'utilisateur trouvé par le repository", async () => {
     // Ce test vérifie que le service transmet bien l'id au repository
     // et renvoie exactement ce que le repository a trouvé.
 
     // Arrange
-    const utilisateur = { id: 5, nom: "Jean", email: "jean@test.fr" };
+    const utilisateur = { id: 5, nom: 'Jean', email: 'jean@test.fr' };
     (getUtilisateurIdRepository as jest.Mock).mockResolvedValue(utilisateur);
 
     // Act
@@ -74,7 +74,7 @@ describe("getUtilisateurIdService", () => {
     expect(resultat).toBe(utilisateur);
   });
 
-  it("erreur : renvoie null si le repository ne trouve rien", async () => {
+  it('erreur : renvoie null si le repository ne trouve rien', async () => {
     // Ce test vérifie que le service ne transforme pas un "rien trouvé"
     // en erreur : il renvoie simplement null, comme le repository.
 
@@ -89,16 +89,16 @@ describe("getUtilisateurIdService", () => {
   });
 });
 
-describe("postUtilisateurService", () => {
+describe('postUtilisateurService', () => {
   it("succès : renvoie l'utilisateur créé quand email et mot de passe sont valides", async () => {
     // Ce test vérifie que le service transmet bien les données reçues au
     // repository, et renvoie l'utilisateur nouvellement créé.
 
     // Arrange
     const data = {
-      nom: "Marie",
-      email: "marie@test.fr",
-      mot_de_passe: "secret123",
+      nom: 'Marie',
+      email: 'marie@test.fr',
+      mot_de_passe: 'secret123',
     };
     const utilisateurCree = { id: 10, ...data };
     (postUtilisateurRepository as jest.Mock).mockResolvedValue(utilisateurCree);
@@ -117,13 +117,13 @@ describe("postUtilisateurService", () => {
         nom: data.nom,
         email: data.email,
         mot_de_passe: expect.any(String),
-      }),
+      })
     );
 
     const argsAppel = (postUtilisateurRepository as jest.Mock).mock.calls[0][0];
     expect(argsAppel.mot_de_passe).not.toBe(data.mot_de_passe);
     await expect(
-      bcrypt.compare(data.mot_de_passe, argsAppel.mot_de_passe),
+      bcrypt.compare(data.mot_de_passe, argsAppel.mot_de_passe)
     ).resolves.toBe(true);
 
     expect(resultat).toBe(utilisateurCree);
@@ -135,9 +135,9 @@ describe("postUtilisateurService", () => {
 
     // Arrange
     const data = {
-      nom: "Marie",
-      email: "email-invalide",
-      mot_de_passe: "secret123",
+      nom: 'Marie',
+      email: 'email-invalide',
+      mot_de_passe: 'secret123',
     };
 
     // Act
@@ -148,67 +148,67 @@ describe("postUtilisateurService", () => {
     expect(postUtilisateurRepository).not.toHaveBeenCalled();
   });
 
-  it("erreur : lève une erreur si le mot de passe est trop court", async () => {
+  it('erreur : lève une erreur si le mot de passe est trop court', async () => {
     // Ce test vérifie la validation métier du service : un mot de passe
     // de moins de 6 caractères doit être rejeté AVANT tout appel au repository.
 
     // Arrange
-    const data = { nom: "Marie", email: "marie@test.fr", mot_de_passe: "abc" };
+    const data = { nom: 'Marie', email: 'marie@test.fr', mot_de_passe: 'abc' };
 
     // Act
     const fn = () => postUtilisateurService(data as any);
 
     // Assert
     await expect(fn()).rejects.toThrow(
-      "Le mot de passe doit contenir au moins 6 caractères.",
+      'Le mot de passe doit contenir au moins 6 caractères.'
     );
     expect(postUtilisateurRepository).not.toHaveBeenCalled();
   });
 
-  it("erreur : lève une erreur si le mot de passe est manquant", async () => {
+  it('erreur : lève une erreur si le mot de passe est manquant', async () => {
     // Ce test vérifie que l'absence totale de mot de passe est bien
     // détectée par la validation du service.
 
     // Arrange
-    const data = { nom: "Marie", email: "marie@test.fr" };
+    const data = { nom: 'Marie', email: 'marie@test.fr' };
 
     // Act
     const fn = () => postUtilisateurService(data as any);
 
     // Assert
     await expect(fn()).rejects.toThrow(
-      "Le mot de passe doit contenir au moins 6 caractères.",
+      'Le mot de passe doit contenir au moins 6 caractères.'
     );
   });
 });
 
-describe("putUtilisateurService", () => {
+describe('putUtilisateurService', () => {
   it("succès : renvoie l'utilisateur modifié par le repository", async () => {
     // Ce test vérifie que le service transmet bien l'id ET les nouvelles
     // données au repository, et renvoie le résultat de la modification.
 
     // Arrange
-    const utilisateurModifie = { id: 1, nom: "Jean Modifié" };
+    const utilisateurModifie = { id: 1, nom: 'Jean Modifié' };
     (putUtilisateurRepository as jest.Mock).mockResolvedValue(
-      utilisateurModifie,
+      utilisateurModifie
     );
 
     // Act
-    const resultat = await putUtilisateurService(1, { nom: "Jean Modifié" });
+    const resultat = await putUtilisateurService(1, { nom: 'Jean Modifié' });
 
     // Assert
     expect(putUtilisateurRepository).toHaveBeenCalledWith(1, {
-      nom: "Jean Modifié",
+      nom: 'Jean Modifié',
     });
     expect(resultat).toBe(utilisateurModifie);
   });
 
-  it("erreur : lève une erreur si le nouvel email est mal formaté", async () => {
+  it('erreur : lève une erreur si le nouvel email est mal formaté', async () => {
     // Ce test vérifie que la validation d'email s'applique aussi lors
     // d'une modification, et bloque l'appel au repository si invalide.
 
     // Arrange
-    const data = { email: "pas-un-email" };
+    const data = { email: 'pas-un-email' };
 
     // Act
     const fn = () => putUtilisateurService(1, data);
@@ -218,19 +218,19 @@ describe("putUtilisateurService", () => {
     expect(putUtilisateurRepository).not.toHaveBeenCalled();
   });
 
-  it("erreur : lève une erreur si le nouveau mot de passe est trop court", async () => {
+  it('erreur : lève une erreur si le nouveau mot de passe est trop court', async () => {
     // Ce test vérifie que la validation de mot de passe s'applique aussi
     // lors d'une modification, et bloque l'appel au repository si invalide.
 
     // Arrange
-    const data = { mot_de_passe: "123" };
+    const data = { mot_de_passe: '123' };
 
     // Act
     const fn = () => putUtilisateurService(1, data);
 
     // Assert
     await expect(fn()).rejects.toThrow(
-      "Le mot de passe doit contenir au moins 6 caractères.",
+      'Le mot de passe doit contenir au moins 6 caractères.'
     );
     expect(putUtilisateurRepository).not.toHaveBeenCalled();
   });
@@ -240,20 +240,20 @@ describe("putUtilisateurService", () => {
     // ne déclenche pas les validations d'email/mot de passe.
 
     // Arrange
-    const utilisateurModifie = { id: 1, nom: "Nouveau nom" };
+    const utilisateurModifie = { id: 1, nom: 'Nouveau nom' };
     (putUtilisateurRepository as jest.Mock).mockResolvedValue(
-      utilisateurModifie,
+      utilisateurModifie
     );
 
     // Act
-    const resultat = await putUtilisateurService(1, { nom: "Nouveau nom" });
+    const resultat = await putUtilisateurService(1, { nom: 'Nouveau nom' });
 
     // Assert
     expect(resultat).toBe(utilisateurModifie);
   });
 });
 
-describe("deleteUtilisateurService", () => {
+describe('deleteUtilisateurService', () => {
   it("succès : renvoie l'utilisateur supprimé par le repository", async () => {
     // Ce test vérifie que le service transmet bien l'id au repository
     // et renvoie exactement ce que le repository a supprimé.
@@ -261,7 +261,7 @@ describe("deleteUtilisateurService", () => {
     // Arrange
     const utilisateurSupprime = { id: 7 };
     (deleteUtilisateurRepository as jest.Mock).mockResolvedValue(
-      utilisateurSupprime,
+      utilisateurSupprime
     );
 
     // Act
@@ -272,7 +272,7 @@ describe("deleteUtilisateurService", () => {
     expect(resultat).toBe(utilisateurSupprime);
   });
 
-  it("erreur : renvoie null si le repository ne trouve rien à supprimer", async () => {
+  it('erreur : renvoie null si le repository ne trouve rien à supprimer', async () => {
     // Ce test vérifie que le service ne transforme pas un "rien supprimé"
     // en erreur : il renvoie simplement null, comme le repository.
 
