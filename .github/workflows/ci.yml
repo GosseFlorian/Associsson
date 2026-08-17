@@ -13,6 +13,9 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
+    env:
+      DATABASE_URL: postgresql://postgres:test@localhost:5432/lovelace_test
+      JWT_SECRET: ${{ secrets.JWT_SECRET_TEST }}
     services:
       postgres:
         image: postgres:18
@@ -33,10 +36,7 @@ jobs:
           cache-dependency-path: backend/package-lock.json
       - name: Installer les dépendances
         run: npm ci
-      - name: Tests
-        env:
-          DATABASE_URL: postgresql://postgres:test@localhost:5432/lovelace_test
-          JWT_SECRET: ${{ secrets.JWT_SECRET_TEST }}
+      - name: Tests bdd
         run: npm run db:migrate:up && npm run db:seed:up
 
       # - name: Linter
