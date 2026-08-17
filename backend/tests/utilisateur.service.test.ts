@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import {
   getUtilisateursService,
   getUtilisateurIdService,
@@ -106,7 +107,25 @@ describe("postUtilisateurService", () => {
     const resultat = await postUtilisateurService(data as any);
 
     // Assert
-    expect(postUtilisateurRepository).toHaveBeenCalledWith(data);
+    // Le mot de passe est haché par bcrypt avec un sel aléatoire à chaque
+    // appel : on ne peut donc pas comparer l'objet transmis au repository
+    // avec `data` tel quel (le hash sera toujours différent). On vérifie
+    // séparément nom/email, puis que le mot de passe transmis est bien un
+    // hash bcrypt valide correspondant au mot de passe original.
+    expect(postUtilisateurRepository).toHaveBeenCalledWith(
+      expect.objectContaining({
+        nom: data.nom,
+        email: data.email,
+        mot_de_passe: expect.any(String),
+      }),
+    );
+
+    const argsAppel = (postUtilisateurRepository as jest.Mock).mock.calls[0][0];
+    expect(argsAppel.mot_de_passe).not.toBe(data.mot_de_passe);
+    await expect(
+      bcrypt.compare(data.mot_de_passe, argsAppel.mot_de_passe),
+    ).resolves.toBe(true);
+
     expect(resultat).toBe(utilisateurCree);
   });
 

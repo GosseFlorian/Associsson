@@ -110,16 +110,11 @@ describe("postOrganisationRepository", () => {
     // Act
     const resultat = await postOrganisationRepository({
       nom: "OpenAI",
-      est_actif: true,
       proprietaire_id: 1,
     } as any);
 
     // Assert
-    expect(pool.query).toHaveBeenCalledWith(expect.any(String), [
-      "OpenAI",
-      true,
-      1,
-    ]);
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), ["OpenAI", 1]);
     expect(resultat).toBe(ligneCreee);
   });
 
