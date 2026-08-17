@@ -1,14 +1,14 @@
-import { pool } from "../config/client";
-import { Utilisateur } from "../types/types";
+import { pool } from '../config/client';
+import { Utilisateur } from '../types/types';
 
 export const getUtilisateurByEmailRepository = async (
-  email: string,
+  email: string
 ): Promise<Utilisateur | null> => {
   const result = await pool.query<Utilisateur>(
     `SELECT id, nom, email, mot_de_passe, date_inscription
     FROM utilisateur
     WHERE email = $1`,
-    [email],
+    [email]
   );
   return result.rows[0] || null;
 };
@@ -17,25 +17,25 @@ export const getUtilisateursRepository = async (): Promise<Utilisateur[]> => {
   const result = await pool.query<Utilisateur>(
     `SELECT id, nom, email, date_inscription
     FROM utilisateur 
-    ORDER BY id`,
+    ORDER BY id`
   );
   return result.rows;
 };
 
 export const getUtilisateurIdRepository = async (
-  id: number,
+  id: number
 ): Promise<Utilisateur | null> => {
   const result = await pool.query<Utilisateur>(
     `SELECT id, nom, email, date_inscription 
     FROM utilisateur 
     WHERE id = $1`,
-    [id],
+    [id]
   );
   return result.rows[0] || null;
 };
 
 export const postUtilisateurRepository = async (
-  data: Utilisateur,
+  data: Utilisateur
 ): Promise<Utilisateur> => {
   const query = `INSERT INTO utilisateur (nom, email, mot_de_passe)
     VALUES ($1, $2, $3)
@@ -50,7 +50,7 @@ export const postUtilisateurRepository = async (
 
 export const putUtilisateurRepository = async (
   id: number,
-  data: Partial<Utilisateur>,
+  data: Partial<Utilisateur>
 ): Promise<Utilisateur | null> => {
   const query = `
     UPDATE utilisateur
@@ -66,7 +66,7 @@ export const putUtilisateurRepository = async (
 };
 
 export const deleteUtilisateurRepository = async (
-  id: number,
+  id: number
 ): Promise<Utilisateur | null> => {
   const query = `DELETE FROM utilisateur
     WHERE id = $1

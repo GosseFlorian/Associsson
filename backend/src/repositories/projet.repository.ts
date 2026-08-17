@@ -1,5 +1,5 @@
-import { pool } from "../config/client";
-import { Projet, ProjetDetails } from "../types/types";
+import { pool } from '../config/client';
+import { Projet, ProjetDetails } from '../types/types';
 
 export const getProjetsRepository = async (): Promise<ProjetDetails[]> => {
   const result = await pool.query<ProjetDetails>(
@@ -24,13 +24,13 @@ export const getProjetsRepository = async (): Promise<ProjetDetails[]> => {
         JOIN utilisateur u ON m.utilisateur_id = u.id
         LEFT JOIN inscription_projet ip ON p.id = ip.projet_id
         GROUP BY p.id, o.nom, u.nom
-        ORDER BY p.id`,
+        ORDER BY p.id`
   );
   return result.rows;
 };
 
 export const getProjetByIdRepository = async (
-  id: number,
+  id: number
 ): Promise<ProjetDetails | null> => {
   const result = await pool.query<ProjetDetails>(
     `SELECT 
@@ -55,7 +55,7 @@ export const getProjetByIdRepository = async (
         LEFT JOIN inscription_projet ip ON p.id = ip.projet_id
         WHERE p.id = $1
         GROUP BY p.id, o.nom, u.nom`,
-    [id],
+    [id]
   );
   return result.rows[0] || null;
 };
@@ -79,14 +79,14 @@ export const postProjetRepository = async (data: Projet): Promise<Projet> => {
   ];
   const result = await pool.query<Projet>(query, values);
   if (!result.rows[0]) {
-    throw new Error("Échec de la création de Projet");
+    throw new Error('Échec de la création de Projet');
   }
   return result.rows[0];
 };
 
 export const putProjetRepository = async (
   id: number,
-  data: Projet,
+  data: Projet
 ): Promise<Projet | null> => {
   const query = `
         UPDATE projet
@@ -119,7 +119,7 @@ export const putProjetRepository = async (
 };
 
 export const deleteProjetRepository = async (
-  id: number,
+  id: number
 ): Promise<Projet | null> => {
   const query = `DELETE FROM projet
     WHERE id = $1

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 import {
   postConnexionService,
   getUtilisateursService,
@@ -6,17 +6,17 @@ import {
   postUtilisateurService,
   putUtilisateurService,
   deleteUtilisateurService,
-} from "../services/utilisateur.service";
+} from '../services/utilisateur.service';
 
 export const postConnexionController = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const { email, mot_de_passe } = req.body;
 
     if (!email || !mot_de_passe) {
-      res.status(400).json({ message: "Identifiants manquants" });
+      res.status(400).json({ message: 'Identifiants manquants' });
       return;
     }
 
@@ -24,56 +24,56 @@ export const postConnexionController = async (
     res.status(200).json(resultat);
     return;
   } catch (error: any) {
-    console.error("Erreur lors de la connexion : ", error);
-    if (error.message === "Identifiants invalides") {
+    console.error('Erreur lors de la connexion : ', error);
+    if (error.message === 'Identifiants invalides') {
       res.status(401).json({ message: error.message });
       return;
     }
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: 'Erreur interne du serveur' });
   }
 };
 
 export const getUtilisateursController = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const utilisateurs = await getUtilisateursService();
     res.status(200).json(utilisateurs);
     return;
   } catch (error) {
-    console.error("Erreur lors de la récupération des utilisateurs :", error);
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    console.error('Erreur lors de la récupération des utilisateurs :', error);
+    res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
 };
 
 export const getUtilisateurIdController = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   const id = Number(req.params.id);
   if (isNaN(id) || id <= 0) {
-    res.status(400).json({ message: "ID invalide" });
+    res.status(400).json({ message: 'ID invalide' });
     return;
   }
   try {
     const utilisateur = await getUtilisateurIdService(id);
     if (!utilisateur) {
-      res.status(404).json({ message: "Utilisateur non trouvé" });
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
       return;
     }
     res.status(200).json(utilisateur);
   } catch (error) {
     console.error("Erreur lors de la récupération de l'utilisateur :", error);
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
 };
 
 export const postUtilisateurController = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const data = req.body;
@@ -89,36 +89,36 @@ export const postUtilisateurController = async (
     // On gère les erreurs de validation métier renvoyées par le service
     if (
       error.message &&
-      (error.message.includes("Format") ||
-        error.message.includes("mot de passe"))
+      (error.message.includes('Format') ||
+        error.message.includes('mot de passe'))
     ) {
       res.status(400).json({ message: error.message });
       return;
     }
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
 };
 
 export const putUtilisateurController = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   const id = Number(req.params.id);
   if (isNaN(id) || id <= 0) {
-    res.status(400).json({ message: "ID invalide" });
+    res.status(400).json({ message: 'ID invalide' });
     return;
   }
   try {
     const data = req.body;
     // Validation qu'au moins un champ est fourni pour la mise à jour
     if (!data || Object.keys(data).length === 0) {
-      res.status(400).json({ message: "Aucune donnée à modifier fournie" });
+      res.status(400).json({ message: 'Aucune donnée à modifier fournie' });
       return;
     }
     const utilisateur = await putUtilisateurService(id, data);
     if (!utilisateur) {
-      res.status(404).json({ message: "Utilisateur non trouvé" });
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
       return;
     }
     res.status(200).json(utilisateur);
@@ -128,36 +128,36 @@ export const putUtilisateurController = async (
     // On gère les erreurs de validation métier renvoyées par le service
     if (
       error.message &&
-      (error.message.includes("Format") ||
-        error.message.includes("mot de passe"))
+      (error.message.includes('Format') ||
+        error.message.includes('mot de passe'))
     ) {
       res.status(400).json({ message: error.message });
       return;
     }
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
 };
 
 export const deleteUtilisateurController = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   const id = Number(req.params.id);
   if (isNaN(id) || id <= 0) {
-    res.status(400).json({ message: "ID invalide" });
+    res.status(400).json({ message: 'ID invalide' });
     return;
   }
   try {
     const utilisateur = await deleteUtilisateurService(id);
     if (!utilisateur) {
-      res.status(404).json({ message: "Utilisateur non trouvé" });
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
       return;
     }
     res.status(200).json(utilisateur);
   } catch (error) {
     console.error("Erreur lors de la suppression de l'utilisateur : ", error);
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
 };

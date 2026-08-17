@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
 const SECRET = process.env.JWT_SECRET as string;
 
@@ -8,7 +8,7 @@ export interface TokenPayload {
 
 // Fabrique un bracelet
 export function creerToken(payload: TokenPayload): string {
-  return jwt.sign(payload, SECRET, { expiresIn: "24h" });
+  return jwt.sign(payload, SECRET, { expiresIn: '24h' });
 }
 
 // Vérifie un bracelet.

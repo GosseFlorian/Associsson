@@ -1,6 +1,6 @@
-export type StatutTache = "a_assigne" | "en_cours" | "termine";
-export type PrioriteTache = "faible" | "moyenne" | "haute" | "tres_haute";
-export type RoleMembre = "admin" | "benevole" | "licencie";
+export type StatutTache = 'a_assigne' | 'en_cours' | 'termine';
+export type PrioriteTache = 'faible' | 'moyenne' | 'haute' | 'tres_haute';
+export type RoleMembre = 'admin' | 'benevole' | 'licencie';
 
 export interface Utilisateur {
   id: number;

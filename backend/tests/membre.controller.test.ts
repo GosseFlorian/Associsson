@@ -1,22 +1,22 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 import {
   getMembresController,
   getMembresParIdController,
   putMembreController,
   postMembreController,
   deleteMembreController,
-} from "../src/controllers/membre.controller";
+} from '../src/controllers/membre.controller';
 import {
   getMembreService,
   getMembreParIdService,
   putMembreService,
   postMembreService,
   deleteMembreService,
-} from "../src/services/membre.service";
+} from '../src/services/membre.service';
 
 // jest.mock remplace toutes les fonctions du service par des fausses fonctions.
 // On contrôle ensuite ce qu'elles renvoient dans chaque test (Arrange).
-jest.mock("../src/services/membre.service");
+jest.mock('../src/services/membre.service');
 
 // Faux "Response" Express minimal : juste status() et json(), chaînés
 // comme le fait vraiment Express (res.status(x).json(y)).
@@ -33,13 +33,13 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("getMembresController", () => {
-  it("succès : renvoie 200 et la liste des membres", async () => {
+describe('getMembresController', () => {
+  it('succès : renvoie 200 et la liste des membres', async () => {
     // Ce test vérifie que si le service renvoie une liste sans erreur,
     // le controller répond bien avec le status 200 et cette liste en JSON.
 
     // Arrange
-    const membres = [{ role: "membre" }];
+    const membres = [{ role: 'membre' }];
     (getMembreService as jest.Mock).mockResolvedValue(membres);
     const req = {} as Request;
     const res = mockResponse();
@@ -52,12 +52,12 @@ describe("getMembresController", () => {
     expect(res.json).toHaveBeenCalledWith(membres);
   });
 
-  it("erreur : renvoie 500 si le service plante", async () => {
+  it('erreur : renvoie 500 si le service plante', async () => {
     // Ce test vérifie que si le service lève une exception (ex: base de
     // données injoignable), le controller ne plante pas mais répond 500.
 
     // Arrange
-    (getMembreService as jest.Mock).mockRejectedValue(new Error("boom"));
+    (getMembreService as jest.Mock).mockRejectedValue(new Error('boom'));
     const req = {} as Request;
     const res = mockResponse();
 
@@ -69,15 +69,15 @@ describe("getMembresController", () => {
   });
 });
 
-describe("getMembresParIdController", () => {
-  it("succès : renvoie 200 et le membre trouvé", async () => {
+describe('getMembresParIdController', () => {
+  it('succès : renvoie 200 et le membre trouvé', async () => {
     // Ce test vérifie que pour un id valide et existant, le controller
     // renvoie 200 avec le membre correspondant.
 
     // Arrange
-    const membre = { id: 5, role: "membre" };
+    const membre = { id: 5, role: 'membre' };
     (getMembreParIdService as jest.Mock).mockResolvedValue(membre);
-    const req = { params: { id: "5" } } as unknown as Request;
+    const req = { params: { id: '5' } } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -93,7 +93,7 @@ describe("getMembresParIdController", () => {
     // numérique doit être rejeté AVANT même d'appeler le service.
 
     // Arrange
-    const req = { params: { id: "abc" } } as unknown as Request;
+    const req = { params: { id: 'abc' } } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -109,7 +109,7 @@ describe("getMembresParIdController", () => {
 
     // Arrange
     (getMembreParIdService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: "999" } } as unknown as Request;
+    const req = { params: { id: '999' } } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -119,13 +119,13 @@ describe("getMembresParIdController", () => {
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
-  it("erreur : renvoie 500 si le service plante", async () => {
+  it('erreur : renvoie 500 si le service plante', async () => {
     // Ce test vérifie que si le service lève une exception, le controller
     // répond 500 (branche catch de getMembresParIdController).
 
     // Arrange
-    (getMembreParIdService as jest.Mock).mockRejectedValue(new Error("boom"));
-    const req = { params: { id: "5" } } as unknown as Request;
+    (getMembreParIdService as jest.Mock).mockRejectedValue(new Error('boom'));
+    const req = { params: { id: '5' } } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -136,17 +136,17 @@ describe("getMembresParIdController", () => {
   });
 });
 
-describe("putMembreController", () => {
-  it("succès : renvoie 200 et le membre modifié", async () => {
+describe('putMembreController', () => {
+  it('succès : renvoie 200 et le membre modifié', async () => {
     // Ce test vérifie que pour un id valide, le controller transmet bien
     // les nouvelles données au service et renvoie le résultat avec 200.
 
     // Arrange
-    const membreModifie = { id: 3, role: "admin" };
+    const membreModifie = { id: 3, role: 'admin' };
     (putMembreService as jest.Mock).mockResolvedValue(membreModifie);
     const req = {
-      params: { id: "3" },
-      body: { role: "admin" },
+      params: { id: '3' },
+      body: { role: 'admin' },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -163,7 +163,7 @@ describe("putMembreController", () => {
     // de l'id, sans jamais appeler le service.
 
     // Arrange
-    const req = { params: { id: "abc" }, body: {} } as unknown as Request;
+    const req = { params: { id: 'abc' }, body: {} } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -178,7 +178,7 @@ describe("putMembreController", () => {
     // vide, sans jamais appeler le service.
 
     // Arrange
-    const req = { params: { id: "3" }, body: {} } as unknown as Request;
+    const req = { params: { id: '3' }, body: {} } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -196,8 +196,8 @@ describe("putMembreController", () => {
     // Arrange
     (putMembreService as jest.Mock).mockResolvedValue(null);
     const req = {
-      params: { id: "999" },
-      body: { role: "admin" },
+      params: { id: '999' },
+      body: { role: 'admin' },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -208,15 +208,15 @@ describe("putMembreController", () => {
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
-  it("erreur : renvoie 500 si le service plante", async () => {
+  it('erreur : renvoie 500 si le service plante', async () => {
     // Ce test vérifie que si le service lève une exception, le controller
     // répond 500.
 
     // Arrange
-    (putMembreService as jest.Mock).mockRejectedValue(new Error("boom"));
+    (putMembreService as jest.Mock).mockRejectedValue(new Error('boom'));
     const req = {
-      params: { id: "3" },
-      body: { role: "admin" },
+      params: { id: '3' },
+      body: { role: 'admin' },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -228,14 +228,14 @@ describe("putMembreController", () => {
   });
 });
 
-describe("postMembreController", () => {
-  it("succès : renvoie 201 et le membre créé", async () => {
+describe('postMembreController', () => {
+  it('succès : renvoie 201 et le membre créé', async () => {
     // Ce test vérifie que le controller transmet bien le body de la
     // requête au service, et renvoie le membre créé avec 201.
     // Le code réel utilise `res.status(201)` pour une création.
 
     // Arrange
-    const nouveauMembre = { id: 1, role: "membre" };
+    const nouveauMembre = { id: 1, role: 'membre' };
     (postMembreService as jest.Mock).mockResolvedValue(nouveauMembre);
     const req = {
       body: { utilisateur_id: 1, organisation_id: 2 },
@@ -250,7 +250,7 @@ describe("postMembreController", () => {
     expect(res.json).toHaveBeenCalledWith(nouveauMembre);
   });
 
-  it("erreur : renvoie 400 si des champs obligatoires sont manquants", async () => {
+  it('erreur : renvoie 400 si des champs obligatoires sont manquants', async () => {
     // Ce test vérifie que la validation d'entrée du controller bloque
     // la création si utilisateur_id ou organisation_id ne sont pas
     // fournis, sans appeler le service.
@@ -267,17 +267,17 @@ describe("postMembreController", () => {
     expect(postMembreService).not.toHaveBeenCalled();
   });
 
-  it("erreur : renvoie 400 si le service lève une erreur de validation métier", async () => {
+  it('erreur : renvoie 400 si le service lève une erreur de validation métier', async () => {
     // Ce test vérifie que le controller distingue les erreurs de validation
     // métier (ex: rôle obligatoire manquant) des erreurs serveur, et
     // renvoie 400 dans ce cas (branche `error.message.includes("obligatoire")`).
 
     // Arrange
     (postMembreService as jest.Mock).mockRejectedValue(
-      new Error("Le role du membre est obligatoire"),
+      new Error('Le role du membre est obligatoire')
     );
     const req = {
-      body: { utilisateur_id: 1, organisation_id: 2, role: "" },
+      body: { utilisateur_id: 1, organisation_id: 2, role: '' },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -288,12 +288,12 @@ describe("postMembreController", () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it("erreur : renvoie 500 si le service plante pour une autre raison", async () => {
+  it('erreur : renvoie 500 si le service plante pour une autre raison', async () => {
     // Ce test vérifie que si la création échoue côté service pour une
     // raison qui n'est pas de la validation, le controller répond 500.
 
     // Arrange
-    (postMembreService as jest.Mock).mockRejectedValue(new Error("boom"));
+    (postMembreService as jest.Mock).mockRejectedValue(new Error('boom'));
     const req = {
       body: { utilisateur_id: 1, organisation_id: 2 },
     } as unknown as Request;
@@ -307,15 +307,15 @@ describe("postMembreController", () => {
   });
 });
 
-describe("deleteMembreController", () => {
-  it("succès : renvoie 200 et le membre supprimé", async () => {
+describe('deleteMembreController', () => {
+  it('succès : renvoie 200 et le membre supprimé', async () => {
     // Ce test vérifie que pour un id valide et existant, le controller
     // renvoie 200 avec le membre qui vient d'être supprimé.
 
     // Arrange
     const membreSupprime = { id: 7 };
     (deleteMembreService as jest.Mock).mockResolvedValue(membreSupprime);
-    const req = { params: { id: "7" } } as unknown as Request;
+    const req = { params: { id: '7' } } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -331,7 +331,7 @@ describe("deleteMembreController", () => {
     // de l'id, sans jamais appeler le service.
 
     // Arrange
-    const req = { params: { id: "abc" } } as unknown as Request;
+    const req = { params: { id: 'abc' } } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -347,7 +347,7 @@ describe("deleteMembreController", () => {
 
     // Arrange
     (deleteMembreService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: "999" } } as unknown as Request;
+    const req = { params: { id: '999' } } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -357,13 +357,13 @@ describe("deleteMembreController", () => {
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
-  it("erreur : renvoie 500 si le service plante", async () => {
+  it('erreur : renvoie 500 si le service plante', async () => {
     // Ce test vérifie que si le service lève une exception, le controller
     // répond 500.
 
     // Arrange
-    (deleteMembreService as jest.Mock).mockRejectedValue(new Error("boom"));
-    const req = { params: { id: "7" } } as unknown as Request;
+    (deleteMembreService as jest.Mock).mockRejectedValue(new Error('boom'));
+    const req = { params: { id: '7' } } as unknown as Request;
     const res = mockResponse();
 
     // Act

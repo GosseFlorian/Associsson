@@ -1,16 +1,16 @@
-import { pool } from "../src/config/client";
+import { pool } from '../src/config/client';
 import {
   postProjetRepository,
   getProjetsRepository,
   getProjetByIdRepository,
   putProjetRepository,
   deleteProjetRepository,
-} from "../src/repositories/projet.repository";
-import { Projet } from "../src/types/types";
+} from '../src/repositories/projet.repository';
+import { Projet } from '../src/types/types';
 
 // On mock le module config/client entier : pool.query devient une fausse
 // fonction. Le repository ne se connecte jamais à une vraie base de données.
-jest.mock("../src/config/client", () => ({
+jest.mock('../src/config/client', () => ({
   pool: {
     query: jest.fn(),
   },
@@ -22,11 +22,11 @@ const fakeProjet: Projet = {
   id: 1,
   organisation_id: 10,
   createur_id: 5,
-  titre: "Projet Test",
-  description: "Description test",
-  date_debut: "2026-01-01",
-  date_fin: "2026-12-31",
-  adresse: "1 rue du Test",
+  titre: 'Projet Test',
+  description: 'Description test',
+  date_debut: '2026-01-01',
+  date_fin: '2026-12-31',
+  adresse: '1 rue du Test',
   est_termine: false,
 } as Projet;
 
@@ -36,8 +36,8 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("postProjetRepository", () => {
-  it("succès : insère un projet et renvoie la ligne créée", async () => {
+describe('postProjetRepository', () => {
+  it('succès : insère un projet et renvoie la ligne créée', async () => {
     // Ce test vérifie que le repository transmet bien les valeurs dans
     // l'ordre attendu par la requête INSERT, et renvoie la ligne créée.
 
@@ -50,7 +50,7 @@ describe("postProjetRepository", () => {
     // Assert
     expect(mockedPool.query).toHaveBeenCalledTimes(1);
     const [query, values] = mockedPool.query.mock.calls[0];
-    expect(query).toContain("INSERT INTO projet");
+    expect(query).toContain('INSERT INTO projet');
     expect(values).toEqual([
       fakeProjet.organisation_id,
       fakeProjet.createur_id,
@@ -76,12 +76,12 @@ describe("postProjetRepository", () => {
     const fn = () => postProjetRepository(fakeProjet);
 
     // Assert
-    await expect(fn()).rejects.toThrow("Échec de la création de Projet");
+    await expect(fn()).rejects.toThrow('Échec de la création de Projet');
   });
 });
 
-describe("getProjetsRepository", () => {
-  it("succès : renvoie la liste des projets", async () => {
+describe('getProjetsRepository', () => {
+  it('succès : renvoie la liste des projets', async () => {
     // Ce test vérifie que le repository renvoie bien les lignes (rows)
     // du résultat SQL, sans les transformer.
 
@@ -93,11 +93,11 @@ describe("getProjetsRepository", () => {
 
     // Assert
     expect(mockedPool.query).toHaveBeenCalledTimes(1);
-    expect(mockedPool.query.mock.calls[0][0]).toContain("SELECT");
+    expect(mockedPool.query.mock.calls[0][0]).toContain('SELECT');
     expect(resultat).toEqual([fakeProjet]);
   });
 
-  it("succès : renvoie un tableau vide si aucun projet", async () => {
+  it('succès : renvoie un tableau vide si aucun projet', async () => {
     // Ce test vérifie que l'absence de résultats se traduit par un
     // tableau vide, pas par une erreur.
 
@@ -116,17 +116,17 @@ describe("getProjetsRepository", () => {
     // l'erreur remonte bien jusqu'à l'appelant du repository.
 
     // Arrange
-    mockedPool.query.mockRejectedValue(new Error("connexion refusée"));
+    mockedPool.query.mockRejectedValue(new Error('connexion refusée'));
 
     // Act
     const fn = () => getProjetsRepository();
 
     // Assert
-    await expect(fn()).rejects.toThrow("connexion refusée");
+    await expect(fn()).rejects.toThrow('connexion refusée');
   });
 });
 
-describe("getProjetByIdRepository", () => {
+describe('getProjetByIdRepository', () => {
   it("succès : renvoie le projet correspondant à l'id", async () => {
     // Ce test vérifie que l'id est bien transmis en paramètre SQL ($1)
     // et que la première ligne du résultat est renvoyée.
@@ -139,8 +139,8 @@ describe("getProjetByIdRepository", () => {
 
     // Assert
     expect(mockedPool.query).toHaveBeenCalledWith(
-      expect.stringContaining("WHERE p.id = $1"),
-      [1],
+      expect.stringContaining('WHERE p.id = $1'),
+      [1]
     );
     expect(resultat).toEqual(fakeProjet);
   });
@@ -161,8 +161,8 @@ describe("getProjetByIdRepository", () => {
   });
 });
 
-describe("putProjetRepository", () => {
-  it("succès : met à jour un projet et renvoie la ligne modifiée", async () => {
+describe('putProjetRepository', () => {
+  it('succès : met à jour un projet et renvoie la ligne modifiée', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne modifiée
     // et transmet l'id en dernier paramètre de la requête UPDATE.
 
@@ -175,7 +175,7 @@ describe("putProjetRepository", () => {
     // Assert
     expect(mockedPool.query).toHaveBeenCalledTimes(1);
     const [query, values] = mockedPool.query.mock.calls[0];
-    expect(query).toContain("UPDATE projet");
+    expect(query).toContain('UPDATE projet');
     expect(values[values.length - 1]).toBe(1); // id en dernier paramètre
     expect(resultat).toEqual(fakeProjet);
   });
@@ -196,8 +196,8 @@ describe("putProjetRepository", () => {
   });
 });
 
-describe("deleteProjetRepository", () => {
-  it("succès : supprime un projet et renvoie la ligne supprimée", async () => {
+describe('deleteProjetRepository', () => {
+  it('succès : supprime un projet et renvoie la ligne supprimée', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne supprimée
     // par la requête DELETE ... RETURNING.
 
@@ -209,8 +209,8 @@ describe("deleteProjetRepository", () => {
 
     // Assert
     expect(mockedPool.query).toHaveBeenCalledWith(
-      expect.stringContaining("DELETE FROM projet"),
-      [1],
+      expect.stringContaining('DELETE FROM projet'),
+      [1]
     );
     expect(resultat).toEqual(fakeProjet);
   });

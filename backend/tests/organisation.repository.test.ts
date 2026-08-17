@@ -1,15 +1,15 @@
-import { pool } from "../src/config/client";
+import { pool } from '../src/config/client';
 import {
   getOrganisationsRepository,
   getOrganisationIdRepository,
   postOrganisationRepository,
   putOrganisationRepository,
   deleteOrganisationRepository,
-} from "../src/repositories/organisation.repository";
+} from '../src/repositories/organisation.repository';
 
 // On mock le module config/client entier : pool.query devient une fausse
 // fonction. Le repository ne se connecte jamais à une vraie base de données.
-jest.mock("../src/config/client", () => ({
+jest.mock('../src/config/client', () => ({
   pool: {
     query: jest.fn(),
   },
@@ -21,8 +21,8 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("getOrganisationsRepository", () => {
-  it("succès : renvoie result.rows", async () => {
+describe('getOrganisationsRepository', () => {
+  it('succès : renvoie result.rows', async () => {
     // Ce test vérifie que le repository renvoie bien les lignes (rows)
     // du résultat SQL, sans les transformer.
 
@@ -30,11 +30,11 @@ describe("getOrganisationsRepository", () => {
     const lignes = [
       {
         id: 1,
-        nom: "OpenAI",
+        nom: 'OpenAI',
         date_creation: new Date(),
         est_actif: true,
         proprietaire_id: 1,
-        nomProprietaire: "Jean",
+        nomProprietaire: 'Jean',
       },
     ];
     (pool.query as jest.Mock).mockResolvedValue({ rows: lignes });
@@ -51,23 +51,23 @@ describe("getOrganisationsRepository", () => {
     // l'erreur remonte bien jusqu'à l'appelant du repository.
 
     // Arrange
-    (pool.query as jest.Mock).mockRejectedValue(new Error("connexion refusée"));
+    (pool.query as jest.Mock).mockRejectedValue(new Error('connexion refusée'));
 
     // Act
     const fn = () => getOrganisationsRepository();
 
     // Assert
-    await expect(fn()).rejects.toThrow("connexion refusée");
+    await expect(fn()).rejects.toThrow('connexion refusée');
   });
 });
 
-describe("getOrganisationIdRepository", () => {
-  it("succès : renvoie la ligne trouvée avec le bon id en paramètre", async () => {
+describe('getOrganisationIdRepository', () => {
+  it('succès : renvoie la ligne trouvée avec le bon id en paramètre', async () => {
     // Ce test vérifie que l'id est bien transmis en paramètre SQL ($1)
     // et que la première ligne du résultat est renvoyée.
 
     // Arrange
-    const ligne = { id: 5, nom: "OpenAI", nomProprietaire: "Jean" };
+    const ligne = { id: 5, nom: 'OpenAI', nomProprietaire: 'Jean' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligne] });
 
     // Act
@@ -78,7 +78,7 @@ describe("getOrganisationIdRepository", () => {
     expect(resultat).toBe(ligne);
   });
 
-  it("erreur : renvoie null si aucune ligne trouvée", async () => {
+  it('erreur : renvoie null si aucune ligne trouvée', async () => {
     // Ce test vérifie que si la requête ne renvoie aucune ligne (id
     // inexistant), le repository renvoie null plutôt qu'une erreur.
 
@@ -93,15 +93,15 @@ describe("getOrganisationIdRepository", () => {
   });
 });
 
-describe("postOrganisationRepository", () => {
-  it("succès : renvoie la ligne créée", async () => {
+describe('postOrganisationRepository', () => {
+  it('succès : renvoie la ligne créée', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne créée
     // par la requête INSERT ... RETURNING id, nom, est_actif, proprietaire_id.
 
     // Arrange
     const ligneCreee = {
       id: 2,
-      nom: "OpenAI",
+      nom: 'OpenAI',
       est_actif: true,
       proprietaire_id: 1,
     };
@@ -109,12 +109,12 @@ describe("postOrganisationRepository", () => {
 
     // Act
     const resultat = await postOrganisationRepository({
-      nom: "OpenAI",
+      nom: 'OpenAI',
       proprietaire_id: 1,
     } as any);
 
     // Assert
-    expect(pool.query).toHaveBeenCalledWith(expect.any(String), ["OpenAI", 1]);
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), ['OpenAI', 1]);
     expect(resultat).toBe(ligneCreee);
   });
 
@@ -133,22 +133,22 @@ describe("postOrganisationRepository", () => {
 
     // Assert
     await expect(fn()).rejects.toThrow(
-      "Echec de la création de l'organisation",
+      "Echec de la création de l'organisation"
     );
   });
 });
 
-describe("putOrganisationRepository", () => {
-  it("succès : renvoie la ligne mise à jour", async () => {
+describe('putOrganisationRepository', () => {
+  it('succès : renvoie la ligne mise à jour', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne modifiée
     // par la requête UPDATE ... RETURNING id, nom, est_actif, proprietaire_id.
 
     // Arrange
-    const ligneModifiee = { id: 1, nom: "Nouveau nom" };
+    const ligneModifiee = { id: 1, nom: 'Nouveau nom' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneModifiee] });
 
     // Act
-    const resultat = await putOrganisationRepository(1, { nom: "Nouveau nom" });
+    const resultat = await putOrganisationRepository(1, { nom: 'Nouveau nom' });
 
     // Assert
     expect(resultat).toBe(ligneModifiee);
@@ -163,20 +163,20 @@ describe("putOrganisationRepository", () => {
     (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
     // Act
-    const resultat = await putOrganisationRepository(999, { nom: "Test" });
+    const resultat = await putOrganisationRepository(999, { nom: 'Test' });
 
     // Assert
     expect(resultat).toBeNull();
   });
 });
 
-describe("deleteOrganisationRepository", () => {
-  it("succès : renvoie la ligne supprimée", async () => {
+describe('deleteOrganisationRepository', () => {
+  it('succès : renvoie la ligne supprimée', async () => {
     // Ce test vérifie que le repository renvoie bien la ligne supprimée
     // par la requête DELETE ... RETURNING id, nom, est_actif, proprietaire_id.
 
     // Arrange
-    const ligneSupprimee = { id: 1, nom: "OpenAI" };
+    const ligneSupprimee = { id: 1, nom: 'OpenAI' };
     (pool.query as jest.Mock).mockResolvedValue({ rows: [ligneSupprimee] });
 
     // Act

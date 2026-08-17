@@ -4,18 +4,18 @@ import {
   postOrganisationService,
   putOrganisationService,
   deleteOrganisationService,
-} from "../src/services/organisation.service";
+} from '../src/services/organisation.service';
 import {
   getOrganisationsRepository,
   getOrganisationIdRepository,
   postOrganisationRepository,
   putOrganisationRepository,
   deleteOrganisationRepository,
-} from "../src/repositories/organisation.repository";
+} from '../src/repositories/organisation.repository';
 
 // On mock le repository : le service ne doit pas toucher la vraie base de
 // données pour être testé, on contrôle nous-mêmes ce que le repository renvoie.
-jest.mock("../src/repositories/organisation.repository");
+jest.mock('../src/repositories/organisation.repository');
 
 // Avant chaque test, vide l'historique de tous les mocks pour garantir
 // que chaque test démarre avec un état propre.
@@ -23,15 +23,15 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("getOrganisationsService", () => {
-  it("succès : renvoie la liste renvoyée par le repository", async () => {
+describe('getOrganisationsService', () => {
+  it('succès : renvoie la liste renvoyée par le repository', async () => {
     // Ce test vérifie que le service transmet simplement (sans la modifier)
     // la liste que lui renvoie le repository.
 
     // Arrange
     const organisations = [
-      { id: 1, nom: "OpenAI" },
-      { id: 2, nom: "Google" },
+      { id: 1, nom: 'OpenAI' },
+      { id: 2, nom: 'Google' },
     ];
     (getOrganisationsRepository as jest.Mock).mockResolvedValue(organisations);
 
@@ -49,24 +49,24 @@ describe("getOrganisationsService", () => {
 
     // Arrange
     (getOrganisationsRepository as jest.Mock).mockRejectedValue(
-      new Error("DB down"),
+      new Error('DB down')
     );
 
     // Act
     const fn = () => getOrganisationsService();
 
     // Assert
-    await expect(fn()).rejects.toThrow("DB down");
+    await expect(fn()).rejects.toThrow('DB down');
   });
 });
 
-describe("getOrganisationIdService", () => {
+describe('getOrganisationIdService', () => {
   it("succès : renvoie l'organisation trouvée par le repository", async () => {
     // Ce test vérifie que le service transmet bien l'id au repository
     // et renvoie exactement ce que le repository a trouvé.
 
     // Arrange
-    const organisation = { id: 1, nom: "OpenAI" };
+    const organisation = { id: 1, nom: 'OpenAI' };
     (getOrganisationIdRepository as jest.Mock).mockResolvedValue(organisation);
 
     // Act
@@ -77,7 +77,7 @@ describe("getOrganisationIdService", () => {
     expect(resultat).toBe(organisation);
   });
 
-  it("erreur : renvoie null si le repository ne trouve rien", async () => {
+  it('erreur : renvoie null si le repository ne trouve rien', async () => {
     // Ce test vérifie que le service ne transforme pas un "rien trouvé"
     // en erreur : il renvoie simplement null, comme le repository.
 
@@ -92,16 +92,16 @@ describe("getOrganisationIdService", () => {
   });
 });
 
-describe("postOrganisationService", () => {
+describe('postOrganisationService', () => {
   it("succès : renvoie l'organisation créée quand le nom est valide", async () => {
     // Ce test vérifie que le service transmet bien les données reçues au
     // repository, et renvoie l'organisation nouvellement créée.
 
     // Arrange
-    const data = { nom: "OpenAI", est_actif: true, proprietaire_id: 1 };
+    const data = { nom: 'OpenAI', est_actif: true, proprietaire_id: 1 };
     const organisationCreee = { id: 1, ...data };
     (postOrganisationRepository as jest.Mock).mockResolvedValue(
-      organisationCreee,
+      organisationCreee
     );
 
     // Act
@@ -112,24 +112,24 @@ describe("postOrganisationService", () => {
     expect(resultat).toBe(organisationCreee);
   });
 
-  it("erreur : lève une erreur si le nom est vide", async () => {
+  it('erreur : lève une erreur si le nom est vide', async () => {
     // Ce test vérifie la validation métier du service : un nom vide
     // (uniquement des espaces) doit être rejeté AVANT tout appel au repository.
 
     // Arrange
-    const data = { nom: "   ", est_actif: true, proprietaire_id: 1 };
+    const data = { nom: '   ', est_actif: true, proprietaire_id: 1 };
 
     // Act
     const fn = () => postOrganisationService(data as any);
 
     // Assert
     await expect(fn()).rejects.toThrow(
-      "Le nom de l'organisation est obligatoire",
+      "Le nom de l'organisation est obligatoire"
     );
     expect(postOrganisationRepository).not.toHaveBeenCalled();
   });
 
-  it("erreur : lève une erreur si le nom est manquant", async () => {
+  it('erreur : lève une erreur si le nom est manquant', async () => {
     // Ce test vérifie que l'absence totale de nom est bien détectée
     // par la validation du service.
 
@@ -141,36 +141,36 @@ describe("postOrganisationService", () => {
 
     // Assert
     await expect(fn()).rejects.toThrow(
-      "Le nom de l'organisation est obligatoire",
+      "Le nom de l'organisation est obligatoire"
     );
     expect(postOrganisationRepository).not.toHaveBeenCalled();
   });
 });
 
-describe("putOrganisationService", () => {
+describe('putOrganisationService', () => {
   it("succès : renvoie l'organisation modifiée par le repository", async () => {
     // Ce test vérifie que le service transmet bien l'id ET les nouvelles
     // données au repository, et renvoie le résultat de la modification.
 
     // Arrange
-    const organisationModifiee = { id: 1, nom: "Nouvelle organisation" };
+    const organisationModifiee = { id: 1, nom: 'Nouvelle organisation' };
     (putOrganisationRepository as jest.Mock).mockResolvedValue(
-      organisationModifiee,
+      organisationModifiee
     );
 
     // Act
     const resultat = await putOrganisationService(1, {
-      nom: "Nouvelle organisation",
+      nom: 'Nouvelle organisation',
     });
 
     // Assert
     expect(putOrganisationRepository).toHaveBeenCalledWith(1, {
-      nom: "Nouvelle organisation",
+      nom: 'Nouvelle organisation',
     });
     expect(resultat).toBe(organisationModifiee);
   });
 
-  it("erreur : renvoie null si le repository ne trouve rien à modifier", async () => {
+  it('erreur : renvoie null si le repository ne trouve rien à modifier', async () => {
     // Ce test vérifie que le service ne transforme pas un "rien trouvé"
     // en erreur : il renvoie simplement null, comme le repository.
 
@@ -178,22 +178,22 @@ describe("putOrganisationService", () => {
     (putOrganisationRepository as jest.Mock).mockResolvedValue(null);
 
     // Act
-    const resultat = await putOrganisationService(999, { nom: "Test" });
+    const resultat = await putOrganisationService(999, { nom: 'Test' });
 
     // Assert
     expect(resultat).toBeNull();
   });
 });
 
-describe("deleteOrganisationService", () => {
+describe('deleteOrganisationService', () => {
   it("succès : renvoie l'organisation supprimée par le repository", async () => {
     // Ce test vérifie que le service transmet bien l'id au repository
     // et renvoie exactement ce que le repository a supprimé.
 
     // Arrange
-    const organisationSupprimee = { id: 1, nom: "OpenAI" };
+    const organisationSupprimee = { id: 1, nom: 'OpenAI' };
     (deleteOrganisationRepository as jest.Mock).mockResolvedValue(
-      organisationSupprimee,
+      organisationSupprimee
     );
 
     // Act
@@ -204,7 +204,7 @@ describe("deleteOrganisationService", () => {
     expect(resultat).toBe(organisationSupprimee);
   });
 
-  it("erreur : renvoie null si le repository ne trouve rien à supprimer", async () => {
+  it('erreur : renvoie null si le repository ne trouve rien à supprimer', async () => {
     // Ce test vérifie que le service ne transforme pas un "rien supprimé"
     // en erreur : il renvoie simplement null, comme le repository.
 
