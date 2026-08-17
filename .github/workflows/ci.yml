@@ -56,3 +56,26 @@ jobs:
 
   #     - name: Tests
   #       run: npm test
+
+  # # ----------- DATABASE --------------
+  database:
+      runs-on: ubuntu-latest
+
+      # Service PostgreSQL pour les tests d'intégration
+      services:
+        postgres:
+          image: postgres:18
+          env:
+            POSTGRES_PASSWORD: test
+            POSTGRES_DB: lovelace_test
+          options: >-
+            --health-cmd pg_isready
+            --health-interval 10s
+
+      steps:
+        - uses: actions/checkout@v4
+        - name: Tests
+          env:
+            DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+            JWT_SECRET: ${{ secrets.JWT_SECRET_TEST }}
+          run: npm run db:migrate-up && npm run db:seed-up
