@@ -1,5 +1,7 @@
 # Associsson
 
+[![CI](https://github.com/GosseFlorian/Associsson/actions/workflows/ci.yml/badge.svg)](https://github.com/GosseFlorian/Associsson/actions/workflows/ci.yml)
+
 Application web qui permet aux associations d'avoir une plateforme de gestion de projets et de suivi de tâches.
 
 ## Sommaire
