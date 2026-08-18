@@ -35,11 +35,21 @@ export function ProfilPage() {
   }
 
   return (
-    <>
-      <h1>Profil</h1>
-      <p>{utilisateur.nom}</p>
-      <p>{utilisateur.email}</p>
-      <p>{formatDate(utilisateur.date_inscription)}</p>
-    </>
+    <section className="profilPage">
+      <div className="profilPage-container">
+        <h1 className="profilPage-title profilPageMargin">
+          Profil utilisateur
+        </h1>
+        <p className="profilPage-name profilPageMargin">
+          Nom : {utilisateur.nom}
+        </p>
+        <p className="profilPage-email profilPageMargin">
+          Email : {utilisateur.email}
+        </p>
+        <p className="profilPage-inscription profilPageMargin">
+          Date d'inscription : {formatDate(utilisateur.date_inscription)}
+        </p>
+      </div>
+    </section>
   );
 }
