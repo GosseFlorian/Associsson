@@ -29,6 +29,9 @@ jobs:
       - name: Linter
         run: npm run lint
 
+      - name: Recheche vulnérabilité
+        run: npm audit --audit-level=high
+
       - name: Tests
         run: npm test
 
@@ -53,3 +56,6 @@ jobs:
 
       - name: Linter
         run: npm run lint
+
+      - name: Recheche vulnérabilité
+        run: npm audit --audit-level=high
