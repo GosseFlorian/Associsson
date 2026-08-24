@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import helmet from 'helmet';
 import express from 'express';
 import cors from 'cors';
 import utilisateurRoutes from './routes/utilisateur.route';
@@ -10,7 +11,8 @@ import tacheRoutes from './routes/tache.route';
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
-app.use(cors());
+app.use(helmet());
+app.use(cors({ origin: ['http://localhost:5173'] }));
 app.use(express.json());
 
 app.use('/utilisateur', utilisateurRoutes);
