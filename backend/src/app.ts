@@ -8,9 +8,11 @@ import projetRoutes from './routes/projet.route';
 import organisationRoutes from './routes/organisation.route';
 import tacheRoutes from './routes/tache.route';
 import rateLimit from 'express-rate-limit';
+import { config } from "dotenv-safe";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
+config();
 
 app.use(helmet());
 app.use(cors({ origin: ['http://localhost:5173'] }));
