@@ -6,21 +6,56 @@ Application web qui permet aux associations d'avoir une plateforme de gestion de
 
 ## Sommaire
 
+- [Démarrage rapide](#démarrage-rapide)
 - [Prérequis](#prérequis)
 - [Installation](#installation)
 - [Variables d'environnement](#variables-denvironnement)
 - [Base de données](#base-de-données)
 - [Utilisation](#utilisation)
+- [Comptes de test (dev)](#comptes-de-test-dev)
 - [Tests](#tests)
-- [Technologies utilisées](#technologies-utilisées)
-- [Structure du projet](#structure-du-projet)
+- [Documentation](#documentation)
 - [Auteur](#auteur)
+
+## Démarrage rapide
+
+Parcours complet pour partir de zéro et avoir l'application qui tourne en local :
+
+```bash
+# 1. Cloner et installer
+git clone https://github.com/GosseFlorian/Associsson
+cd Associsson
+cd backend && npm install
+cd ../frontend && npm install
+
+# 2. Configurer l'environnement backend
+cd ../backend
+cp .env.example .env
+# → éditer .env (PostgreSQL + JWT_SECRET)
+
+# 3. Créer la base et initialiser les données
+createdb associsson          # adapter si PGDATABASE diffère dans .env
+npm run db:migrate:up
+npm run db:seed:up
+
+# 4. Lancer les deux serveurs (deux terminaux)
+npm run dev                  # terminal 1 — backend → http://localhost:3000
+cd ../frontend && npm run dev  # terminal 2 — frontend → http://localhost:5173
+
+# 5. Vérifier
+curl http://localhost:3000/health
+# → 200 { "status": "ok", "db": "connected", "dbLatencyMs": … }
+```
+
+Ouvrir [http://localhost:5173](http://localhost:5173) et se connecter avec un [compte de test](#comptes-de-test-dev).
+
+> Le détail de chaque étape se trouve dans les sections ci-dessous.
 
 ## Prérequis
 
 Avant de commencer, assure-toi d'avoir installé :
 
-- [Node.js](https://nodejs.org/) version 18 ou supérieure (nécessaire pour le frontend **et** le backend)
+- [Node.js](https://nodejs.org/) version **24** recommandée (minimum 18) — nécessaire pour le frontend **et** le backend
 - [PostgreSQL](https://www.postgresql.org/) version 14 ou supérieure
 - npm (installé automatiquement avec Node.js)
 
@@ -55,7 +90,7 @@ Le fichier d'environnement se trouve **côté backend uniquement** (`backend/.en
 
 ```bash
 cd backend
-cp .env.exemple .env
+cp .env.example .env
 ```
 
 > ⚠️ Le fichier `.env` contient des informations sensibles : il ne doit **jamais** être versionné avec Git. Il est déjà listé dans le `.gitignore`. On documente ici le **nom** et le **rôle** des variables, jamais leurs valeurs réelles.
@@ -74,42 +109,44 @@ Le frontend n'a pas de fichier `.env` pour l'instant (pas d'appel API configuré
 
 ## Base de données
 
-Une fois PostgreSQL installé et le fichier `backend/.env` renseigné (avec une base déjà créée, ex. `createdb associsson`), tout se pilote depuis `backend/` via des scripts npm qui exécutent les fichiers `.sql` situés dans `backend/src/config/` (`migrationUp.sql`, `migrationDown.sql`, `seedUp.sql`, `seedDown.sql`) à travers le pool de connexion `pg` (`backend/src/config/client.ts`).
+Une fois PostgreSQL installé et le fichier `backend/.env` renseigné, tout se pilote depuis `backend/` via des scripts npm qui exécutent les fichiers `.sql` situés dans `backend/src/config/` à travers le pool de connexion `pg` (`backend/src/config/client.ts`).
 
 ```bash
 cd backend
 ```
 
-- Créer les tables (migration) :
+1. **Créer la base PostgreSQL** (une seule fois) :
 
-  ```bash
-  npm run db:migrate:up
-  ```
+   ```bash
+   createdb associsson
+   ```
 
-- Supprimer les tables (rollback complet) :
+   > Le nom doit correspondre à `PGDATABASE` dans ton `.env`.
 
-  ```bash
-  npm run db:migrate:down
-  ```
+2. **Créer les tables** (migration) :
 
-- Injecter un jeu de données de test (seed) :
+   ```bash
+   npm run db:migrate:up
+   ```
 
-  ```bash
-  npm run db:seed:up
-  ```
+3. **Injecter un jeu de données de test** (seed) :
 
-- Vider le jeu de données de test :
-
-  ```bash
-  npm run db:seed:down
-  ```
+   ```bash
+   npm run db:seed:up
+   ```
 
 Ordre typique pour partir d'une base vide et prête à l'emploi :
 
 ```bash
+createdb associsson
 npm run db:migrate:up
 npm run db:seed:up
 ```
+
+**Autres commandes utiles :**
+
+- Supprimer les tables (rollback complet) : `npm run db:migrate:down`
+- Vider le jeu de données de test : `npm run db:seed:down`
 
 > Ces scripts npm exécutent respectivement `backend/src/config/migrationUp.ts`, `migrationDown.ts`, `seedUp.ts` et `seedDown.ts`, qui lisent chacun le fichier `.sql` correspondant et l'envoient à la base via `pool.query`.
 
@@ -129,6 +166,32 @@ cd frontend
 npm run dev
 ```
 
+**Vérifier que tout fonctionne :**
+
+```bash
+curl http://localhost:3000/health
+```
+
+Réponse attendue :
+
+```json
+{ "status": "ok", "db": "connected", "dbLatencyMs": 4 }
+```
+
+Puis ouvrir [http://localhost:5173](http://localhost:5173) dans le navigateur.
+
+## Comptes de test (dev)
+
+Après `npm run db:seed:up`, des utilisateurs fictifs sont disponibles pour se connecter **en développement uniquement** :
+
+| Email | Mot de passe |
+|-------|--------------|
+| `florian@gmail.com` | `Mot2passeFlori@n` |
+| `benjamin@gmail.com` | `Mot2passeBenj@min` |
+| `antoine@gmail.com` | `Mot2passe@ntoine` |
+
+> ⚠️ Ces comptes ne doivent **jamais** être déployés en production. Liste complète dans `backend/src/config/seedUp.sql`.
+
 ## Tests
 
 Le backend utilise Jest (`ts-jest`), avec les tests dans `backend/tests/` :
@@ -138,70 +201,24 @@ cd backend
 npm test
 ```
 
-Le frontend n'a pas encore de suite de tests configurée à ce jour
+Le frontend n'a pas encore de suite de tests configurée à ce jour.
 
-## Technologies utilisées
+## Documentation
 
-- **Front-end** : React 19, TypeScript, Vite, React Router, Zustand (état global)
-- **Back-end** : Node.js, Express 5, TypeScript, driver `pg`, `bcryptjs` (hash de mots de passe), `jsonwebtoken` (authentification JWT)
-- **Base de données** : PostgreSQL
-- **Tests** : Jest / ts-jest (backend)
+La documentation est organisée selon le cadre [Diátaxis](https://diataxis.fr) — un document par besoin :
 
-## Structure du projet
+| Besoin | Document |
+|--------|----------|
+| Installer et démarrer (ce fichier) | [README.md](./README.md) |
+| Faire tourner le service, vérifier, relancer | [docs/exploitation.md](./docs/exploitation.md) |
+| Procédures d'incident (runbook) | [docs/runbook.md](./docs/runbook.md) |
+| Référence des endpoints API | [docs/api.md](./docs/api.md) |
+| Architecture et choix techniques | [docs/architecture.md](./docs/architecture.md) |
+| Décisions d'architecture (ADR) | [docs/adr/](./docs/adr/) |
 
-```
-associsson/
-├── frontend/                          # Application web (React + TypeScript, Vite)
-│   ├── public/                        # Assets statiques servis tels quels (favicon, images...)
-│   ├── src/
-│   │   ├── components/                # Composants UI réutilisables (boutons, cartes, formulaires...)
-│   │   ├── pages/                     # Écrans / routes de l'application
-│   │   ├── stores/                    # État global partagé entre composants (Zustand)
-│   │   ├── lib/                       # Fonctions utilitaires côté front
-│   │   ├── style/                     # Styles partagés
-│   │   ├── types/                     # Interfaces et types TypeScript partagés côté front
-│   │   ├── App.tsx                    # Composant racine, monte le routeur et les providers
-│   │   ├── main.tsx                   # Point d'entrée, injecte App dans le DOM
-│   │   └── index.css / App.css
-│   ├── index.html                     # Page HTML unique (SPA), point d'ancrage de Vite
-│   ├── vite.config.ts
-│   ├── eslint.config.js
-│   ├── tsconfig.json / .app.json / .node.json
-│   └── package.json
-│
-├── backend/                           # API REST (Node.js + Express + TypeScript)
-│   ├── src/
-│   │   ├── routes/                    # Déclare les endpoints HTTP et les relie aux controllers
-│   │   ├── controllers/               # Reçoit la requête HTTP, valide les paramètres, formate la réponse
-│   │   ├── services/                  # Logique métier (règles, validations, orchestration)
-│   │   ├── repositories/              # Accès direct à PostgreSQL (requêtes SQL brutes via pg)
-│   │   ├── middlewares/               # Middlewares Express (ex. requireAuth pour les routes protégées)
-│   │   ├── config/                    # Connexion DB (client.ts), scripts de migration et de seed
-│   │   │   ├── client.ts              # Pool de connexion PostgreSQL (pg)
-│   │   │   ├── migrationUp.ts / .sql  # Création des tables
-│   │   │   ├── migrationDown.ts / .sql# Suppression des tables
-│   │   │   ├── seedUp.ts / .sql       # Injection d'un jeu de données de test
-│   │   │   └── seedDown.ts / .sql     # Suppression du jeu de données de test
-│   │   ├── types.ts                   # Interfaces TypeScript partagées côté back
-│   │   └── app.ts                     # Point d'entrée : instancie Express, branche les routes, lance le serveur
-│   ├── tests/                         # Tests unitaires (Jest), un fichier par couche et par entité
-│   ├── jest.config.js
-│   ├── tsconfig.json
-│   ├── .env / .env.exemple            # Variables d'environnement (jamais commit le .env réel)
-│   └── package.json
-│
-├── docs/                              # Documentation projet
-│   ├── adr/                           # Décisions d'architecture (ADR)
-│   ├── backlog.md                     # Backlog produit (user stories, état d'avancement)
-│   ├── cadrage.md                     # Objectifs, périmètre, rôles de l'équipe
-│   ├── erd.md                         # Modèle de données (diagramme entité-relation)
-│   └── CONTRIBUTING.md                # Guide de contribution
-│
-├── .github/
-│   └── CODEOWNERS
-├── .gitignore
-└── README.md                          # Ce fichier
-```
+Index complet : [docs/README.md](./docs/README.md)
+
+Autres documents : [cadrage](./docs/cadrage.md) · [backlog](./docs/backlog.md) · [modèle de données](./docs/erd.md) · [contribution](./docs/CONTRIBUTING.md)
 
 ## Auteur
 
