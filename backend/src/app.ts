@@ -10,11 +10,14 @@ import tacheRoutes from './routes/tache.route';
 import healthRoutes from './routes/health.route';
 import rateLimit from 'express-rate-limit';
 import { config } from "dotenv-safe";
+import { httpLogger } from './middlewares/httpLogger.middleware';
+import { logger } from './lib/logger';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 config();
 
+app.use(httpLogger);
 app.use(helmet());
 app.use(cors({ origin: ['http://localhost:5173'] }));
 app.use(express.json());
@@ -32,5 +35,5 @@ app.use('/health', healthRoutes);
 
 // Lancement du serveur
 app.listen(PORT, () => {
-  console.log(`Le serveur est lancé sur : http://localhost:${PORT}`);
+  logger.info({ port: PORT }, `Serveur lancé sur http://localhost:${PORT}`);
 });

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { logError } from '../lib/logError';
 import {
   getProjetsService,
   getProjetByIdService,
@@ -15,7 +16,7 @@ export const getProjetsController = async (
     const projets = await getProjetsService();
     res.status(200).json(projets);
   } catch (error) {
-    console.error('Erreur lors de la récupération des projets :', error);
+    logError(req, error, 'Erreur lors de la récupération des projets');
     res.status(500).json({ message: 'Erreur interne du serveur' });
   }
 };
@@ -37,7 +38,7 @@ export const getProjetByIdController = async (
     }
     res.status(200).json(projet);
   } catch (error) {
-    console.error('Erreur lors de la récupération du projet :', error);
+    logError(req, error, 'Erreur lors de la récupération du projet');
     res.status(500).json({ message: 'Erreur interne du serveur' });
   }
 };
@@ -56,7 +57,7 @@ export const postProjetController = async (
     res.status(201).json(nouveauProjet);
     return;
   } catch (error: any) {
-    console.error('Erreur lors de la création du projet :', error);
+    logError(req, error, 'Erreur lors de la création du projet');
     // On gère les erreurs de validation métier renvoyées par le service
     if (error.message && error.message.includes('obligatoire')) {
       res.status(400).json({ message: error.message });
@@ -91,7 +92,7 @@ export const putProjetController = async (
     res.status(200).json(projetModifie);
     return;
   } catch (error) {
-    console.error('Erreur lors de la modification du projet :', error);
+    logError(req, error, 'Erreur lors de la modification du projet');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -115,7 +116,7 @@ export const deleteProjetController = async (
     res.status(200).json(projetSupprime);
     return;
   } catch (error) {
-    console.error('Erreur lors de la suppression du projet :', error);
+    logError(req, error, 'Erreur lors de la suppression du projet');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
