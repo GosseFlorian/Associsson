@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { logError } from '../lib/logError';
 import {
   getOrganisationIdService,
   getOrganisationsService,
@@ -16,7 +17,7 @@ export const getOrganisationsController = async (
     res.status(200).json(organisations);
     return;
   } catch (error) {
-    console.error('Erreur lors de la récuperation des organisations : ', error);
+    logError(req, error, 'Erreur lors de la récuperation des organisations');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -41,7 +42,7 @@ export const getOrganisationIdController = async (
     }
     res.status(200).json(organisation);
   } catch (error) {
-    console.error('Erreur lors de la récuperation de organisation : ', error);
+    logError(req, error, 'Erreur lors de la récuperation de organisation');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -63,7 +64,7 @@ export const postOrganisationController = async (
     res.status(201).json(nouvelleOrganisation);
     return;
   } catch (error: any) {
-    console.error("Erreur lors de la création de l'organisation :", error);
+    logError(req, error, "Erreur lors de la création de l'organisation");
     // On gère les erreurs de validation métier renvoyées par le service
     if (error.message && error.message.includes('obligatoire')) {
       res.status(400).json({ message: error.message });
@@ -101,7 +102,7 @@ export const putOrganisationController = async (
     res.status(200).json(organisation);
     return;
   } catch (error) {
-    console.error("Erreur lors de la modification de l'organisation : ", error);
+    logError(req, error, "Erreur lors de la modification de l'organisation");
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -125,7 +126,7 @@ export const deleteOrganisationController = async (
     }
     res.status(200).json(organisation);
   } catch (error) {
-    console.error("Erreur lors de la suppression de l'organisation : ", error);
+    logError(req, error, "Erreur lors de la suppression de l'organisation");
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }

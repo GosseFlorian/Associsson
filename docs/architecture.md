@@ -177,10 +177,11 @@ Diagramme complet : [erd.md](./erd.md)
 
 Points **non encore traités** (dette documentée) :
 
-- Logs structurés JSON en production (OWASP A09).
 - Autorisation fine par ressource / propriétaire (OWASP A01).
 - Protection de toutes les routes mutantes par JWT.
 - Retrait des comptes de démo en production (OWASP A05).
+
+Les logs structurés (pino + pino-http) sont en place — voir [exploitation.md § Logs](./exploitation.md#logs).
 
 ---
 

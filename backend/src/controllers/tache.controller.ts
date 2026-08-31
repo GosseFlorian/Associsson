@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { logError } from '../lib/logError';
 import {
   getTachesService,
   getTacheIdService,
@@ -16,7 +17,7 @@ export const getTachesController = async (
     res.status(200).json(taches);
     return;
   } catch (error) {
-    console.error('Erreur lors de la récupération des tâches :', error);
+    logError(req, error, 'Erreur lors de la récupération des tâches');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -41,7 +42,7 @@ export const getTacheIdController = async (
     res.status(200).json(tache);
     return;
   } catch (error) {
-    console.error('Erreur lors de la récupération de la tâche :', error);
+    logError(req, error, 'Erreur lors de la récupération de la tâche');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -63,7 +64,7 @@ export const postTacheController = async (
     res.status(201).json(nouvelleTache);
     return;
   } catch (error: any) {
-    console.error('Erreur lors de la création de la tâche :', error);
+    logError(req, error, 'Erreur lors de la création de la tâche');
     // On gère les erreurs de validation métier renvoyées par le service
     if (error.message && error.message.includes('obligatoire')) {
       res.status(400).json({ message: error.message });
@@ -101,7 +102,7 @@ export const putTacheController = async (
     res.status(200).json(tache);
     return;
   } catch (error) {
-    console.error('Erreur lors de la modification de la tâche :', error);
+    logError(req, error, 'Erreur lors de la modification de la tâche');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -125,7 +126,7 @@ export const deleteTacheController = async (
     res.status(200).json(tache);
     return;
   } catch (error) {
-    console.error('Erreur lors de la suppression de la tâche :', error);
+    logError(req, error, 'Erreur lors de la suppression de la tâche');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }

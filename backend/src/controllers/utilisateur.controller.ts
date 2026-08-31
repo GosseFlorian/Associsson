@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { logError } from '../lib/logError';
 import {
   postConnexionService,
   getUtilisateursService,
@@ -24,7 +25,7 @@ export const postConnexionController = async (
     res.status(200).json(resultat);
     return;
   } catch (error: any) {
-    console.error('Erreur lors de la connexion : ', error);
+    logError(req, error, 'Erreur lors de la connexion');
     if (error.message === 'Identifiants invalides') {
       res.status(401).json({ message: error.message });
       return;
@@ -42,7 +43,7 @@ export const getUtilisateursController = async (
     res.status(200).json(utilisateurs);
     return;
   } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs :', error);
+    logError(req, error, 'Erreur lors de la récupération des utilisateurs');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -65,7 +66,7 @@ export const getUtilisateurIdController = async (
     }
     res.status(200).json(utilisateur);
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'utilisateur :", error);
+    logError(req, error, "Erreur lors de la récupération de l'utilisateur");
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -85,7 +86,7 @@ export const postUtilisateurController = async (
     res.status(201).json(nouvelleUtilisateur);
     return;
   } catch (error: any) {
-    console.error("Erreur lors de la création de l'utilisateur : ", error);
+    logError(req, error, "Erreur lors de la création de l'utilisateur");
     // On gère les erreurs de validation métier renvoyées par le service
     if (
       error.message &&
@@ -124,7 +125,7 @@ export const putUtilisateurController = async (
     res.status(200).json(utilisateur);
     return;
   } catch (error: any) {
-    console.error("Erreur lors de la modification de l'utilisateur : ", error);
+    logError(req, error, "Erreur lors de la modification de l'utilisateur");
     // On gère les erreurs de validation métier renvoyées par le service
     if (
       error.message &&
@@ -156,7 +157,7 @@ export const deleteUtilisateurController = async (
     }
     res.status(200).json(utilisateur);
   } catch (error) {
-    console.error("Erreur lors de la suppression de l'utilisateur : ", error);
+    logError(req, error, "Erreur lors de la suppression de l'utilisateur");
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }

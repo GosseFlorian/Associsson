@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { logError } from '../lib/logError';
 import {
   getMembreService,
   getMembreParIdService,
@@ -16,7 +17,7 @@ export async function getMembresController(
     res.status(200).json(membres);
     return;
   } catch (error) {
-    console.error('Erreur lors de la récupération des membres :', error);
+    logError(req, error, 'Erreur lors de la récupération des membres');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -40,7 +41,7 @@ export async function getMembresParIdController(
     }
     res.status(200).json(membre);
   } catch (error) {
-    console.error('Erreur lors de la récupération du membre:', error);
+    logError(req, error, 'Erreur lors de la récupération du membre');
     res.status(500).json({ message: 'Erreur serveur', error });
   }
 }
@@ -72,7 +73,7 @@ export async function putMembreController(
     res.status(200).json(membre);
     return;
   } catch (error) {
-    console.error('Erreur lors de la modification du membre : ', error);
+    logError(req, error, 'Erreur lors de la modification du membre');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -92,7 +93,7 @@ export async function postMembreController(
     res.status(201).json(nouveauMembre);
     return;
   } catch (error: any) {
-    console.error('Erreur lors de la création du membre : ', error);
+    logError(req, error, 'Erreur lors de la création du membre');
     // On gère les erreurs de validation métier renvoyées par le service
     if (error.message && error.message.includes('obligatoire')) {
       res.status(400).json({ message: error.message });
@@ -120,7 +121,7 @@ export async function deleteMembreController(
     }
     res.status(200).json(membre);
   } catch (error) {
-    console.error('Erreur lors de la récupération : ', error);
+    logError(req, error, 'Erreur lors de la suppression du membre');
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
