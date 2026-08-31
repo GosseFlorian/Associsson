@@ -7,6 +7,7 @@ import membreRoutes from './routes/membre.route';
 import projetRoutes from './routes/projet.route';
 import organisationRoutes from './routes/organisation.route';
 import tacheRoutes from './routes/tache.route';
+import healthRoutes from './routes/health.route';
 import rateLimit from 'express-rate-limit';
 import { config } from "dotenv-safe";
 
@@ -27,6 +28,7 @@ app.use('/membre', membreRoutes);
 app.use('/projet', projetRoutes);
 app.use('/organisation', organisationRoutes);
 app.use('/tache', tacheRoutes);
+app.use('/health', healthRoutes);
 
 // Lancement du serveur
 app.listen(PORT, () => {
