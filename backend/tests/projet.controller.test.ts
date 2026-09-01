@@ -41,6 +41,7 @@ const mockRequest = (overrides: Partial<Request> = {}): Request => {
   return {
     params: {},
     body: {},
+    utilisateur: { utilisateurId: 1 },
     ...overrides,
   } as unknown as Request;
 };
@@ -92,7 +93,7 @@ describe('projet.controller', () => {
 
       await getProjetByIdController(req, res);
 
-      expect(getProjetByIdService).toHaveBeenCalledWith(1);
+      expect(getProjetByIdService).toHaveBeenCalledWith(1, 1);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(fakeProjet);
     });
@@ -145,7 +146,7 @@ describe('projet.controller', () => {
 
       await postProjetController(req, res);
 
-      expect(postProjetService).toHaveBeenCalledWith(fakeProjet);
+      expect(postProjetService).toHaveBeenCalledWith(fakeProjet, 1);
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith(fakeProjet);
     });
@@ -199,7 +200,7 @@ describe('projet.controller', () => {
 
       await putProjetController(req, res);
 
-      expect(putProjetService).toHaveBeenCalledWith(1, fakeProjet);
+      expect(putProjetService).toHaveBeenCalledWith(1, fakeProjet, 1);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(fakeProjet);
     });
@@ -257,7 +258,7 @@ describe('projet.controller', () => {
 
       await deleteProjetController(req, res);
 
-      expect(deleteProjetService).toHaveBeenCalledWith(1);
+      expect(deleteProjetService).toHaveBeenCalledWith(1, 1);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(fakeProjet);
     });

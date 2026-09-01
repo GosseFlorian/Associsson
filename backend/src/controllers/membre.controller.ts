@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { logError } from '../lib/logError';
+import { envoyerSiAccesRefuse } from '../lib/errors';
 import {
   getMembreService,
   getMembreParIdService,
@@ -13,11 +14,14 @@ export async function getMembresController(
   res: Response
 ): Promise<void> {
   try {
-    const membres = await getMembreService();
+    const membres = await getMembreService(req.utilisateur!.utilisateurId);
     res.status(200).json(membres);
     return;
   } catch (error) {
     logError(req, error, 'Erreur lors de la récupération des membres');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -34,7 +38,10 @@ export async function getMembresParIdController(
     return;
   }
   try {
-    const membre = await getMembreParIdService(id);
+    const membre = await getMembreParIdService(
+      id,
+      req.utilisateur!.utilisateurId
+    );
     if (!membre) {
       res.status(404).json({ message: 'Membre non trouvé' });
       return;
@@ -42,6 +49,9 @@ export async function getMembresParIdController(
     res.status(200).json(membre);
   } catch (error) {
     logError(req, error, 'Erreur lors de la récupération du membre');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur serveur', error });
   }
 }
@@ -63,7 +73,11 @@ export async function putMembreController(
       res.status(400).json({ message: 'Aucune donnée à modifier fournie' });
       return;
     }
-    const membre = await putMembreService(id, data);
+    const membre = await putMembreService(
+      id,
+      data,
+      req.utilisateur!.utilisateurId
+    );
 
     if (!membre) {
       res.status(404).json({ message: 'Membre non trouvé' });
@@ -72,8 +86,15 @@ export async function putMembreController(
 
     res.status(200).json(membre);
     return;
-  } catch (error) {
+  } catch (error: any) {
     logError(req, error, 'Erreur lors de la modification du membre');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
+    if (error.message && error.message.includes('obligatoire')) {
+      res.status(400).json({ message: error.message });
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -89,11 +110,17 @@ export async function postMembreController(
       res.status(400).json({ message: 'Données du membre incomplètes' });
       return;
     }
-    const nouveauMembre = await postMembreService(data);
+    const nouveauMembre = await postMembreService(
+      data,
+      req.utilisateur!.utilisateurId
+    );
     res.status(201).json(nouveauMembre);
     return;
   } catch (error: any) {
     logError(req, error, 'Erreur lors de la création du membre');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     // On gère les erreurs de validation métier renvoyées par le service
     if (error.message && error.message.includes('obligatoire')) {
       res.status(400).json({ message: error.message });
@@ -114,7 +141,10 @@ export async function deleteMembreController(
     return;
   }
   try {
-    const membre = await deleteMembreService(id);
+    const membre = await deleteMembreService(
+      id,
+      req.utilisateur!.utilisateurId
+    );
     if (!membre) {
       res.status(404).json({ message: 'Membre non trouvé' });
       return;
@@ -122,6 +152,9 @@ export async function deleteMembreController(
     res.status(200).json(membre);
   } catch (error) {
     logError(req, error, 'Erreur lors de la suppression du membre');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }

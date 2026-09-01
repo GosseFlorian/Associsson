@@ -12,135 +12,128 @@ import {
   putOrganisationRepository,
   deleteOrganisationRepository,
 } from '../src/repositories/organisation.repository';
+import { postMembreRepository } from '../src/repositories/membre.repository';
+import { exigerMembre, exigerRole } from '../src/services/autorisation.service';
+import { AccesRefuseError } from '../src/lib/errors';
 
-// On mock le repository : le service ne doit pas toucher la vraie base de
-// données pour être testé, on contrôle nous-mêmes ce que le repository renvoie.
 jest.mock('../src/repositories/organisation.repository');
+jest.mock('../src/repositories/membre.repository');
+jest.mock('../src/services/autorisation.service');
 
-// Avant chaque test, vide l'historique de tous les mocks pour garantir
-// que chaque test démarre avec un état propre.
+const organisation = {
+  id: 1,
+  nom: 'OpenAI',
+  proprietaire_id: 1,
+};
+
 beforeEach(() => {
   jest.clearAllMocks();
+  (exigerMembre as jest.Mock).mockResolvedValue({
+    id: 10,
+    role: 'admin',
+    organisation_id: 1,
+    utilisateur_id: 1,
+  });
+  (exigerRole as jest.Mock).mockResolvedValue({
+    id: 10,
+    role: 'admin',
+    organisation_id: 1,
+    utilisateur_id: 1,
+  });
 });
 
 describe('getOrganisationsService', () => {
   it('succès : renvoie la liste renvoyée par le repository', async () => {
-    // Ce test vérifie que le service transmet simplement (sans la modifier)
-    // la liste que lui renvoie le repository.
-
-    // Arrange
     const organisations = [
       { id: 1, nom: 'OpenAI' },
       { id: 2, nom: 'Google' },
     ];
     (getOrganisationsRepository as jest.Mock).mockResolvedValue(organisations);
 
-    // Act
-    const resultat = await getOrganisationsService();
+    const resultat = await getOrganisationsService(1);
 
-    // Assert
-    expect(getOrganisationsRepository).toHaveBeenCalled();
+    expect(getOrganisationsRepository).toHaveBeenCalledWith(1);
     expect(resultat).toBe(organisations);
   });
 
   it("erreur : propage l'erreur si le repository plante", async () => {
-    // Ce test vérifie que si le repository échoue, l'erreur remonte bien
-    // jusqu'à l'appelant du service (elle n'est pas avalée en silence).
-
-    // Arrange
     (getOrganisationsRepository as jest.Mock).mockRejectedValue(
       new Error('DB down')
     );
 
-    // Act
-    const fn = () => getOrganisationsService();
-
-    // Assert
-    await expect(fn()).rejects.toThrow('DB down');
+    await expect(getOrganisationsService(1)).rejects.toThrow('DB down');
   });
 });
 
 describe('getOrganisationIdService', () => {
   it("succès : renvoie l'organisation trouvée par le repository", async () => {
-    // Ce test vérifie que le service transmet bien l'id au repository
-    // et renvoie exactement ce que le repository a trouvé.
-
-    // Arrange
-    const organisation = { id: 1, nom: 'OpenAI' };
     (getOrganisationIdRepository as jest.Mock).mockResolvedValue(organisation);
 
-    // Act
-    const resultat = await getOrganisationIdService(1);
+    const resultat = await getOrganisationIdService(1, 1);
 
-    // Assert
     expect(getOrganisationIdRepository).toHaveBeenCalledWith(1);
+    expect(exigerMembre).toHaveBeenCalledWith(1, 1);
     expect(resultat).toBe(organisation);
   });
 
   it('erreur : renvoie null si le repository ne trouve rien', async () => {
-    // Ce test vérifie que le service ne transforme pas un "rien trouvé"
-    // en erreur : il renvoie simplement null, comme le repository.
-
-    // Arrange
     (getOrganisationIdRepository as jest.Mock).mockResolvedValue(null);
 
-    // Act
-    const resultat = await getOrganisationIdService(999);
+    const resultat = await getOrganisationIdService(999, 1);
 
-    // Assert
     expect(resultat).toBeNull();
+    expect(exigerMembre).not.toHaveBeenCalled();
+  });
+
+  it("erreur : refuse l'accès si l'utilisateur n'est pas membre (IDOR)", async () => {
+    (getOrganisationIdRepository as jest.Mock).mockResolvedValue(organisation);
+    (exigerMembre as jest.Mock).mockRejectedValue(new AccesRefuseError());
+
+    await expect(getOrganisationIdService(1, 2)).rejects.toThrow(
+      AccesRefuseError
+    );
   });
 });
 
 describe('postOrganisationService', () => {
-  it("succès : renvoie l'organisation créée quand le nom est valide", async () => {
-    // Ce test vérifie que le service transmet bien les données reçues au
-    // repository, et renvoie l'organisation nouvellement créée.
-
-    // Arrange
-    const data = { nom: 'OpenAI', est_actif: true, proprietaire_id: 1 };
-    const organisationCreee = { id: 1, ...data };
+  it("succès : force le propriétaire au JWT et crée le membre admin", async () => {
+    const data = { nom: 'OpenAI', est_actif: true, proprietaire_id: 99 };
+    const organisationCreee = { id: 1, nom: 'OpenAI', proprietaire_id: 1 };
     (postOrganisationRepository as jest.Mock).mockResolvedValue(
       organisationCreee
     );
+    (postMembreRepository as jest.Mock).mockResolvedValue({
+      id: 1,
+      role: 'admin',
+    });
 
-    // Act
-    const resultat = await postOrganisationService(data as any);
+    const resultat = await postOrganisationService(data as any, 1);
 
-    // Assert
-    expect(postOrganisationRepository).toHaveBeenCalledWith(data);
+    expect(postOrganisationRepository).toHaveBeenCalledWith({
+      ...data,
+      proprietaire_id: 1,
+    });
+    expect(postMembreRepository).toHaveBeenCalledWith({
+      organisation_id: 1,
+      utilisateur_id: 1,
+      role: 'admin',
+    });
     expect(resultat).toBe(organisationCreee);
   });
 
   it('erreur : lève une erreur si le nom est vide', async () => {
-    // Ce test vérifie la validation métier du service : un nom vide
-    // (uniquement des espaces) doit être rejeté AVANT tout appel au repository.
-
-    // Arrange
     const data = { nom: '   ', est_actif: true, proprietaire_id: 1 };
 
-    // Act
-    const fn = () => postOrganisationService(data as any);
-
-    // Assert
-    await expect(fn()).rejects.toThrow(
+    await expect(postOrganisationService(data as any, 1)).rejects.toThrow(
       "Le nom de l'organisation est obligatoire"
     );
     expect(postOrganisationRepository).not.toHaveBeenCalled();
   });
 
   it('erreur : lève une erreur si le nom est manquant', async () => {
-    // Ce test vérifie que l'absence totale de nom est bien détectée
-    // par la validation du service.
-
-    // Arrange
     const data = { est_actif: true, proprietaire_id: 1 };
 
-    // Act
-    const fn = () => postOrganisationService(data as any);
-
-    // Assert
-    await expect(fn()).rejects.toThrow(
+    await expect(postOrganisationService(data as any, 1)).rejects.toThrow(
       "Le nom de l'organisation est obligatoire"
     );
     expect(postOrganisationRepository).not.toHaveBeenCalled();
@@ -149,21 +142,19 @@ describe('postOrganisationService', () => {
 
 describe('putOrganisationService', () => {
   it("succès : renvoie l'organisation modifiée par le repository", async () => {
-    // Ce test vérifie que le service transmet bien l'id ET les nouvelles
-    // données au repository, et renvoie le résultat de la modification.
-
-    // Arrange
     const organisationModifiee = { id: 1, nom: 'Nouvelle organisation' };
+    (getOrganisationIdRepository as jest.Mock).mockResolvedValue(organisation);
     (putOrganisationRepository as jest.Mock).mockResolvedValue(
       organisationModifiee
     );
 
-    // Act
-    const resultat = await putOrganisationService(1, {
-      nom: 'Nouvelle organisation',
-    });
+    const resultat = await putOrganisationService(
+      1,
+      { nom: 'Nouvelle organisation', proprietaire_id: 99 },
+      1
+    );
 
-    // Assert
+    expect(exigerRole).toHaveBeenCalledWith(1, 1, ['admin']);
     expect(putOrganisationRepository).toHaveBeenCalledWith(1, {
       nom: 'Nouvelle organisation',
     });
@@ -171,50 +162,49 @@ describe('putOrganisationService', () => {
   });
 
   it('erreur : renvoie null si le repository ne trouve rien à modifier', async () => {
-    // Ce test vérifie que le service ne transforme pas un "rien trouvé"
-    // en erreur : il renvoie simplement null, comme le repository.
+    (getOrganisationIdRepository as jest.Mock).mockResolvedValue(null);
 
-    // Arrange
-    (putOrganisationRepository as jest.Mock).mockResolvedValue(null);
+    const resultat = await putOrganisationService(999, { nom: 'Test' }, 1);
 
-    // Act
-    const resultat = await putOrganisationService(999, { nom: 'Test' });
-
-    // Assert
     expect(resultat).toBeNull();
+    expect(putOrganisationRepository).not.toHaveBeenCalled();
   });
 });
 
 describe('deleteOrganisationService', () => {
   it("succès : renvoie l'organisation supprimée par le repository", async () => {
-    // Ce test vérifie que le service transmet bien l'id au repository
-    // et renvoie exactement ce que le repository a supprimé.
-
-    // Arrange
-    const organisationSupprimee = { id: 1, nom: 'OpenAI' };
+    const organisationSupprimee = { id: 1, nom: 'OpenAI', proprietaire_id: 1 };
+    (getOrganisationIdRepository as jest.Mock).mockResolvedValue(
+      organisationSupprimee
+    );
     (deleteOrganisationRepository as jest.Mock).mockResolvedValue(
       organisationSupprimee
     );
 
-    // Act
-    const resultat = await deleteOrganisationService(1);
+    const resultat = await deleteOrganisationService(1, 1);
 
-    // Assert
     expect(deleteOrganisationRepository).toHaveBeenCalledWith(1);
     expect(resultat).toBe(organisationSupprimee);
   });
 
   it('erreur : renvoie null si le repository ne trouve rien à supprimer', async () => {
-    // Ce test vérifie que le service ne transforme pas un "rien supprimé"
-    // en erreur : il renvoie simplement null, comme le repository.
+    (getOrganisationIdRepository as jest.Mock).mockResolvedValue(null);
 
-    // Arrange
-    (deleteOrganisationRepository as jest.Mock).mockResolvedValue(null);
+    const resultat = await deleteOrganisationService(999, 1);
 
-    // Act
-    const resultat = await deleteOrganisationService(999);
-
-    // Assert
     expect(resultat).toBeNull();
+  });
+
+  it("erreur : refuse la suppression si l'utilisateur n'est pas propriétaire (IDOR)", async () => {
+    (getOrganisationIdRepository as jest.Mock).mockResolvedValue({
+      id: 1,
+      nom: 'OpenAI',
+      proprietaire_id: 99,
+    });
+
+    await expect(deleteOrganisationService(1, 1)).rejects.toThrow(
+      AccesRefuseError
+    );
+    expect(deleteOrganisationRepository).not.toHaveBeenCalled();
   });
 });

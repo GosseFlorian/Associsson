@@ -10,10 +10,10 @@ import {
 
 const router = Router();
 
+router.use(requireAuth);
 router.get('/', getTachesController);
-
 router.get('/:id', getTacheIdController);
-router.post('/', requireAuth, postTacheController);
+router.post('/', postTacheController);
 router.put('/:id', putTacheController);
 router.delete('/:id', deleteTacheController);
 export default router;

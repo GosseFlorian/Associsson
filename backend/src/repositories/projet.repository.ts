@@ -1,7 +1,9 @@
 import { pool } from '../config/client';
 import { Projet, ProjetDetails } from '../types/types';
 
-export const getProjetsRepository = async (): Promise<ProjetDetails[]> => {
+export const getProjetsRepository = async (
+  utilisateurId: number
+): Promise<ProjetDetails[]> => {
   const result = await pool.query<ProjetDetails>(
     `SELECT 
         p.id, 
@@ -23,8 +25,12 @@ export const getProjetsRepository = async (): Promise<ProjetDetails[]> => {
         JOIN membre m ON p.createur_id = m.id
         JOIN utilisateur u ON m.utilisateur_id = u.id
         LEFT JOIN inscription_projet ip ON p.id = ip.projet_id
+        WHERE p.organisation_id IN (
+          SELECT organisation_id FROM membre WHERE utilisateur_id = $1
+        )
         GROUP BY p.id, o.nom, u.nom
-        ORDER BY p.id`
+        ORDER BY p.id`,
+    [utilisateurId]
   );
   return result.rows;
 };

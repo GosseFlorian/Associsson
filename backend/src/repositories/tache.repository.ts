@@ -1,7 +1,9 @@
 import { pool } from '../config/client';
 import { Tache, TacheDetails } from '../types/types';
 
-export const getTachesRepository = async (): Promise<TacheDetails[]> => {
+export const getTachesRepository = async (
+  utilisateurId: number
+): Promise<TacheDetails[]> => {
   const result = await pool.query<TacheDetails>(
     `SELECT
       t.id,
@@ -27,7 +29,11 @@ export const getTachesRepository = async (): Promise<TacheDetails[]> => {
       ON t.assigne_a = ma.id
     LEFT JOIN utilisateur ua
       ON ma.utilisateur_id = ua.id
-    ORDER BY t.id;`
+    WHERE p.organisation_id IN (
+      SELECT organisation_id FROM membre WHERE utilisateur_id = $1
+    )
+    ORDER BY t.id;`,
+    [utilisateurId]
   );
   return result.rows;
 };

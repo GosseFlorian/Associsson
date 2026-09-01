@@ -41,7 +41,7 @@ describe('getTachesController', () => {
     // Arrange
     const taches = [{ id: 1, titre: 'Tâche 1' }];
     (getTachesService as jest.Mock).mockResolvedValue(taches);
-    const req = {} as Request;
+    const req = { utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -58,7 +58,7 @@ describe('getTachesController', () => {
 
     // Arrange
     (getTachesService as jest.Mock).mockRejectedValue(new Error('boom'));
-    const req = {} as Request;
+    const req = { utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -77,7 +77,10 @@ describe('getTacheIdController', () => {
     // Arrange
     const tache = { id: 5, titre: 'Tâche 5' };
     (getTacheIdService as jest.Mock).mockResolvedValue(tache);
-    const req = { params: { id: '5' } } as unknown as Request;
+    const req = {
+      params: { id: '5' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -109,7 +112,10 @@ describe('getTacheIdController', () => {
 
     // Arrange
     (getTacheIdService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: '999' } } as unknown as Request;
+    const req = {
+      params: { id: '999' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -130,6 +136,7 @@ describe('postTacheController', () => {
     (postTacheService as jest.Mock).mockResolvedValue(nouvelleTache);
     const req = {
       body: { titre: 'Nouvelle tâche', projet_id: 1 },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -181,7 +188,10 @@ describe('postTacheController', () => {
     (postTacheService as jest.Mock).mockRejectedValue(
       new Error('Le titre de la tâche est obligatoire')
     );
-    const req = { body: { titre: '  ', projet_id: 1 } } as unknown as Request;
+    const req = {
+      body: { titre: '  ', projet_id: 1 },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -199,6 +209,7 @@ describe('postTacheController', () => {
     (postTacheService as jest.Mock).mockRejectedValue(new Error('boom'));
     const req = {
       body: { titre: 'Une tâche', projet_id: 1 },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -221,6 +232,7 @@ describe('putTacheController', () => {
     const req = {
       params: { id: '3' },
       body: { statut: 'termine' },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -272,6 +284,7 @@ describe('putTacheController', () => {
     const req = {
       params: { id: '999' },
       body: { statut: 'termine' },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -291,7 +304,10 @@ describe('deleteTacheController', () => {
     // Arrange
     const tacheSupprimee = { id: 7 };
     (deleteTacheService as jest.Mock).mockResolvedValue(tacheSupprimee);
-    const req = { params: { id: '7' } } as unknown as Request;
+    const req = {
+      params: { id: '7' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -323,7 +339,10 @@ describe('deleteTacheController', () => {
 
     // Arrange
     (deleteTacheService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: '999' } } as unknown as Request;
+    const req = {
+      params: { id: '999' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act

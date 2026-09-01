@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { creerToken } from '../lib/jwt';
+import { AccesRefuseError } from '../lib/errors';
 import { Utilisateur } from '../types/types';
 import {
   getUtilisateurByEmailRepository,
@@ -9,6 +10,17 @@ import {
   putUtilisateurRepository,
   deleteUtilisateurRepository,
 } from '../repositories/utilisateur.repository';
+
+function exigerProprietaireDuCompte(
+  idRessource: number,
+  utilisateurId: number
+): void {
+  if (idRessource !== utilisateurId) {
+    throw new AccesRefuseError(
+      "Vous ne pouvez accéder qu'à votre propre compte"
+    );
+  }
+}
 
 // Fonction utilitaire de validation de l'adresse email
 const isValidEmail = (email: string): boolean => {
@@ -43,8 +55,10 @@ export const getUtilisateursService = async (): Promise<Utilisateur[]> => {
 };
 
 export const getUtilisateurIdService = async (
-  id: number
+  id: number,
+  utilisateurId: number
 ): Promise<Utilisateur | null> => {
+  exigerProprietaireDuCompte(id, utilisateurId);
   return await getUtilisateurIdRepository(id);
 };
 
@@ -69,8 +83,10 @@ export const postUtilisateurService = async (
 
 export const putUtilisateurService = async (
   id: number,
-  data: Partial<Utilisateur>
+  data: Partial<Utilisateur>,
+  utilisateurId: number
 ): Promise<Utilisateur | null> => {
+  exigerProprietaireDuCompte(id, utilisateurId);
   // Si l'email est modifié, on le valide
   if (data.email !== undefined && !isValidEmail(data.email)) {
     throw new Error("Format de l'adresse email invalide.");
@@ -83,7 +99,9 @@ export const putUtilisateurService = async (
 };
 
 export const deleteUtilisateurService = async (
-  id: number
+  id: number,
+  utilisateurId: number
 ): Promise<Utilisateur | null> => {
+  exigerProprietaireDuCompte(id, utilisateurId);
   return await deleteUtilisateurRepository(id);
 };

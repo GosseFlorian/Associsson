@@ -159,8 +159,15 @@ Diagramme complet : [erd.md](./erd.md)
 ### Autorisation (AuthZ)
 
 - Middleware `requireAuth` vérifie la validité du JWT.
-- Actuellement appliqué sur **`POST /tache`** uniquement.
-- **Limitation connue :** la plupart des routes CRUD ne vérifient pas encore que l'utilisateur a le droit d'accéder à *cette* ressource (risque IDOR — voir OWASP A01). C'est une dette technique assumée en phase de formation.
+- Appliqué sur **toutes les routes** sauf `POST /utilisateur` (inscription), `POST /utilisateur/connexion` et `GET /health`.
+- Les services vérifient ensuite que l'utilisateur a le droit d'accéder à *cette* ressource (anti-IDOR, OWASP A01) :
+  - **Utilisateur** : la liste (`GET /utilisateur`) exige un JWT ; lecture / modification / suppression par id limitées au compte authentifié.
+  - **Organisation** : visible par ses membres ; création pour tout utilisateur authentifié (le JWT impose `proprietaire_id`) ; mise à jour réservée aux admins ; suppression réservée au propriétaire.
+  - **Membre** : visible dans les organisations dont on est membre ; invitation / changement de rôle / retrait réservés à un admin (ou au propriétaire).
+  - **Projet** : visible par les membres de l'organisation ; création / modification / suppression réservées aux admins. Le `createur_id` est celui du membre authentifié, pas celui du corps de requête.
+  - **Tâche** : visible par les membres de l'organisation du projet ; création / modification / suppression réservées aux admins et bénévoles.
+
+Les identifiants sensibles du corps (`proprietaire_id`, `createur_id`, `organisation_id` sur une mise à jour) sont ignorés ou réécrits côté serveur.
 
 ---
 
@@ -172,13 +179,13 @@ Diagramme complet : [erd.md](./erd.md)
 | CORS | Origine autorisée : `http://localhost:5173` |
 | Rate limiting | 100 req / 15 min sur `/login` |
 | Hash mots de passe | bcryptjs |
-| JWT | Signature HMAC, vérification via `requireAuth` |
+| JWT | Signature HMAC, vérification via `requireAuth` sur toutes les routes sauf inscription, connexion et health |
+| Autorisation (OWASP A01 / IDOR) | Contrôle d'appartenance et de rôle dans les services ; les IDs du JWT priment sur ceux du client |
+| Journalisation des refus (OWASP A09) | `warn` structuré (`event: acces_refuse`) sans corps, token ni mot de passe |
 | Variables sensibles | `.env` (non versionné), validé par `dotenv-safe` |
 
 Points **non encore traités** (dette documentée) :
 
-- Autorisation fine par ressource / propriétaire (OWASP A01).
-- Protection de toutes les routes mutantes par JWT.
 - Retrait des comptes de démo en production (OWASP A05).
 
 Les logs structurés (pino + pino-http) sont en place — voir [exploitation.md § Logs](./exploitation.md#logs).

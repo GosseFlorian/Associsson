@@ -1,7 +1,9 @@
 import { pool } from '../config/client';
 import { Membre, MembreDetails } from '../types/types';
 
-export async function getMembresRepository(): Promise<MembreDetails[]> {
+export async function getMembresRepository(
+  utilisateurId: number
+): Promise<MembreDetails[]> {
   const result = await pool.query<MembreDetails>(
     `SELECT
       m.id,
@@ -13,9 +15,26 @@ export async function getMembresRepository(): Promise<MembreDetails[]> {
     FROM membre m
     JOIN utilisateur u ON u.id = m.utilisateur_id
     JOIN organisation o ON o.id = m.organisation_id
-    ORDER BY m.id`
+    WHERE m.organisation_id IN (
+      SELECT organisation_id FROM membre WHERE utilisateur_id = $1
+    )
+    ORDER BY m.id`,
+    [utilisateurId]
   );
   return result.rows;
+}
+
+export async function getMembreByUtilisateurEtOrganisationRepository(
+  utilisateurId: number,
+  organisationId: number
+): Promise<Membre | null> {
+  const result = await pool.query<Membre>(
+    `SELECT id, utilisateur_id, organisation_id, role
+    FROM membre
+    WHERE utilisateur_id = $1 AND organisation_id = $2`,
+    [utilisateurId, organisationId]
+  );
+  return result.rows[0] || null;
 }
 
 export async function getMembreParIdRepository(
@@ -38,7 +57,9 @@ export async function getMembreParIdRepository(
   return result.rows[0] || null;
 }
 
-export async function postMembreRepository(data: Membre): Promise<Membre> {
+export async function postMembreRepository(
+  data: Omit<Membre, 'id'>
+): Promise<Membre> {
   const result = await pool.query<Membre>(
     `INSERT INTO membre (utilisateur_id, organisation_id, role)
     VALUES ($1, $2, $3)

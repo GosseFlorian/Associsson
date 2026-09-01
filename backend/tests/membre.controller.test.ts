@@ -41,7 +41,7 @@ describe('getMembresController', () => {
     // Arrange
     const membres = [{ role: 'membre' }];
     (getMembreService as jest.Mock).mockResolvedValue(membres);
-    const req = {} as Request;
+    const req = { utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -58,7 +58,7 @@ describe('getMembresController', () => {
 
     // Arrange
     (getMembreService as jest.Mock).mockRejectedValue(new Error('boom'));
-    const req = {} as Request;
+    const req = { utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -77,7 +77,10 @@ describe('getMembresParIdController', () => {
     // Arrange
     const membre = { id: 5, role: 'membre' };
     (getMembreParIdService as jest.Mock).mockResolvedValue(membre);
-    const req = { params: { id: '5' } } as unknown as Request;
+    const req = {
+      params: { id: '5' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -109,7 +112,10 @@ describe('getMembresParIdController', () => {
 
     // Arrange
     (getMembreParIdService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: '999' } } as unknown as Request;
+    const req = {
+      params: { id: '999' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -125,7 +131,10 @@ describe('getMembresParIdController', () => {
 
     // Arrange
     (getMembreParIdService as jest.Mock).mockRejectedValue(new Error('boom'));
-    const req = { params: { id: '5' } } as unknown as Request;
+    const req = {
+      params: { id: '5' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -147,6 +156,7 @@ describe('putMembreController', () => {
     const req = {
       params: { id: '3' },
       body: { role: 'admin' },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -198,6 +208,7 @@ describe('putMembreController', () => {
     const req = {
       params: { id: '999' },
       body: { role: 'admin' },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -206,6 +217,22 @@ describe('putMembreController', () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('erreur : renvoie 400 si le service lève une erreur de validation métier', async () => {
+    (putMembreService as jest.Mock).mockRejectedValue(
+      new Error('Le role du membre est obligatoire')
+    );
+    const req = {
+      params: { id: '3' },
+      body: { organisation_id: 2 },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
+    const res = mockResponse();
+
+    await putMembreController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it('erreur : renvoie 500 si le service plante', async () => {
@@ -217,6 +244,7 @@ describe('putMembreController', () => {
     const req = {
       params: { id: '3' },
       body: { role: 'admin' },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -239,6 +267,7 @@ describe('postMembreController', () => {
     (postMembreService as jest.Mock).mockResolvedValue(nouveauMembre);
     const req = {
       body: { utilisateur_id: 1, organisation_id: 2 },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -278,6 +307,7 @@ describe('postMembreController', () => {
     );
     const req = {
       body: { utilisateur_id: 1, organisation_id: 2, role: '' },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -296,6 +326,7 @@ describe('postMembreController', () => {
     (postMembreService as jest.Mock).mockRejectedValue(new Error('boom'));
     const req = {
       body: { utilisateur_id: 1, organisation_id: 2 },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -315,7 +346,10 @@ describe('deleteMembreController', () => {
     // Arrange
     const membreSupprime = { id: 7 };
     (deleteMembreService as jest.Mock).mockResolvedValue(membreSupprime);
-    const req = { params: { id: '7' } } as unknown as Request;
+    const req = {
+      params: { id: '7' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -347,7 +381,10 @@ describe('deleteMembreController', () => {
 
     // Arrange
     (deleteMembreService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: '999' } } as unknown as Request;
+    const req = {
+      params: { id: '999' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -363,7 +400,10 @@ describe('deleteMembreController', () => {
 
     // Arrange
     (deleteMembreService as jest.Mock).mockRejectedValue(new Error('boom'));
-    const req = { params: { id: '7' } } as unknown as Request;
+    const req = {
+      params: { id: '7' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act

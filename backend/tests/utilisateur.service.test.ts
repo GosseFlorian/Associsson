@@ -6,6 +6,7 @@ import {
   putUtilisateurService,
   deleteUtilisateurService,
 } from '../src/services/utilisateur.service';
+import { AccesRefuseError } from '../src/lib/errors';
 import {
   getUtilisateursRepository,
   getUtilisateurIdRepository,
@@ -67,7 +68,7 @@ describe('getUtilisateurIdService', () => {
     (getUtilisateurIdRepository as jest.Mock).mockResolvedValue(utilisateur);
 
     // Act
-    const resultat = await getUtilisateurIdService(5);
+    const resultat = await getUtilisateurIdService(5, 5);
 
     // Assert
     expect(getUtilisateurIdRepository).toHaveBeenCalledWith(5);
@@ -82,10 +83,17 @@ describe('getUtilisateurIdService', () => {
     (getUtilisateurIdRepository as jest.Mock).mockResolvedValue(null);
 
     // Act
-    const resultat = await getUtilisateurIdService(999);
+    const resultat = await getUtilisateurIdService(999, 999);
 
     // Assert
     expect(resultat).toBeNull();
+  });
+
+  it("erreur : refuse l'accès à un autre compte (IDOR)", async () => {
+    await expect(getUtilisateurIdService(5, 1)).rejects.toThrow(
+      AccesRefuseError
+    );
+    expect(getUtilisateurIdRepository).not.toHaveBeenCalled();
   });
 });
 
@@ -194,7 +202,7 @@ describe('putUtilisateurService', () => {
     );
 
     // Act
-    const resultat = await putUtilisateurService(1, { nom: 'Jean Modifié' });
+    const resultat = await putUtilisateurService(1, { nom: 'Jean Modifié' }, 1);
 
     // Assert
     expect(putUtilisateurRepository).toHaveBeenCalledWith(1, {
@@ -211,7 +219,7 @@ describe('putUtilisateurService', () => {
     const data = { email: 'pas-un-email' };
 
     // Act
-    const fn = () => putUtilisateurService(1, data);
+    const fn = () => putUtilisateurService(1, data, 1);
 
     // Assert
     await expect(fn()).rejects.toThrow("Format de l'adresse email invalide.");
@@ -226,7 +234,7 @@ describe('putUtilisateurService', () => {
     const data = { mot_de_passe: '123' };
 
     // Act
-    const fn = () => putUtilisateurService(1, data);
+    const fn = () => putUtilisateurService(1, data, 1);
 
     // Assert
     await expect(fn()).rejects.toThrow(
@@ -246,7 +254,7 @@ describe('putUtilisateurService', () => {
     );
 
     // Act
-    const resultat = await putUtilisateurService(1, { nom: 'Nouveau nom' });
+    const resultat = await putUtilisateurService(1, { nom: 'Nouveau nom' }, 1);
 
     // Assert
     expect(resultat).toBe(utilisateurModifie);
@@ -265,7 +273,7 @@ describe('deleteUtilisateurService', () => {
     );
 
     // Act
-    const resultat = await deleteUtilisateurService(7);
+    const resultat = await deleteUtilisateurService(7, 7);
 
     // Assert
     expect(deleteUtilisateurRepository).toHaveBeenCalledWith(7);
@@ -280,9 +288,16 @@ describe('deleteUtilisateurService', () => {
     (deleteUtilisateurRepository as jest.Mock).mockResolvedValue(null);
 
     // Act
-    const resultat = await deleteUtilisateurService(999);
+    const resultat = await deleteUtilisateurService(999, 999);
 
     // Assert
     expect(resultat).toBeNull();
+  });
+
+  it("erreur : refuse la suppression d'un autre compte (IDOR)", async () => {
+    await expect(deleteUtilisateurService(7, 1)).rejects.toThrow(
+      AccesRefuseError
+    );
+    expect(deleteUtilisateurRepository).not.toHaveBeenCalled();
   });
 });

@@ -2,6 +2,7 @@ import { pool } from '../src/config/client';
 import {
   getMembresRepository,
   getMembreParIdRepository,
+  getMembreByUtilisateurEtOrganisationRepository,
   putMembreRepository,
   postMembreRepository,
   deleteMembreRepository,
@@ -33,9 +34,10 @@ describe('getMembresRepository', () => {
     (pool.query as jest.Mock).mockResolvedValue({ rows: lignes });
 
     // Act
-    const resultat = await getMembresRepository();
+    const resultat = await getMembresRepository(1);
 
     // Assert
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), [1]);
     expect(resultat).toBe(lignes);
   });
 
@@ -47,7 +49,7 @@ describe('getMembresRepository', () => {
     (pool.query as jest.Mock).mockRejectedValue(new Error('connexion refusée'));
 
     // Act
-    const fn = () => getMembresRepository();
+    const fn = () => getMembresRepository(1);
 
     // Assert
     await expect(fn()).rejects.toThrow('connexion refusée');
@@ -209,6 +211,31 @@ describe('deleteMembreRepository', () => {
     const resultat = await deleteMembreRepository(999);
 
     // Assert
+    expect(resultat).toBeNull();
+  });
+});
+
+describe('getMembreByUtilisateurEtOrganisationRepository', () => {
+  it('succès : transmet utilisateur_id et organisation_id', async () => {
+    const ligne = {
+      id: 3,
+      utilisateur_id: 1,
+      organisation_id: 2,
+      role: 'admin',
+    };
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [ligne] });
+
+    const resultat = await getMembreByUtilisateurEtOrganisationRepository(1, 2);
+
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), [1, 2]);
+    expect(resultat).toBe(ligne);
+  });
+
+  it('erreur : renvoie null si aucune ligne', async () => {
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+
+    const resultat = await getMembreByUtilisateurEtOrganisationRepository(1, 2);
+
     expect(resultat).toBeNull();
   });
 });
