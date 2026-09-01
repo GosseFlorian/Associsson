@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { logError } from '../lib/logError';
+import { envoyerSiAccesRefuse } from '../lib/errors';
 import {
   getProjetsService,
   getProjetByIdService,
@@ -13,10 +14,13 @@ export const getProjetsController = async (
   res: Response
 ): Promise<void> => {
   try {
-    const projets = await getProjetsService();
+    const projets = await getProjetsService(req.utilisateur!.utilisateurId);
     res.status(200).json(projets);
   } catch (error) {
     logError(req, error, 'Erreur lors de la récupération des projets');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
   }
 };
@@ -31,7 +35,10 @@ export const getProjetByIdController = async (
       res.status(400).json({ message: 'ID invalide' });
       return;
     }
-    const projet = await getProjetByIdService(id);
+    const projet = await getProjetByIdService(
+      id,
+      req.utilisateur!.utilisateurId
+    );
     if (!projet) {
       res.status(404).json({ message: 'Projet non trouvé' });
       return;
@@ -39,6 +46,9 @@ export const getProjetByIdController = async (
     res.status(200).json(projet);
   } catch (error) {
     logError(req, error, 'Erreur lors de la récupération du projet');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
   }
 };
@@ -53,11 +63,17 @@ export const postProjetController = async (
       res.status(400).json({ message: 'Données du projet incomplètes' });
       return;
     }
-    const nouveauProjet = await postProjetService(data);
+    const nouveauProjet = await postProjetService(
+      data,
+      req.utilisateur!.utilisateurId
+    );
     res.status(201).json(nouveauProjet);
     return;
   } catch (error: any) {
     logError(req, error, 'Erreur lors de la création du projet');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     // On gère les erreurs de validation métier renvoyées par le service
     if (error.message && error.message.includes('obligatoire')) {
       res.status(400).json({ message: error.message });
@@ -84,7 +100,11 @@ export const putProjetController = async (
       res.status(400).json({ message: 'Aucune donnée à modifier fournie' });
       return;
     }
-    const projetModifie = await putProjetService(id, data);
+    const projetModifie = await putProjetService(
+      id,
+      data,
+      req.utilisateur!.utilisateurId
+    );
     if (!projetModifie) {
       res.status(404).json({ message: 'Projet non trouvé' });
       return;
@@ -93,6 +113,9 @@ export const putProjetController = async (
     return;
   } catch (error) {
     logError(req, error, 'Erreur lors de la modification du projet');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -108,7 +131,10 @@ export const deleteProjetController = async (
     return;
   }
   try {
-    const projetSupprime = await deleteProjetService(id);
+    const projetSupprime = await deleteProjetService(
+      id,
+      req.utilisateur!.utilisateurId
+    );
     if (!projetSupprime) {
       res.status(404).json({ message: 'Projet non trouvé' });
       return;
@@ -117,6 +143,9 @@ export const deleteProjetController = async (
     return;
   } catch (error) {
     logError(req, error, 'Erreur lors de la suppression du projet');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }

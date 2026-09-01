@@ -6,9 +6,11 @@ import {
   putOrganisationController,
   deleteOrganisationController,
 } from '../controllers/organisation.controller';
+import { requireAuth } from '../middlewares/requireAuth.middleware';
 
 const router = Router();
 
+router.use(requireAuth);
 router.get('/', getOrganisationsController);
 router.get('/:id', getOrganisationIdController);
 router.post('/', postOrganisationController);

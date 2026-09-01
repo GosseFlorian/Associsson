@@ -13,10 +13,11 @@ import {
   deleteProjetRepository,
 } from '../src/repositories/projet.repository';
 import { Projet } from '../src/types/types';
+import { exigerMembre, exigerRole } from '../src/services/autorisation.service';
+import { AccesRefuseError } from '../src/lib/errors';
 
-// Le service n'est qu'une fine couche au-dessus du repository :
-// on mock donc entièrement le repository pour tester le service en isolation.
 jest.mock('../src/repositories/projet.repository');
+jest.mock('../src/services/autorisation.service');
 
 const fakeProjet: Projet = {
   id: 1,
@@ -30,73 +31,83 @@ const fakeProjet: Projet = {
   est_termine: false,
 } as Projet;
 
-// Avant chaque test, vide l'historique de tous les mocks pour garantir
-// que chaque test démarre avec un état propre.
+const membreAdmin = {
+  id: 5,
+  role: 'admin' as const,
+  organisation_id: 10,
+  utilisateur_id: 1,
+};
+
 beforeEach(() => {
   jest.clearAllMocks();
+  (exigerMembre as jest.Mock).mockResolvedValue(membreAdmin);
+  (exigerRole as jest.Mock).mockResolvedValue(membreAdmin);
 });
 
 describe('projet.service', () => {
   it('getProjetsService délègue au repository et retourne son résultat', async () => {
-    // Ce test vérifie que le service transmet simplement (sans la modifier)
-    // la liste que lui renvoie le repository.
-
     (getProjetsRepository as jest.Mock).mockResolvedValueOnce([fakeProjet]);
 
-    const result = await getProjetsService();
+    const result = await getProjetsService(1);
 
-    expect(getProjetsRepository).toHaveBeenCalledTimes(1);
+    expect(getProjetsRepository).toHaveBeenCalledWith(1);
     expect(result).toEqual([fakeProjet]);
   });
 
   it("getProjetsService propage l'erreur si le repository plante", async () => {
-    // Ce test vérifie que si le repository échoue, l'erreur remonte bien
-    // jusqu'à l'appelant du service (elle n'est pas avalée en silence).
-
     (getProjetsRepository as jest.Mock).mockRejectedValueOnce(
       new Error('DB down')
     );
 
-    await expect(getProjetsService()).rejects.toThrow('DB down');
+    await expect(getProjetsService(1)).rejects.toThrow('DB down');
   });
 
   it('getProjetByIdService délègue au repository avec le bon id', async () => {
     (getProjetByIdRepository as jest.Mock).mockResolvedValueOnce(fakeProjet);
 
-    const result = await getProjetByIdService(1);
+    const result = await getProjetByIdService(1, 1);
 
     expect(getProjetByIdRepository).toHaveBeenCalledWith(1);
+    expect(exigerMembre).toHaveBeenCalledWith(1, 10);
     expect(result).toEqual(fakeProjet);
   });
 
   it('getProjetByIdService retourne null si le repository ne trouve rien', async () => {
-    // Corrigé : le repository renvoie null (pas undefined) quand aucune
-    // ligne n'est trouvée (`return result.rows[0] || null;`).
-
     (getProjetByIdRepository as jest.Mock).mockResolvedValueOnce(null);
 
-    const result = await getProjetByIdService(999);
+    const result = await getProjetByIdService(999, 1);
 
     expect(result).toBeNull();
+    expect(exigerMembre).not.toHaveBeenCalled();
   });
 
-  it('postProjetService délègue au repository quand le titre est valide', async () => {
+  it("getProjetByIdService refuse l'accès hors organisation (IDOR)", async () => {
+    (getProjetByIdRepository as jest.Mock).mockResolvedValueOnce(fakeProjet);
+    (exigerMembre as jest.Mock).mockRejectedValueOnce(new AccesRefuseError());
+
+    await expect(getProjetByIdService(1, 99)).rejects.toThrow(AccesRefuseError);
+  });
+
+  it('postProjetService impose le createur_id du membre authentifié', async () => {
     (postProjetRepository as jest.Mock).mockResolvedValueOnce(fakeProjet);
 
-    const result = await postProjetService(fakeProjet);
+    const result = await postProjetService(
+      { ...fakeProjet, createur_id: 999 },
+      1
+    );
 
-    expect(postProjetRepository).toHaveBeenCalledWith(fakeProjet);
+    expect(exigerRole).toHaveBeenCalledWith(1, 10, ['admin']);
+    expect(postProjetRepository).toHaveBeenCalledWith({
+      ...fakeProjet,
+      createur_id: 5,
+    });
     expect(result).toEqual(fakeProjet);
   });
 
   it('postProjetService lève une erreur si le titre est vide', async () => {
-    // Ajouté : le service valide le titre avant d'appeler le repository
-    // (`if (!data.titre || data.titre.trim() === "")`), ce qui n'était pas
-    // testé jusqu'ici.
-
     const data = { ...fakeProjet, titre: '   ' };
 
-    await expect(postProjetService(data)).rejects.toThrow(
+    await expect(postProjetService(data, 1)).rejects.toThrow(
       'Le titre du projet est obligatoire'
     );
     expect(postProjetRepository).not.toHaveBeenCalled();
@@ -105,56 +116,64 @@ describe('projet.service', () => {
   it('postProjetService lève une erreur si le titre est manquant', async () => {
     const { titre, ...data } = fakeProjet;
 
-    await expect(postProjetService(data as Projet)).rejects.toThrow(
+    await expect(postProjetService(data as Projet, 1)).rejects.toThrow(
       'Le titre du projet est obligatoire'
     );
     expect(postProjetRepository).not.toHaveBeenCalled();
   });
 
-  it('putProjetService délègue au repository avec id et données', async () => {
+  it('putProjetService empêche de changer organisation_id', async () => {
+    (getProjetByIdRepository as jest.Mock).mockResolvedValueOnce(fakeProjet);
     (putProjetRepository as jest.Mock).mockResolvedValueOnce(fakeProjet);
 
-    const result = await putProjetService(1, fakeProjet);
+    const result = await putProjetService(
+      1,
+      { ...fakeProjet, organisation_id: 99 },
+      1
+    );
 
-    expect(putProjetRepository).toHaveBeenCalledWith(1, fakeProjet);
+    expect(exigerRole).toHaveBeenCalledWith(1, 10, ['admin']);
+    expect(putProjetRepository).toHaveBeenCalledWith(1, {
+      ...fakeProjet,
+      organisation_id: 10,
+    });
     expect(result).toEqual(fakeProjet);
   });
 
-  it('putProjetService retourne null si le repository ne trouve rien à modifier', async () => {
-    // Ajouté : couvre le cas où l'id à modifier n'existe pas.
+  it("putProjetService retourne null si le projet n'existe pas", async () => {
+    (getProjetByIdRepository as jest.Mock).mockResolvedValueOnce(null);
 
-    (putProjetRepository as jest.Mock).mockResolvedValueOnce(null);
-
-    const result = await putProjetService(999, fakeProjet);
+    const result = await putProjetService(999, fakeProjet, 1);
 
     expect(result).toBeNull();
   });
 
   it("propage l'erreur si le repository échoue (ex: putProjetService)", async () => {
+    (getProjetByIdRepository as jest.Mock).mockResolvedValueOnce(fakeProjet);
     (putProjetRepository as jest.Mock).mockRejectedValueOnce(
       new Error('Projet non trouvé')
     );
 
-    await expect(putProjetService(999, fakeProjet)).rejects.toThrow(
+    await expect(putProjetService(999, fakeProjet, 1)).rejects.toThrow(
       'Projet non trouvé'
     );
   });
 
   it('deleteProjetService délègue au repository avec le bon id', async () => {
+    (getProjetByIdRepository as jest.Mock).mockResolvedValueOnce(fakeProjet);
     (deleteProjetRepository as jest.Mock).mockResolvedValueOnce(fakeProjet);
 
-    const result = await deleteProjetService(1);
+    const result = await deleteProjetService(1, 1);
 
+    expect(exigerRole).toHaveBeenCalledWith(1, 10, ['admin']);
     expect(deleteProjetRepository).toHaveBeenCalledWith(1);
     expect(result).toEqual(fakeProjet);
   });
 
   it('deleteProjetService retourne null si le repository ne trouve rien à supprimer', async () => {
-    // Ajouté : couvre le cas où l'id à supprimer n'existe pas.
+    (getProjetByIdRepository as jest.Mock).mockResolvedValueOnce(null);
 
-    (deleteProjetRepository as jest.Mock).mockResolvedValueOnce(null);
-
-    const result = await deleteProjetService(999);
+    const result = await deleteProjetService(999, 1);
 
     expect(result).toBeNull();
   });

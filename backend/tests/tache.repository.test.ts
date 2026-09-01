@@ -32,9 +32,10 @@ describe('getTachesRepository', () => {
     (pool.query as jest.Mock).mockResolvedValue({ rows: lignes });
 
     // Act
-    const resultat = await getTachesRepository();
+    const resultat = await getTachesRepository(1);
 
     // Assert
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), [1]);
     expect(resultat).toBe(lignes);
   });
 
@@ -46,7 +47,7 @@ describe('getTachesRepository', () => {
     (pool.query as jest.Mock).mockRejectedValue(new Error('connexion refusée'));
 
     // Act
-    const fn = () => getTachesRepository();
+    const fn = () => getTachesRepository(1);
 
     // Assert
     await expect(fn()).rejects.toThrow('connexion refusée');

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { logError } from '../lib/logError';
+import { envoyerSiAccesRefuse } from '../lib/errors';
 import {
   postConnexionService,
   getUtilisateursService,
@@ -59,7 +60,10 @@ export const getUtilisateurIdController = async (
     return;
   }
   try {
-    const utilisateur = await getUtilisateurIdService(id);
+    const utilisateur = await getUtilisateurIdService(
+      id,
+      req.utilisateur!.utilisateurId
+    );
     if (!utilisateur) {
       res.status(404).json({ message: 'Utilisateur non trouvé' });
       return;
@@ -67,6 +71,9 @@ export const getUtilisateurIdController = async (
     res.status(200).json(utilisateur);
   } catch (error) {
     logError(req, error, "Erreur lors de la récupération de l'utilisateur");
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -117,7 +124,11 @@ export const putUtilisateurController = async (
       res.status(400).json({ message: 'Aucune donnée à modifier fournie' });
       return;
     }
-    const utilisateur = await putUtilisateurService(id, data);
+    const utilisateur = await putUtilisateurService(
+      id,
+      data,
+      req.utilisateur!.utilisateurId
+    );
     if (!utilisateur) {
       res.status(404).json({ message: 'Utilisateur non trouvé' });
       return;
@@ -126,6 +137,9 @@ export const putUtilisateurController = async (
     return;
   } catch (error: any) {
     logError(req, error, "Erreur lors de la modification de l'utilisateur");
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     // On gère les erreurs de validation métier renvoyées par le service
     if (
       error.message &&
@@ -150,7 +164,10 @@ export const deleteUtilisateurController = async (
     return;
   }
   try {
-    const utilisateur = await deleteUtilisateurService(id);
+    const utilisateur = await deleteUtilisateurService(
+      id,
+      req.utilisateur!.utilisateurId
+    );
     if (!utilisateur) {
       res.status(404).json({ message: 'Utilisateur non trouvé' });
       return;
@@ -158,6 +175,9 @@ export const deleteUtilisateurController = async (
     res.status(200).json(utilisateur);
   } catch (error) {
     logError(req, error, "Erreur lors de la suppression de l'utilisateur");
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }

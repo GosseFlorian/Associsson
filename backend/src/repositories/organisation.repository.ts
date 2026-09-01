@@ -1,9 +1,9 @@
 import { pool } from '../config/client';
 import { Organisation, OrganisationDetails } from '../types/types';
 
-export const getOrganisationsRepository = async (): Promise<
-  OrganisationDetails[]
-> => {
+export const getOrganisationsRepository = async (
+  utilisateurId: number
+): Promise<OrganisationDetails[]> => {
   const result = await pool.query<OrganisationDetails>(
     `SELECT
       o.id,
@@ -14,7 +14,11 @@ export const getOrganisationsRepository = async (): Promise<
       u.nom AS "nomProprietaire"
     FROM organisation o
     JOIN utilisateur u ON o.proprietaire_id = u.id
-    ORDER BY o.id`
+    WHERE o.id IN (
+      SELECT organisation_id FROM membre WHERE utilisateur_id = $1
+    )
+    ORDER BY o.id`,
+    [utilisateurId]
   );
   return result.rows;
 };

@@ -89,11 +89,12 @@ describe('getProjetsRepository', () => {
     mockedPool.query.mockResolvedValue({ rows: [fakeProjet] });
 
     // Act
-    const resultat = await getProjetsRepository();
+    const resultat = await getProjetsRepository(1);
 
     // Assert
     expect(mockedPool.query).toHaveBeenCalledTimes(1);
     expect(mockedPool.query.mock.calls[0][0]).toContain('SELECT');
+    expect(mockedPool.query.mock.calls[0][1]).toEqual([1]);
     expect(resultat).toEqual([fakeProjet]);
   });
 
@@ -105,7 +106,7 @@ describe('getProjetsRepository', () => {
     mockedPool.query.mockResolvedValue({ rows: [] });
 
     // Act
-    const resultat = await getProjetsRepository();
+    const resultat = await getProjetsRepository(1);
 
     // Assert
     expect(resultat).toEqual([]);
@@ -119,7 +120,7 @@ describe('getProjetsRepository', () => {
     mockedPool.query.mockRejectedValue(new Error('connexion refusée'));
 
     // Act
-    const fn = () => getProjetsRepository();
+    const fn = () => getProjetsRepository(1);
 
     // Assert
     await expect(fn()).rejects.toThrow('connexion refusée');

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { logError } from '../lib/logError';
+import { envoyerSiAccesRefuse } from '../lib/errors';
 import {
   getOrganisationIdService,
   getOrganisationsService,
@@ -13,11 +14,16 @@ export const getOrganisationsController = async (
   res: Response
 ): Promise<void> => {
   try {
-    const organisations = await getOrganisationsService();
+    const organisations = await getOrganisationsService(
+      req.utilisateur!.utilisateurId
+    );
     res.status(200).json(organisations);
     return;
   } catch (error) {
     logError(req, error, 'Erreur lors de la récuperation des organisations');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -34,7 +40,10 @@ export const getOrganisationIdController = async (
     return;
   }
   try {
-    const organisation = await getOrganisationIdService(id);
+    const organisation = await getOrganisationIdService(
+      id,
+      req.utilisateur!.utilisateurId
+    );
 
     if (!organisation) {
       res.status(404).json({ message: 'Organisation non trouvé' });
@@ -43,6 +52,9 @@ export const getOrganisationIdController = async (
     res.status(200).json(organisation);
   } catch (error) {
     logError(req, error, 'Erreur lors de la récuperation de organisation');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -60,11 +72,17 @@ export const postOrganisationController = async (
         .json({ message: "Le nom de l'organisation est obligatoire" });
       return;
     }
-    const nouvelleOrganisation = await postOrganisationService(data);
+    const nouvelleOrganisation = await postOrganisationService(
+      data,
+      req.utilisateur!.utilisateurId
+    );
     res.status(201).json(nouvelleOrganisation);
     return;
   } catch (error: any) {
     logError(req, error, "Erreur lors de la création de l'organisation");
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     // On gère les erreurs de validation métier renvoyées par le service
     if (error.message && error.message.includes('obligatoire')) {
       res.status(400).json({ message: error.message });
@@ -92,7 +110,11 @@ export const putOrganisationController = async (
       res.status(400).json({ message: 'Aucune donnée à modifier fournie' });
       return;
     }
-    const organisation = await putOrganisationService(id, data);
+    const organisation = await putOrganisationService(
+      id,
+      data,
+      req.utilisateur!.utilisateurId
+    );
 
     if (!organisation) {
       res.status(404).json({ message: 'Organisation non trouvé' });
@@ -103,6 +125,9 @@ export const putOrganisationController = async (
     return;
   } catch (error) {
     logError(req, error, "Erreur lors de la modification de l'organisation");
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -118,7 +143,10 @@ export const deleteOrganisationController = async (
     return;
   }
   try {
-    const organisation = await deleteOrganisationService(id);
+    const organisation = await deleteOrganisationService(
+      id,
+      req.utilisateur!.utilisateurId
+    );
 
     if (!organisation) {
       res.status(404).json({ message: 'Organisation non trouvé' });
@@ -127,6 +155,9 @@ export const deleteOrganisationController = async (
     res.status(200).json(organisation);
   } catch (error) {
     logError(req, error, "Erreur lors de la suppression de l'organisation");
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }

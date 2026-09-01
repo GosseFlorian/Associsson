@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { logError } from '../lib/logError';
+import { envoyerSiAccesRefuse } from '../lib/errors';
 import {
   getTachesService,
   getTacheIdService,
@@ -13,11 +14,14 @@ export const getTachesController = async (
   res: Response
 ): Promise<void> => {
   try {
-    const taches = await getTachesService();
+    const taches = await getTachesService(req.utilisateur!.utilisateurId);
     res.status(200).json(taches);
     return;
   } catch (error) {
     logError(req, error, 'Erreur lors de la récupération des tâches');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -34,7 +38,7 @@ export const getTacheIdController = async (
   }
 
   try {
-    const tache = await getTacheIdService(id);
+    const tache = await getTacheIdService(id, req.utilisateur!.utilisateurId);
     if (!tache) {
       res.status(404).json({ message: 'Tâche non trouvée' });
       return;
@@ -43,6 +47,9 @@ export const getTacheIdController = async (
     return;
   } catch (error) {
     logError(req, error, 'Erreur lors de la récupération de la tâche');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -60,14 +67,24 @@ export const postTacheController = async (
         .json({ message: 'Données de la tâche invalides ou manquantes' });
       return;
     }
-    const nouvelleTache = await postTacheService(data);
+    const nouvelleTache = await postTacheService(
+      data,
+      req.utilisateur!.utilisateurId
+    );
     res.status(201).json(nouvelleTache);
     return;
   } catch (error: any) {
     logError(req, error, 'Erreur lors de la création de la tâche');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     // On gère les erreurs de validation métier renvoyées par le service
     if (error.message && error.message.includes('obligatoire')) {
       res.status(400).json({ message: error.message });
+      return;
+    }
+    if (error.message === 'Projet introuvable') {
+      res.status(404).json({ message: error.message });
       return;
     }
     res.status(500).json({ message: 'Erreur interne du serveur' });
@@ -94,7 +111,11 @@ export const putTacheController = async (
         .json({ message: 'Aucune donnée fournie pour la modification' });
       return;
     }
-    const tache = await putTacheService(id, data);
+    const tache = await putTacheService(
+      id,
+      data,
+      req.utilisateur!.utilisateurId
+    );
     if (!tache) {
       res.status(404).json({ message: 'Tâche non trouvée' });
       return;
@@ -103,6 +124,9 @@ export const putTacheController = async (
     return;
   } catch (error) {
     logError(req, error, 'Erreur lors de la modification de la tâche');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }
@@ -118,7 +142,10 @@ export const deleteTacheController = async (
     return;
   }
   try {
-    const tache = await deleteTacheService(id);
+    const tache = await deleteTacheService(
+      id,
+      req.utilisateur!.utilisateurId
+    );
     if (!tache) {
       res.status(404).json({ message: 'Tâche non trouvée' });
       return;
@@ -127,6 +154,9 @@ export const deleteTacheController = async (
     return;
   } catch (error) {
     logError(req, error, 'Erreur lors de la suppression de la tâche');
+    if (envoyerSiAccesRefuse(req, res, error)) {
+      return;
+    }
     res.status(500).json({ message: 'Erreur interne du serveur' });
     return;
   }

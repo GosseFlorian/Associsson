@@ -17,11 +17,9 @@ La connexion renvoie un **JWT**. Pour les routes protégées, envoyer :
 Authorization: Bearer <token>
 ```
 
-| Route protégée | Middleware |
-|----------------|------------|
-| `POST /tache` | `requireAuth` |
+**Routes publiques** (pas de JWT) : `GET /health`, `POST /utilisateur`, `POST /utilisateur/connexion`.
 
-> La plupart des routes ne sont pas encore protégées — voir [architecture.md § Sécurité](./architecture.md#sécurité).
+Toutes les autres routes exigent un JWT valide (`requireAuth`). Un token manquant ou invalide répond **401**. Un accès à une ressource d'un autre compte ou d'une autre organisation répond **403** (IDOR).
 
 ---
 
@@ -33,6 +31,7 @@ Authorization: Bearer <token>
 | 201 | Ressource créée |
 | 400 | Paramètres ou corps invalides |
 | 401 | Token manquant, invalide, ou identifiants incorrects |
+| 403 | Accès refusé (ressource d'un autre utilisateur / rôle insuffisant) |
 | 404 | Ressource introuvable |
 | 500 | Erreur interne serveur |
 | 503 | Service dégradé (health check uniquement) |
@@ -88,15 +87,17 @@ Authentifie un utilisateur.
 
 ### `GET /utilisateur`
 
-Liste tous les utilisateurs.
+Liste tous les utilisateurs (annuaire, sans mot de passe). **JWT requis.**
 
 **Réponses :** 200 → tableau d'utilisateurs (sans mot de passe).
 
 ### `GET /utilisateur/:id`
 
+**Authentification :** JWT. L'id doit être celui du compte authentifié.
+
 **Paramètres :** `id` (entier > 0)
 
-**Réponses :** 200 | 400 | 404 | 500
+**Réponses :** 200 | 400 | 403 | 404 | 500
 
 ### `POST /utilisateur`
 
@@ -116,27 +117,31 @@ Crée un utilisateur.
 
 ### `PUT /utilisateur/:id`
 
+**Authentification :** JWT. Un utilisateur ne peut modifier que son propre compte.
+
 **Corps :** champs partiels (`nom`, `email`, `mot_de_passe`)
 
-**Réponses :** 200 | 400 | 404 | 500
+**Réponses :** 200 | 400 | 403 | 404 | 500
 
 ### `DELETE /utilisateur/:id`
 
-**Réponses :** 200 | 400 | 404 | 500
+**Authentification :** JWT. Un utilisateur ne peut supprimer que son propre compte.
+
+**Réponses :** 200 | 400 | 403 | 404 | 500
 
 ---
 
 ## Organisation
 
-Préfixe : `/organisation`
+Préfixe : `/organisation` — **JWT requis**
 
-| Méthode | Route | Description |
-|---------|-------|-------------|
-| GET | `/organisation` | Liste toutes les organisations |
-| GET | `/organisation/:id` | Détail d'une organisation |
-| POST | `/organisation` | Crée une organisation |
-| PUT | `/organisation/:id` | Met à jour une organisation |
-| DELETE | `/organisation/:id` | Supprime une organisation |
+| Méthode | Route | Droits |
+|---------|-------|--------|
+| GET | `/organisation` | Membres : organisations auxquelles on appartient |
+| GET | `/organisation/:id` | Membre de l'organisation |
+| POST | `/organisation` | Tout utilisateur authentifié (`proprietaire_id` = JWT) |
+| PUT | `/organisation/:id` | Admin de l'organisation |
+| DELETE | `/organisation/:id` | Propriétaire |
 
 **Corps POST / PUT (exemple)**
 
@@ -154,15 +159,15 @@ Préfixe : `/organisation`
 
 ## Membre
 
-Préfixe : `/membre`
+Préfixe : `/membre` — **JWT requis**
 
-| Méthode | Route | Description |
-|---------|-------|-------------|
-| GET | `/membre` | Liste tous les membres |
-| GET | `/membre/:id` | Détail d'un membre |
-| POST | `/membre` | Ajoute un membre à une organisation |
-| PUT | `/membre/:id` | Met à jour le rôle |
-| DELETE | `/membre/:id` | Supprime un membre |
+| Méthode | Route | Droits |
+|---------|-------|--------|
+| GET | `/membre` | Membres des organisations auxquelles on appartient |
+| GET | `/membre/:id` | Membre de la même organisation |
+| POST | `/membre` | Admin ou propriétaire de l'organisation |
+| PUT | `/membre/:id` | Admin ou propriétaire (rôle uniquement) |
+| DELETE | `/membre/:id` | Admin ou propriétaire |
 
 **Corps POST (exemple)**
 
@@ -182,15 +187,15 @@ Préfixe : `/membre`
 
 ## Projet
 
-Préfixe : `/projet`
+Préfixe : `/projet` — **JWT requis**
 
-| Méthode | Route | Description |
-|---------|-------|-------------|
-| GET | `/projet` | Liste tous les projets |
-| GET | `/projet/:id` | Détail d'un projet |
-| POST | `/projet` | Crée un projet |
-| PUT | `/projet/:id` | Met à jour un projet |
-| DELETE | `/projet/:id` | Supprime un projet |
+| Méthode | Route | Droits |
+|---------|-------|--------|
+| GET | `/projet` | Membres : projets des organisations auxquelles on appartient |
+| GET | `/projet/:id` | Membre de l'organisation |
+| POST | `/projet` | Admin (`createur_id` = membre authentifié) |
+| PUT | `/projet/:id` | Admin |
+| DELETE | `/projet/:id` | Admin |
 
 **Corps POST (exemple)**
 
@@ -214,15 +219,15 @@ Préfixe : `/projet`
 
 ## Tâche
 
-Préfixe : `/tache`
+Préfixe : `/tache` — **JWT requis**
 
-| Méthode | Route | Auth | Description |
-|---------|-------|------|-------------|
-| GET | `/tache` | Non | Liste toutes les tâches |
-| GET | `/tache/:id` | Non | Détail d'une tâche |
-| POST | `/tache` | **Oui** | Crée une tâche |
-| PUT | `/tache/:id` | Non | Met à jour une tâche |
-| DELETE | `/tache/:id` | Non | Supprime une tâche |
+| Méthode | Route | Auth | Droits |
+|---------|-------|------|--------|
+| GET | `/tache` | Oui | Membres : tâches des organisations auxquelles on appartient |
+| GET | `/tache/:id` | Oui | Membre de l'organisation du projet |
+| POST | `/tache` | Oui | Admin ou bénévole (`createur_id` = membre authentifié) |
+| PUT | `/tache/:id` | Oui | Admin ou bénévole |
+| DELETE | `/tache/:id` | Oui | Admin ou bénévole |
 
 **Corps POST (exemple)**
 
@@ -277,10 +282,11 @@ curl -s -X POST http://localhost:3000/utilisateur/connexion \
 curl -s -X POST http://localhost:3000/tache \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer VOTRE_TOKEN" \
-  -d '{"createur_id":1,"projet_id":1,"titre":"Ma tâche","statut":"a_assigne","priorite":"moyenne"}'
+  -d '{"projet_id":1,"titre":"Ma tâche","statut":"a_assigne","priorite":"moyenne"}'
 
-# Lister les projets
-curl -s http://localhost:3000/projet
+# Lister les projets (avec token)
+curl -s http://localhost:3000/projet \
+  -H "Authorization: Bearer VOTRE_TOKEN"
 ```
 
 ---

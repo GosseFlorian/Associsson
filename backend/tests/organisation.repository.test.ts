@@ -40,9 +40,10 @@ describe('getOrganisationsRepository', () => {
     (pool.query as jest.Mock).mockResolvedValue({ rows: lignes });
 
     // Act
-    const resultat = await getOrganisationsRepository();
+    const resultat = await getOrganisationsRepository(1);
 
     // Assert
+    expect(pool.query).toHaveBeenCalledWith(expect.any(String), [1]);
     expect(resultat).toBe(lignes);
   });
 
@@ -54,7 +55,7 @@ describe('getOrganisationsRepository', () => {
     (pool.query as jest.Mock).mockRejectedValue(new Error('connexion refusée'));
 
     // Act
-    const fn = () => getOrganisationsRepository();
+    const fn = () => getOrganisationsRepository(1);
 
     // Assert
     await expect(fn()).rejects.toThrow('connexion refusée');

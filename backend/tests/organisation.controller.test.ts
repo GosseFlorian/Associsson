@@ -41,7 +41,7 @@ describe('getOrganisationsController', () => {
     // Arrange
     const organisations = [{ id: 1, nom: 'OpenAI' }];
     (getOrganisationsService as jest.Mock).mockResolvedValue(organisations);
-    const req = {} as Request;
+    const req = { utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -58,7 +58,7 @@ describe('getOrganisationsController', () => {
 
     // Arrange
     (getOrganisationsService as jest.Mock).mockRejectedValue(new Error('boom'));
-    const req = {} as Request;
+    const req = { utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -77,14 +77,17 @@ describe('getOrganisationIdController', () => {
     // Arrange
     const organisation = { id: 1, nom: 'OpenAI' };
     (getOrganisationIdService as jest.Mock).mockResolvedValue(organisation);
-    const req = { params: { id: '1' } } as unknown as Request;
+    const req = {
+      params: { id: '1' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
     await getOrganisationIdController(req, res);
 
     // Assert
-    expect(getOrganisationIdService).toHaveBeenCalledWith(1);
+    expect(getOrganisationIdService).toHaveBeenCalledWith(1, 1);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(organisation);
   });
@@ -111,7 +114,10 @@ describe('getOrganisationIdController', () => {
 
     // Arrange
     (getOrganisationIdService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: '1' } } as unknown as Request;
+    const req = {
+      params: { id: '1' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -132,7 +138,10 @@ describe('getOrganisationIdController', () => {
     (getOrganisationIdService as jest.Mock).mockRejectedValue(
       new Error('Erreur DB')
     );
-    const req = { params: { id: '1' } } as unknown as Request;
+    const req = {
+      params: { id: '1' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -156,14 +165,14 @@ describe('postOrganisationController', () => {
     const data = { nom: 'OpenAI' };
     const organisation = { id: 1, nom: 'OpenAI' };
     (postOrganisationService as jest.Mock).mockResolvedValue(organisation);
-    const req = { body: data } as Request;
+    const req = { body: data, utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
     await postOrganisationController(req, res);
 
     // Assert
-    expect(postOrganisationService).toHaveBeenCalledWith(data);
+    expect(postOrganisationService).toHaveBeenCalledWith(data, 1);
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(organisation);
   });
@@ -192,7 +201,7 @@ describe('postOrganisationController', () => {
     (postOrganisationService as jest.Mock).mockRejectedValue(
       new Error("Le nom de l'organisation est obligatoire")
     );
-    const req = { body: { nom: '  ' } } as Request;
+    const req = { body: { nom: '  ' }, utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -210,7 +219,7 @@ describe('postOrganisationController', () => {
     (postOrganisationService as jest.Mock).mockRejectedValue(
       new Error('Erreur DB')
     );
-    const req = { body: { nom: 'OpenAI' } } as Request;
+    const req = { body: { nom: 'OpenAI' }, utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -235,6 +244,7 @@ describe('putOrganisationController', () => {
     const req = {
       params: { id: '1' },
       body: { nom: 'Nouvelle organisation' },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -242,7 +252,7 @@ describe('putOrganisationController', () => {
     await putOrganisationController(req, res);
 
     // Assert
-    expect(putOrganisationService).toHaveBeenCalledWith(1, req.body);
+    expect(putOrganisationService).toHaveBeenCalledWith(1, req.body, 1);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(organisation);
   });
@@ -294,6 +304,7 @@ describe('putOrganisationController', () => {
     const req = {
       params: { id: '1' },
       body: { nom: 'test' },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -316,6 +327,7 @@ describe('putOrganisationController', () => {
     const req = {
       params: { id: '1' },
       body: { nom: 'test' },
+      utilisateur: { utilisateurId: 1 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -335,14 +347,17 @@ describe('deleteOrganisationController', () => {
     // Arrange
     const organisation = { id: 1, nom: 'OpenAI' };
     (deleteOrganisationService as jest.Mock).mockResolvedValue(organisation);
-    const req = { params: { id: '1' } } as unknown as Request;
+    const req = {
+      params: { id: '1' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
     await deleteOrganisationController(req, res);
 
     // Assert
-    expect(deleteOrganisationService).toHaveBeenCalledWith(1);
+    expect(deleteOrganisationService).toHaveBeenCalledWith(1, 1);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(organisation);
   });
@@ -369,7 +384,10 @@ describe('deleteOrganisationController', () => {
 
     // Arrange
     (deleteOrganisationService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: '1' } } as unknown as Request;
+    const req = {
+      params: { id: '1' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -387,7 +405,10 @@ describe('deleteOrganisationController', () => {
     (deleteOrganisationService as jest.Mock).mockRejectedValue(
       new Error('boom')
     );
-    const req = { params: { id: '1' } } as unknown as Request;
+    const req = {
+      params: { id: '1' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act

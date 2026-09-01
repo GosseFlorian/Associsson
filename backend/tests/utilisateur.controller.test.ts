@@ -13,6 +13,7 @@ import {
   putUtilisateurService,
   deleteUtilisateurService,
 } from '../src/services/utilisateur.service';
+import { AccesRefuseError } from '../src/lib/errors';
 
 // jest.mock remplace toutes les fonctions du service par des fausses fonctions.
 // On contrôle ensuite ce qu'elles renvoient dans chaque test (Arrange).
@@ -41,7 +42,7 @@ describe('getUtilisateursController', () => {
     // Arrange
     const utilisateurs = [{ id: 1, nom: 'Jean' }];
     (getUtilisateursService as jest.Mock).mockResolvedValue(utilisateurs);
-    const req = {} as Request;
+    const req = { utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -58,7 +59,7 @@ describe('getUtilisateursController', () => {
 
     // Arrange
     (getUtilisateursService as jest.Mock).mockRejectedValue(new Error('boom'));
-    const req = {} as Request;
+    const req = { utilisateur: { utilisateurId: 1 } } as Request;
     const res = mockResponse();
 
     // Act
@@ -77,7 +78,10 @@ describe('getUtilisateurIdController', () => {
     // Arrange
     const utilisateur = { id: 5, nom: 'Jean' };
     (getUtilisateurIdService as jest.Mock).mockResolvedValue(utilisateur);
-    const req = { params: { id: '5' } } as unknown as Request;
+    const req = {
+      params: { id: '5' },
+      utilisateur: { utilisateurId: 5 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -109,7 +113,10 @@ describe('getUtilisateurIdController', () => {
 
     // Arrange
     (getUtilisateurIdService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: '999' } } as unknown as Request;
+    const req = {
+      params: { id: '999' },
+      utilisateur: { utilisateurId: 999 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -117,6 +124,21 @@ describe('getUtilisateurIdController', () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("erreur : renvoie 403 si l'accès à un autre compte est refusé (IDOR)", async () => {
+    (getUtilisateurIdService as jest.Mock).mockRejectedValue(
+      new AccesRefuseError("Vous ne pouvez accéder qu'à votre propre compte")
+    );
+    const req = {
+      params: { id: '5' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
+    const res = mockResponse();
+
+    await getUtilisateurIdController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(403);
   });
 });
 
@@ -228,6 +250,7 @@ describe('putUtilisateurController', () => {
     const req = {
       params: { id: '3' },
       body: { nom: 'Nouveau nom' },
+      utilisateur: { utilisateurId: 3 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -279,6 +302,7 @@ describe('putUtilisateurController', () => {
     const req = {
       params: { id: '999' },
       body: { nom: 'X' },
+      utilisateur: { utilisateurId: 999 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -300,6 +324,7 @@ describe('putUtilisateurController', () => {
     const req = {
       params: { id: '3' },
       body: { email: 'invalide' },
+      utilisateur: { utilisateurId: 3 },
     } as unknown as Request;
     const res = mockResponse();
 
@@ -308,6 +333,25 @@ describe('putUtilisateurController', () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it("erreur : renvoie 403 si l'utilisateur tente de modifier un autre compte", async () => {
+    (putUtilisateurService as jest.Mock).mockRejectedValue(
+      new AccesRefuseError("Vous ne pouvez accéder qu'à votre propre compte")
+    );
+    const req = {
+      params: { id: '3' },
+      body: { nom: 'Intrus' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
+    const res = mockResponse();
+
+    await putUtilisateurController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Vous ne pouvez accéder qu'à votre propre compte",
+    });
   });
 });
 
@@ -321,7 +365,10 @@ describe('deleteUtilisateurController', () => {
     (deleteUtilisateurService as jest.Mock).mockResolvedValue(
       utilisateurSupprime
     );
-    const req = { params: { id: '7' } } as unknown as Request;
+    const req = {
+      params: { id: '7' },
+      utilisateur: { utilisateurId: 7 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -353,7 +400,10 @@ describe('deleteUtilisateurController', () => {
 
     // Arrange
     (deleteUtilisateurService as jest.Mock).mockResolvedValue(null);
-    const req = { params: { id: '999' } } as unknown as Request;
+    const req = {
+      params: { id: '999' },
+      utilisateur: { utilisateurId: 999 },
+    } as unknown as Request;
     const res = mockResponse();
 
     // Act
@@ -361,5 +411,20 @@ describe('deleteUtilisateurController', () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("erreur : renvoie 403 si l'utilisateur tente de supprimer un autre compte", async () => {
+    (deleteUtilisateurService as jest.Mock).mockRejectedValue(
+      new AccesRefuseError("Vous ne pouvez accéder qu'à votre propre compte")
+    );
+    const req = {
+      params: { id: '7' },
+      utilisateur: { utilisateurId: 1 },
+    } as unknown as Request;
+    const res = mockResponse();
+
+    await deleteUtilisateurController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(403);
   });
 });

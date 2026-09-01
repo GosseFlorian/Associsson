@@ -6,9 +6,11 @@ import {
   postMembreController,
   deleteMembreController,
 } from '../controllers/membre.controller';
+import { requireAuth } from '../middlewares/requireAuth.middleware';
 
 const router = Router();
 
+router.use(requireAuth);
 router.get('/', getMembresController);
 router.get('/:id', getMembresParIdController);
 router.put('/:id', putMembreController);
